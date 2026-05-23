@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juche TV - Live Streams</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .stagger-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: staggerFadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes staggerFadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .go-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5001a;
+      margin-top: 12px;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .channel-card:hover .go-btn {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .go-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+    .badge-http {
+      background: rgba(245, 158, 11, 0.12);
+      color: #b45309;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-top: 8px;
+    }
+    .dark .badge-http {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span>Juche TV</span>
+      </a>
+      <ul id="menu">
+        <li><a href="index.html" class="active">Channels</a></li>
+        <li>
+          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+            <svg id="moon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+            </svg>
+            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+              <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main page-transition">
+    <div class="page-header">
+      <h1>Live Streams</h1>
+      <p>Watch Korean and Chinese television and radio broadcasts live.</p>
+    </div>
+
+    <div class="channel-grid">
+      <!-- KCTV -->
+      <a href="kctv.html" class="channel-card stagger-in" style="animation-delay:0.05s">
+        <div class="channel-icon">
+          <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV" loading="lazy">
+        </div>
+        <div class="channel-info">
+          <h3>Korean Central Television</h3>
+          <p>Live television broadcast from Pyongyang, DPRK. 24/7 news, cultural programs, and entertainment.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+          </div>
+          <div class="go-btn">
+            Watch Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- KCBS -->
+      <a href="kcbs.html" class="channel-card stagger-in" style="animation-delay:0.1s">
+        <div class="channel-icon">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)">
+            <circle cx="32" cy="32" r="28" stroke-width="2.5"/>
+            <circle cx="32" cy="32" r="12"/>
+            <line x1="32" y1="4" x2="32" y2="12"/>
+            <line x1="32" y1="52" x2="32" y2="60"/>
+            <line x1="4" y1="32" x2="12" y2="32"/>
+            <line x1="52" y1="32" x2="60" y2="32"/>
+            <line x1="12.2" y1="12.2" x2="17.8" y2="17.8"/>
+            <line x1="46.2" y1="46.2" x2="51.8" y2="51.8"/>
+            <line x1="12.2" y1="51.8" x2="17.8" y2="46.2"/>
+            <line x1="46.2" y1="17.8" x2="51.8" y2="12.2"/>
+            <circle cx="32" cy="32" r="4" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="channel-info">
+          <h3>Korean Central Broadcasting Station</h3>
+          <p>State radio broadcaster of the Democratic People's Republic of Korea. News, music, and cultural programming.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="channel-badge badge-radio">RADIO</span>
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+          </div>
+          <div class="go-btn">
+            Listen Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Voice of Korea -->
+      <a href="vok.html" class="channel-card stagger-in" style="animation-delay:0.15s">
+        <div class="channel-icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px">
+        </div>
+        <div class="channel-info">
+          <h3>Voice of Korea</h3>
+          <p>International broadcasting service of the DPRK. Shortwave and internet radio in multiple languages.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="channel-badge badge-radio">RADIO</span>
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+          </div>
+          <div class="go-btn">
+            Listen Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- CCTV-1 HD -->
+      <a href="cctv.html" class="channel-card stagger-in" style="animation-delay:0.2s">
+        <div class="channel-icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/CCTV-1_Logo.svg" alt="CCTV-1" loading="lazy" style="width:56px">
+        </div>
+        <div class="channel-info">
+          <h3>CCTV-1 HD</h3>
+          <p>China Central Television flagship channel. News, documentaries, and entertainment with EPG.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="channel-badge badge-hd">HD</span>
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+          </div>
+          <div class="go-btn">
+            Watch Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- CCTV-4K -->
+      <a href="cctv4k.html" class="channel-card stagger-in" style="animation-delay:0.25s">
+        <div class="channel-icon">
+          <img src="https://static.wikia.nocookie.net/logopedia/images/5/5c/CCTV-4k.png/revision/latest?cb=20220312213639" alt="CCTV-4K" loading="lazy" style="width:64px">
+        </div>
+        <div class="channel-info">
+          <h3>CCTV-4K</h3>
+          <p>China Central Television ultra-high definition channel. Premium 4K content and live events.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="channel-badge badge-hd">4K</span>
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+            <span class="channel-badge badge-http">
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              HTTP
+            </span>
+          </div>
+          <div class="go-btn">
+            Watch Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- CCTV-8K -->
+      <a href="cctv8k.html" class="channel-card stagger-in" style="animation-delay:0.3s">
+        <div class="channel-icon">
+          <img src="https://i.postimg.cc/FH5RQVy9/CCTV8K.webp" alt="CCTV-8K" loading="lazy" style="width:64px">
+        </div>
+        <div class="channel-info">
+          <h3>CCTV-8K</h3>
+          <p>China Central Television 8K super ultra-high definition channel. The highest resolution broadcast available.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="channel-badge badge-hd">8K</span>
+            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
+            <span class="channel-badge badge-http">
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              HTTP
+            </span>
+          </div>
+          <div class="go-btn">
+            Watch Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span> Juche TV. Not affiliated with any broadcasting entity.</span>
+    <span>All streams are publicly available sources.</span>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const moon = document.getElementById('moon');
+    const sun = document.getElementById('sun');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none';
+      sun.style.display = '';
+    }
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      moon.style.display = isDark ? 'none' : '';
+      sun.style.display = isDark ? '' : 'none';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>
