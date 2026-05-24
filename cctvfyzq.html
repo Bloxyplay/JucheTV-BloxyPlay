@@ -132,96 +132,6 @@
       animation: pulse 1.8s ease infinite;
     }
 
-
-    /* ===== EPG SECTION ===== */
-    .epg-section {
-      margin-top: 24px;
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .epg-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .epg-header h3 {
-      font-size: 15px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .epg-header h3 svg { width: 16px; height: 16px; }
-    .epg-date {
-      font-size: 12px;
-      color: var(--secondary);
-      font-family: 'SF Mono', monospace;
-    }
-    .epg-list {
-      max-height: 360px;
-      overflow-y: auto;
-    }
-    .epg-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background .15s ease;
-      font-size: 13px;
-    }
-    .epg-item:last-child { border-bottom: none; }
-    .epg-item:hover { background: var(--theme); }
-    .epg-item.current {
-      background: rgba(229,0,26,.04);
-      border-left: 3px solid #e5001a;
-      padding-left: 17px;
-    }
-    .epg-time {
-      font-family: 'SF Mono', monospace;
-      font-size: 12px;
-      color: var(--secondary);
-      white-space: nowrap;
-      min-width: 72px;
-    }
-    .epg-name {
-      flex: 1;
-      font-weight: 500;
-    }
-    .epg-status {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-    .epg-status.now {
-      background: rgba(229,0,26,.1);
-      color: #e5001a;
-    }
-    .epg-status.next {
-      background: var(--tertiary);
-      color: var(--secondary);
-    }
-    .epg-loading {
-      padding: 32px;
-      text-align: center;
-      color: var(--secondary);
-      font-size: 13px;
-    }
-    .epg-error {
-      padding: 24px;
-      text-align: center;
-      color: var(--secondary);
-      font-size: 13px;
-    }
-
     /* ===== INFO ===== */
     .info-section {
       margin-top: 24px;
@@ -275,7 +185,7 @@
 
     <!-- Channel Header -->
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-      <img src="https://static.wikia.nocookie.net/logopedia/images/b/bb/CCTV-%E9%A3%8E%E4%BA%91%E8%B6%B3%E7%90%83.png/revision/latest?cb=20240815010514" alt="CCTV风云足球" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;">
+      <img src="https://i.postimg.cc/Bbrk6GQ1/5fdf8db1cb1349540923b7564b058558d109b3dedce4.png" alt="CCTV风云足球" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;">
       <div>
         <h2 style="font-size:19px;font-weight:700;margin:0 0 4px;">CCTV风云足球</h2>
         <p style="font-size:13px;color:var(--secondary);margin:0;">CCTV Sports & Football Channel &nbsp;·&nbsp; <span style="color:#e5001a;font-weight:600;">● LIVE</span></p>
@@ -289,22 +199,6 @@
         <source src="https://bloxyplaytv.duckdns.org/live/fyzq.m3u8" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
       </video>
-    </div>
-
-    <!-- EPG Section -->
-    <div class="epg-section">
-      <div class="epg-header">
-        <h3>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          Program Guide (CCTV风云足球)
-        </h3>
-        <span class="epg-date" id="epgDate"></span>
-      </div>
-      <div class="epg-list" id="epgList">
-        <div class="epg-loading">Loading program guide...</div>
-      </div>
     </div>
 
     <div class="info-section">
@@ -336,9 +230,6 @@
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
-    // ===================== CONFIG =====================
-    const EPG_NAME = 'CCTV风云足球';
-
     // ===================== VIDEO.JS INIT =====================
     const player = videojs('vid', {
       controls: true,
@@ -360,7 +251,6 @@
 
     player.ready(function() {
       player.play().catch(() => {});
-      fetchEPG(EPG_NAME);
     });
 
     document.addEventListener('contextmenu', e => e.preventDefault());
@@ -369,171 +259,6 @@
         e.preventDefault();
       }
     });
-
-    // ===================== EPG =====================
-    const EPG_CODES = {
-      '\u65B0\u95FB': 'News',
-      '\u65B0\u95FB\u8054\u64AD': 'News Network',
-      '\u671D\u95FB\u5929\u4E0B': 'Morning News',
-      '\u665A\u95FB\u5929\u4E0B': 'Evening News',
-      '\u7126\u70B9\u8BBF\u8C08': 'Focus Interview',
-      '\u4ECA\u65E5\u8BF4\u6CD5': 'Legal Report',
-      '\u64AD\u51FA\u95F4\u9699': 'Broadcast Gap',
-      '\u5E7F\u544A': 'Commercial',
-      '\u7EFC\u827A\u5927\u89C2': 'Variety Show',
-      '\u7535\u89C6\u5267': 'TV Drama',
-      '\u7CBE\u54C1\u5251\u6863': 'Premium Drama',
-      '\u52A8\u753B\u5927\u7247': 'Animation',
-      '\u7EAA\u5F55': 'Documentary',
-      '\u79D1\u6559': 'Science & Education',
-      '\u4F53\u80B2': 'Sports',
-      '\u97F3\u4E50': 'Music',
-      '\u620F\u66F2': 'Opera',
-      '\u5C11\u513F\u8282\u76EE': 'Children Program',
-      '\u751F\u6D3B\u670D\u52A1': 'Life Service',
-      '\u8D22\u7ECF': 'Finance',
-      '\u519C\u4E1A': 'Agriculture',
-      '\u519B\u4E8B': 'Military',
-      '\u5916\u8BED': 'Foreign Language',
-      '\u6C49\u8BED': 'Chinese Language',
-      '\u62A5\u9053': 'Report',
-      '\u76F4\u64AD': 'Live',
-      '\u7279\u522B\u8282\u76EE': 'Special Program',
-      '\u8282\u76EE\u9884\u544A': 'Program Preview',
-      '\u8282\u76EE': 'Program',
-      'CCTV': 'CCTV',
-      'HD': 'HD',
-    };
-
-    function translateEPG(text) {
-      if (!text) return 'Program';
-      let translated = text;
-      for (const [cn, en] of Object.entries(EPG_CODES)) {
-        translated = translated.replace(new RegExp(cn, 'g'), en);
-      }
-      if (/[\u4e00-\u9fff]/.test(translated)) {
-        return 'TV Program (' + text.slice(0, 20) + ')';
-      }
-      return translated;
-    }
-
-    function getTodayDate() {
-      const d = new Date();
-      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    }
-
-    async function fetchEPG(chName) {
-      const epgList = document.getElementById('epgList');
-      const epgDate = document.getElementById('epgDate');
-      const date = getTodayDate();
-      epgDate.textContent = date;
-      epgList.innerHTML = '<div class="epg-loading">Loading program guide...</div>';
-
-      try {
-        const url = 'http://tvapisg.canghaitv.com/api/diyp.php?ch=' + encodeURIComponent(chName) + '&date=' + date;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000);
-
-        const response = await fetch(url, {
-          signal: controller.signal,
-          headers: { 'Accept': 'application/json,*/*' }
-        });
-        clearTimeout(timeout);
-
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        const data = await response.json();
-        renderEPG(data);
-      } catch (e) {
-        showFallbackEPG();
-      }
-    }
-
-    function renderEPG(data) {
-      const epgList = document.getElementById('epgList');
-      if (!data || !data.list || !data.list.length) {
-        showFallbackEPG();
-        return;
-      }
-      let html = '';
-      const now = new Date();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
-      let foundCurrent = false;
-
-      data.list.forEach((item, idx) => {
-        const time = item.time || item.start || '';
-        const name = translateEPG(item.title || item.name || 'Program');
-        const [h, m] = time.split(':').map(Number);
-        const itemMinutes = (h || 0) * 60 + (m || 0);
-        let status = '';
-        let cls = 'epg-item';
-
-        if (!foundCurrent && itemMinutes <= nowMinutes) {
-          const nextItem = data.list[idx + 1];
-          if (nextItem) {
-            const [nh, nm] = (nextItem.time || nextItem.start || '23:59').split(':').map(Number);
-            const nextMinutes = (nh || 0) * 60 + (nm || 0);
-            if (nowMinutes < nextMinutes) {
-              cls += ' current';
-              status = '<span class="epg-status now">ON NOW</span>';
-              foundCurrent = true;
-            }
-          }
-        } else if (!foundCurrent && itemMinutes > nowMinutes && idx === 0) {
-          cls += ' current';
-          status = '<span class="epg-status now">ON NOW</span>';
-          foundCurrent = true;
-        }
-
-        if (!status && !foundCurrent) {
-          status = '<span class="epg-status next">UP NEXT</span>';
-        } else if (!status) {
-          status = '<span class="epg-status next">LATER</span>';
-        }
-
-        html += `<div class="${cls}"><span class="epg-time">${time}</span><span class="epg-name">${name}</span>${status}</div>`;
-      });
-      epgList.innerHTML = html;
-    }
-
-    function showFallbackEPG() {
-      const epgList = document.getElementById('epgList');
-      const now = new Date();
-      const hour = now.getHours();
-      const schedules = [
-        { t: '06:00', n: 'Morning News' },
-        { t: '07:00', n: 'News Broadcast' },
-        { t: '08:00', n: 'Focus Interview' },
-        { t: '09:00', n: 'TV Drama Series' },
-        { t: '12:00', n: 'Midday News' },
-        { t: '12:35', n: 'Documentary' },
-        { t: '14:00', n: 'TV Drama Series' },
-        { t: '18:00', n: 'Evening News' },
-        { t: '19:00', n: 'News Network' },
-        { t: '19:38', n: 'Focus Interview' },
-        { t: '20:00', n: 'Prime Time Drama' },
-        { t: '21:00', n: 'Special Program' },
-        { t: '22:00', n: 'Late Night News' },
-        { t: '23:00', n: 'Night Program' },
-      ];
-      let html = '';
-      let foundCurrent = false;
-      schedules.forEach((s, idx) => {
-        const [h, m] = s.t.split(':').map(Number);
-        const itemMinutes = h * 60 + m;
-        const nowMinutes = hour * 60 + now.getMinutes();
-        let cls = 'epg-item';
-        let status = '';
-        if (!foundCurrent && itemMinutes <= nowMinutes) {
-          const next = schedules[idx + 1];
-          if (!next || nowMinutes < (parseInt(next.t) * 60)) {
-            cls += ' current'; status = '<span class="epg-status now">ON NOW</span>'; foundCurrent = true;
-          }
-        }
-        if (!status) status = '<span class="epg-status next">SCHEDULED</span>';
-        html += `<div class="${cls}"><span class="epg-time">${s.t}</span><span class="epg-name">${s.n}</span>${status}</div>`;
-      });
-      epgList.innerHTML = html;
-    }
 
 
   </script>
