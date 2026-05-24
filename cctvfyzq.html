@@ -4,8 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CCTV风云足球 - Juche TV</title>
+
+  <!-- ── Speed hints ── -->
+  <link rel="preconnect" href="https://bloxyplaytv.duckdns.org" crossorigin>
+  <link rel="dns-prefetch" href="https://bloxyplaytv.duckdns.org">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+  <!-- Video.js CSS – kept external so browser can cache it -->
+  <link rel="stylesheet" href="https://unpkg.com/video.js@8/dist/video-js.min.css">
   <link rel="stylesheet" href="style.css">
-  <link href="https://unpkg.com/video.js@8/dist/video-js.min.css" rel="stylesheet" />
+
   <style>
     /* ===== CCTV风云足球 PAGE STYLES ===== */
     .back-link {
@@ -22,20 +30,27 @@
     .back-link:hover { color: var(--primary); }
     .back-link svg { width: 16px; height: 16px; }
 
-    /* ===== VIDEO PLAYER (Video.js overrides) ===== */
+    /* ===== VIDEO PLAYER ===== */
     .player-container {
       border-radius: 16px;
       overflow: hidden;
       position: relative;
-    }
-    .video-js {
-      width: 100%;
+      /* Reserve exact space before JS loads — no layout shift */
       aspect-ratio: 16 / 9;
       max-height: 70vh;
       background: #000;
+    }
+    /* Use CSS for sizing; skip fluid/responsive JS recalc entirely */
+    .video-js {
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute !important;
+      inset: 0;
+      background: #000;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-    /* Big center play button — dark circle matching reference */
+
+    /* Big center play button */
     .video-js .vjs-big-play-button {
       width: 72px;
       height: 72px;
@@ -54,14 +69,14 @@
       background: rgba(60,60,60,.95);
       transform: translate(-50%, -50%) scale(1.05);
     }
-    /* Let Video.js control visibility — don't override with display:flex */
-    .video-js.vjs-has-started .vjs-big-play-button { display: none; }
+    .video-js.vjs-has-started .vjs-big-play-button,
     .video-js.vjs-has-started.vjs-paused .vjs-big-play-button { display: none; }
     .video-js .vjs-big-play-button .vjs-icon-placeholder:before {
       font-size: 28px;
       line-height: 72px;
       color: #fff;
     }
+
     /* Control bar */
     .video-js .vjs-control-bar {
       background: rgba(0,0,0,.82);
@@ -185,25 +200,24 @@
 
     <!-- Channel Header -->
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-      <img src="https://i.postimg.cc/Bbrk6GQ1/5fdf8db1cb1349540923b7564b058558d109b3dedce4.png" alt="CCTV风云足球" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;">
+      <img src="https://i.postimg.cc/Bbrk6GQ1/5fdf8db1cb1349540923b7564b058558d109b3dedce4.png" alt="CCTV风云足球"
+           style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;">
       <div>
         <h2 style="font-size:19px;font-weight:700;margin:0 0 4px;">CCTV风云足球</h2>
-        <p style="font-size:13px;color:var(--secondary);margin:0;">CCTV Sports & Football Channel &nbsp;·&nbsp; <span style="color:#e5001a;font-weight:600;">● LIVE</span></p>
+        <p style="font-size:13px;color:var(--secondary);margin:0;">CCTV Sports &amp; Football Channel &nbsp;·&nbsp; <span style="color:#e5001a;font-weight:600;">● LIVE</span></p>
       </div>
     </div>
 
     <!-- Video Player -->
     <div class="player-container">
+      <!-- No <source> here; we set src via JS after player init for fastest start -->
       <video id="vid" class="video-js vjs-big-play-centered"
-             playsinline preload="auto">
-        <source src="https://bloxyplaytv.duckdns.org/live/fyzq.m3u8" type="application/x-mpegURL">
-        <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
-      </video>
+             playsinline preload="auto"></video>
     </div>
 
     <div class="info-section">
       <h3>About CCTV风云足球</h3>
-      <p>CCTV风云足球 (CCTV Sports & Football Channel) is a dedicated football and sports broadcasting channel under China Central Television. It delivers comprehensive coverage of domestic and international football leagues, including the Chinese Super League, UEFA Champions League, and major tournaments worldwide, alongside sports news, analysis, and live match commentary.</p>
+      <p>CCTV风云足球 (CCTV Sports &amp; Football Channel) is a dedicated football and sports broadcasting channel under China Central Television. It delivers comprehensive coverage of domestic and international football leagues, including the Chinese Super League, UEFA Champions League, and major tournaments worldwide, alongside sports news, analysis, and live match commentary.</p>
     </div>
   </main>
 
@@ -212,12 +226,13 @@
     <a href="index.html">Back to Channels</a>
   </footer>
 
+  <!-- Load VJS as late as possible so page paint isn't blocked -->
   <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
   <script>
     // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
-    const sun = document.getElementById('sun');
+    const sun  = document.getElementById('sun');
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
       moon.style.display = 'none'; sun.style.display = '';
@@ -226,41 +241,86 @@
       document.documentElement.classList.toggle('dark');
       const d = document.documentElement.classList.contains('dark');
       moon.style.display = d ? 'none' : '';
-      sun.style.display = d ? '' : 'none';
+      sun.style.display  = d ? '' : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
-    // ===================== VIDEO.JS INIT =====================
+    // ===================== VIDEO.JS — INSTANT HLS =====================
+    const HLS_SRC = 'https://bloxyplaytv.duckdns.org/live/fyzq.m3u8';
+
     const player = videojs('vid', {
-      controls: true,
-      autoplay: true,
-      muted: true,
-      liveui: true,
-      fluid: true,
-      responsive: true,
+      controls:      true,
+      // 'any' tries unmuted first, falls back to muted autoplay — faster than true
+      autoplay:      'any',
+      muted:         true,
+      liveui:        true,
       playbackRates: [],
+
+      // Disable fluid/responsive — CSS handles all sizing (no JS layout recalc)
+      fluid:         false,
+      responsive:    false,
+      fill:          true,       // fills the absolute-positioned container
+
       html5: {
         vhs: {
-          overrideNative: true,
-          enableLowInitialPlaylist: true,
+          // Tell VHS we have plenty of bandwidth so it picks the best rendition
+          // immediately instead of climbing the quality ladder from the bottom
+          bandwidth:                      10_000_000, // 10 Mbps initial estimate
+
+          // Skip the lowest-quality playlist on first load
+          enableLowInitialPlaylist:       false,
+
+          // Jump straight to live edge rather than starting near the DVR window start
+          liveRangeSafeTimeDelta:         0,
+
+          // Prefer native HLS only when the browser can do it truly natively;
+          // force VHS (MSE) elsewhere so behaviour is consistent
+          overrideNative:                 true,
+
+          // Allow small seeks within the unsafe live window without stalling
+          allowSeeksWithinUnsafeLiveWindow: true,
+
+          // Don't limit quality by player pixel size — always pick best available
+          limitRenditionByPlayerDimensions: false,
+
+          // Keep segment requests moving even when the player is hidden
+          useNetworkInformationApi:       true,
+
+          // Smooth quality switches — no rebuffer on rendition change
+          smoothQualityChange:            true,
         },
         nativeAudioTracks: false,
         nativeVideoTracks: false,
-      }
+      },
     });
 
-    player.ready(function() {
+    // Set source via JS (avoids a second HTML parse round-trip)
+    player.src({ src: HLS_SRC, type: 'application/x-mpegURL' });
+
+    player.ready(function () {
+      // Lock immediately to the live edge
+      player.liveTracker && player.liveTracker.seekToLiveEdge();
       player.play().catch(() => {});
     });
 
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) || (e.ctrlKey && ['u','U'].includes(e.key))) {
-        e.preventDefault();
-      }
+    // If stalled, seek back to live edge and retry
+    player.on('error', function () {
+      setTimeout(function () {
+        player.src({ src: HLS_SRC, type: 'application/x-mpegURL' });
+        player.liveTracker && player.liveTracker.seekToLiveEdge();
+        player.play().catch(() => {});
+      }, 2000);
     });
 
-
+    // ===================== DEV-TOOLS GUARD =====================
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) ||
+        (e.ctrlKey && ['u','U'].includes(e.key))
+      ) e.preventDefault();
+    });
   </script>
 </body>
 </html>
