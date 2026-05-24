@@ -107,18 +107,130 @@
       <!-- KCBS -->
       <a href="kcbs.html" class="channel-card stagger-in" style="animation-delay:0.1s">
         <div class="channel-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)">
-            <circle cx="32" cy="32" r="28" stroke-width="2.5"/>
-            <circle cx="32" cy="32" r="12"/>
-            <line x1="32" y1="4" x2="32" y2="12"/>
-            <line x1="32" y1="52" x2="32" y2="60"/>
-            <line x1="4" y1="32" x2="12" y2="32"/>
-            <line x1="52" y1="32" x2="60" y2="32"/>
-            <line x1="12.2" y1="12.2" x2="17.8" y2="17.8"/>
-            <line x1="46.2" y1="46.2" x2="51.8" y2="51.8"/>
-            <line x1="12.2" y1="51.8" x2="17.8" y2="46.2"/>
-            <line x1="46.2" y1="17.8" x2="51.8" y2="12.2"/>
-            <circle cx="32" cy="32" r="4" fill="currentColor" stroke="none"/>
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--primary);overflow:visible">
+            <defs>
+              <!-- Signal wave 1 -->
+              <style>
+                @keyframes kcbs-wave1 {
+                  0%   { opacity: 0; r: 2; }
+                  30%  { opacity: 0.7; }
+                  100% { opacity: 0; r: 8; }
+                }
+                @keyframes kcbs-wave2 {
+                  0%   { opacity: 0; r: 2; }
+                  30%  { opacity: 0.5; }
+                  100% { opacity: 0; r: 12; }
+                }
+                @keyframes kcbs-wave3 {
+                  0%   { opacity: 0; r: 2; }
+                  30%  { opacity: 0.3; }
+                  100% { opacity: 0; r: 16; }
+                }
+                @keyframes kcbs-needle {
+                  0%   { transform: translateX(-6px); }
+                  50%  { transform: translateX(6px); }
+                  100% { transform: translateX(-6px); }
+                }
+                @keyframes kcbs-grille1 {
+                  0%,100% { opacity: 0.25; }
+                  50%     { opacity: 0.75; }
+                }
+                @keyframes kcbs-grille2 {
+                  0%,100% { opacity: 0.6; }
+                  50%     { opacity: 0.2; }
+                }
+                @keyframes kcbs-grille3 {
+                  0%,100% { opacity: 0.15; }
+                  33%     { opacity: 0.7; }
+                  66%     { opacity: 0.3; }
+                }
+                @keyframes kcbs-grille4 {
+                  0%,100% { opacity: 0.5; }
+                  40%     { opacity: 0.15; }
+                }
+                @keyframes kcbs-grille5 {
+                  0%,100% { opacity: 0.3; }
+                  60%     { opacity: 0.8; }
+                }
+                @keyframes kcbs-knob-vol {
+                  0%,100% { transform: rotate(0deg); }
+                  25%     { transform: rotate(15deg); }
+                  75%     { transform: rotate(-10deg); }
+                }
+                @keyframes kcbs-knob-tune {
+                  0%   { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+                @keyframes kcbs-dot {
+                  0%,100% { opacity: 1; r: 1.5; }
+                  50%     { opacity: 0.4; r: 2.5; }
+                }
+                .kcbs-w1 { animation: kcbs-wave1 2s ease-out infinite; }
+                .kcbs-w2 { animation: kcbs-wave2 2s ease-out 0.5s infinite; }
+                .kcbs-w3 { animation: kcbs-wave3 2s ease-out 1s infinite; }
+                .kcbs-needle-g { animation: kcbs-needle 2.8s ease-in-out infinite; transform-origin: 43px 34px; }
+                .kcbs-gl1 { animation: kcbs-grille1 1.1s ease-in-out infinite; }
+                .kcbs-gl2 { animation: kcbs-grille2 0.9s ease-in-out 0.15s infinite; }
+                .kcbs-gl3 { animation: kcbs-grille3 1.3s ease-in-out 0.05s infinite; }
+                .kcbs-gl4 { animation: kcbs-grille4 0.85s ease-in-out 0.3s infinite; }
+                .kcbs-gl5 { animation: kcbs-grille5 1.05s ease-in-out 0.2s infinite; }
+                .kcbs-knob-vol { animation: kcbs-knob-vol 4s ease-in-out infinite; transform-origin: 37px 44px; }
+                .kcbs-knob-tune { animation: kcbs-knob-tune 3s linear infinite; transform-origin: 51px 44px; }
+                .kcbs-dot { animation: kcbs-dot 1.5s ease-in-out infinite; }
+              </style>
+            </defs>
+
+            <!-- Signal rings emanating from antenna tip -->
+            <circle class="kcbs-w1" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+            <circle class="kcbs-w2" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="1" fill="none"/>
+            <circle class="kcbs-w3" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="0.8" fill="none"/>
+
+            <!-- Antenna tip dot (pulsing) -->
+            <circle class="kcbs-dot" cx="44" cy="6" r="1.5" fill="currentColor"/>
+
+            <!-- Antenna rod -->
+            <line x1="44" y1="6" x2="36" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- Radio body -->
+            <rect x="6" y="18" width="52" height="36" rx="5" ry="5" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.06"/>
+
+            <!-- Speaker grille lines (each independently animated for sound wave feel) -->
+            <line class="kcbs-gl1" x1="10" y1="26" x2="10" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line class="kcbs-gl2" x1="13.5" y1="24" x2="13.5" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line class="kcbs-gl3" x1="17" y1="23" x2="17" y2="49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line class="kcbs-gl4" x1="20.5" y1="24" x2="20.5" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line class="kcbs-gl5" x1="24" y1="26" x2="24" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Speaker grille border -->
+            <rect x="8" y="22" width="18" height="28" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+
+            <!-- Tuner dial area -->
+            <rect x="30" y="22" width="26" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.08"/>
+
+            <!-- Tuner needle (sweeping left-right) -->
+            <g class="kcbs-needle-g">
+              <line x1="43" y1="24" x2="43" y2="34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+            </g>
+
+            <!-- Tuner scale ticks (static) -->
+            <line x1="33" y1="24" x2="33" y2="27" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="37" y1="24" x2="37" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="41" y1="24" x2="41" y2="28" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="45" y1="24" x2="45" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="49" y1="24" x2="49" y2="27" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="53" y1="24" x2="53" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+
+            <!-- Volume knob (slow wobble) -->
+            <g class="kcbs-knob-vol">
+              <circle cx="37" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
+              <line x1="37" y1="40" x2="37" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Tuner knob (continuous spin) -->
+            <g class="kcbs-knob-tune">
+              <circle cx="51" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
+              <line x1="53.5" y1="42" x2="52.2" y2="43.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
           </svg>
         </div>
         <div class="channel-info">
@@ -255,7 +367,7 @@
       <!-- CCTV风云足球 -->
       <a href="cctvfyzq.html" class="channel-card stagger-in" style="animation-delay:0.4s">
         <div class="channel-icon">
-          <img src="https://static.wikia.nocookie.net/logopedia/images/b/bb/CCTV-%E9%A3%8E%E4%BA%91%E8%B6%B3%E7%90%83.png/revision/latest?cb=20240815010514" alt="CCTV风云足球" loading="lazy" style="width:64px">
+          <img src="https://i.postimg.cc/Bbrk6GQ1/5fdf8db1cb1349540923b7564b058558d109b3dedce4.png" alt="CCTV风云足球" loading="lazy" style="width:64px">
         </div>
         <div class="channel-info">
           <h3>CCTV风云足球</h3>
