@@ -413,61 +413,113 @@
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
+    // Normalize any EPG response shape into a flat array of { time, name }
+    function normalizeEPGData(data) {
+      if (!data) return null;
+
+      // Shape 1: { list: [ { time, title } ] }  — original canghaitv style
+      if (Array.isArray(data.list) && data.list.length) return data.list.map(item => ({
+        time: item.time || item.start || item.startTime || '',
+        name: item.title || item.name || item.program || 'Program',
+      }));
+
+      // Shape 2: { programs: [ ... ] }
+      if (Array.isArray(data.programs) && data.programs.length) return data.programs.map(item => ({
+        time: item.time || item.start || item.startTime || '',
+        name: item.title || item.name || item.program || 'Program',
+      }));
+
+      // Shape 3: { data: [ ... ] }
+      if (Array.isArray(data.data) && data.data.length) return data.data.map(item => ({
+        time: item.time || item.start || item.startTime || '',
+        name: item.title || item.name || item.program || 'Program',
+      }));
+
+      // Shape 4: top-level array  [ { time, title } ]
+      if (Array.isArray(data) && data.length) return data.map(item => ({
+        time: item.time || item.start || item.startTime || '',
+        name: item.title || item.name || item.program || 'Program',
+      }));
+
+      // Shape 5: keyed by channel  { "CCTV-1HD": [ ... ] }
+      for (const key of Object.keys(data)) {
+        if (Array.isArray(data[key]) && data[key].length) return data[key].map(item => ({
+          time: item.time || item.start || item.startTime || '',
+          name: item.title || item.name || item.program || 'Program',
+        }));
+      }
+
+      return null;
+    }
+
     async function fetchEPG(chName) {
       const epgList = document.getElementById('epgList');
       const epgDate = document.getElementById('epgDate');
       const date = getTodayDate();
       epgDate.textContent = date;
-      epgList.innerHTML = '<div class="epg-loading">Loading program guide...</div>';
+      epgList.innerHTML = '<div class="epg-loading">Loading program guide…</div>';
 
       try {
-        const url = 'http://tvapisg.canghaitv.com/api/diyp.php?ch=' + encodeURIComponent(chName) + '&date=' + date;
+        // ── Primary source: Juche TV EPG API ──────────────────────────────
+        const url = 'https://bloxyplaytvapi.duckdns.org/api/epg?ch=' + encodeURIComponent(chName) + '&date=' + date;
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000);
+        const timeout = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(url, {
           signal: controller.signal,
-          headers: { 'Accept': 'application/json,*/*' }
+          headers: {
+            'Accept': 'application/json,*/*',
+            'Origin': window.location.origin,
+            'Referer': window.location.href,
+          }
         });
         clearTimeout(timeout);
 
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
-        renderEPG(data);
+        const items = normalizeEPGData(data);
+        if (items && items.length) {
+          renderEPG(items);
+        } else {
+          throw new Error('empty');
+        }
       } catch (e) {
+        // ── Fallback: static schedule ──────────────────────────────────────
         showFallbackEPG();
       }
     }
 
-    function renderEPG(data) {
+    function renderEPG(items) {
       const epgList = document.getElementById('epgList');
-      if (!data || !data.list || !data.list.length) {
-        showFallbackEPG();
-        return;
-      }
+      if (!items || !items.length) { showFallbackEPG(); return; }
+
       let html = '';
       const now = new Date();
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       let foundCurrent = false;
 
-      data.list.forEach((item, idx) => {
-        const time = item.time || item.start || '';
-        const name = translateEPG(item.title || item.name || 'Program');
-        const [h, m] = time.split(':').map(Number);
-        const itemMinutes = (h || 0) * 60 + (m || 0);
+      items.forEach((item, idx) => {
+        const time = item.time;
+        const name = translateEPG(item.name);
+        const parts = time.split(':').map(Number);
+        const itemMinutes = (parts[0] || 0) * 60 + (parts[1] || 0);
         let status = '';
         let cls = 'epg-item';
 
         if (!foundCurrent && itemMinutes <= nowMinutes) {
-          const nextItem = data.list[idx + 1];
-          if (nextItem) {
-            const [nh, nm] = (nextItem.time || nextItem.start || '23:59').split(':').map(Number);
-            const nextMinutes = (nh || 0) * 60 + (nm || 0);
+          const next = items[idx + 1];
+          if (next) {
+            const np = (next.time || '23:59').split(':').map(Number);
+            const nextMinutes = (np[0] || 0) * 60 + (np[1] || 0);
             if (nowMinutes < nextMinutes) {
               cls += ' current';
               status = '<span class="epg-status now">ON NOW</span>';
               foundCurrent = true;
             }
+          } else {
+            cls += ' current';
+            status = '<span class="epg-status now">ON NOW</span>';
+            foundCurrent = true;
           }
         } else if (!foundCurrent && itemMinutes > nowMinutes && idx === 0) {
           cls += ' current';
@@ -483,7 +535,11 @@
 
         html += `<div class="${cls}"><span class="epg-time">${time}</span><span class="epg-name">${name}</span>${status}</div>`;
       });
+
+      // Auto-scroll to current programme
       epgList.innerHTML = html;
+      const currentEl = epgList.querySelector('.current');
+      if (currentEl) setTimeout(() => currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150);
     }
 
     function showFallbackEPG() {
