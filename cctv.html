@@ -362,54 +362,39 @@
     });
 
     // ===================== EPG =====================
-    const EPG_CODES = {
-      '\u65B0\u95FB': 'News',
-      '\u65B0\u95FB\u8054\u64AD': 'News Network',
-      '\u671D\u95FB\u5929\u4E0B': 'Morning News',
-      '\u665A\u95FB\u5929\u4E0B': 'Evening News',
-      '\u7126\u70B9\u8BBF\u8C08': 'Focus Interview',
-      '\u4ECA\u65E5\u8BF4\u6CD5': 'Legal Report',
-      '\u64AD\u51FA\u95F4\u9699': 'Broadcast Gap',
-      '\u5E7F\u544A': 'Commercial',
-      '\u7EFC\u827A\u5927\u89C2': 'Variety Show',
-      '\u7535\u89C6\u5267': 'TV Drama',
-      '\u7CBE\u54C1\u5251\u6863': 'Premium Drama',
-      '\u52A8\u753B\u5927\u7247': 'Animation',
-      '\u7EAA\u5F55': 'Documentary',
-      '\u79D1\u6559': 'Science & Education',
-      '\u4F53\u80B2': 'Sports',
-      '\u97F3\u4E50': 'Music',
-      '\u620F\u66F2': 'Opera',
-      '\u5C11\u513F\u8282\u76EE': 'Children Program',
-      '\u751F\u6D3B\u670D\u52A1': 'Life Service',
-      '\u8D22\u7ECF': 'Finance',
-      '\u519C\u4E1A': 'Agriculture',
-      '\u519B\u4E8B': 'Military',
-      '\u5916\u8BED': 'Foreign Language',
-      '\u6C49\u8BED': 'Chinese Language',
-      '\u62A5\u9053': 'Report',
-      '\u76F4\u64AD': 'Live',
-      '\u7279\u522B\u8282\u76EE': 'Special Program',
-      '\u8282\u76EE\u9884\u544A': 'Program Preview',
-      '\u8282\u76EE': 'Program',
-      'CCTV': 'CCTV',
-      'HD': 'HD',
-    };
+    // Translation cache so we never hit Google Translate twice for the same string
+    const _translateCache = {};
 
-    function translateEPG(text) {
-      if (!text) return 'Program';
-      let translated = text;
-      for (const [cn, en] of Object.entries(EPG_CODES)) {
-        translated = translated.replace(new RegExp(cn, 'g'), en);
+    function hasChinese(text) {
+      return /[\u4e00-\u9fff\u3400-\u4dbf]/.test(text);
+    }
+
+    async function googleTranslate(text) {
+      if (!text) return '';
+      if (!hasChinese(text)) return text;
+      if (_translateCache[text]) return _translateCache[text];
+      try {
+        const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-CN&tl=en&dt=t&q=' + encodeURIComponent(text);
+        const res = await fetch(url);
+        const json = await res.json();
+        // Response shape: [ [ ["translated","original",...], ... ], ... ]
+        const translated = json[0].map(seg => seg[0]).join('').trim();
+        _translateCache[text] = translated || text;
+        return _translateCache[text];
+      } catch {
+        return text; // fallback: show original on error
       }
-      if (/[\u4e00-\u9fff]/.test(translated)) {
-        return 'TV Program (' + text.slice(0, 20) + ')';
-      }
-      return translated;
+    }
+
+    // Always use China Standard Time (UTC+8) regardless of viewer's device timezone
+    function getChinaNow() {
+      const now = new Date();
+      const utcMs = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+      return new Date(utcMs + 8 * 60 * 60 * 1000);
     }
 
     function getTodayDate() {
-      const d = new Date();
+      const d = getChinaNow();
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
@@ -479,28 +464,34 @@
         const data = await response.json();
         const items = normalizeEPGData(data);
         if (items && items.length) {
-          renderEPG(items);
+          epgList.innerHTML = '<div class="epg-loading">Translating program guide…</div>';
+          await renderEPG(items);
         } else {
           throw new Error('empty');
         }
       } catch (e) {
-        // ── Fallback: static schedule ──────────────────────────────────────
+        // ── Fallback: static schedule ──────────────────────────────────────────────────
         showFallbackEPG();
       }
     }
 
-    function renderEPG(items) {
+    async function renderEPG(items) {
       const epgList = document.getElementById('epgList');
       if (!items || !items.length) { showFallbackEPG(); return; }
 
+      // Translate all titles in parallel via Google Translate (free public endpoint)
+      const translatedNames = await Promise.all(
+        items.map(item => googleTranslate(item.name))
+      );
+
       let html = '';
-      const now = new Date();
+      const now = getChinaNow();
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       let foundCurrent = false;
 
       items.forEach((item, idx) => {
         const time = item.time;
-        const name = translateEPG(item.name);
+        const name = translatedNames[idx] || item.name;
         const parts = time.split(':').map(Number);
         const itemMinutes = (parts[0] || 0) * 60 + (parts[1] || 0);
         let status = '';
@@ -544,7 +535,7 @@
 
     function showFallbackEPG() {
       const epgList = document.getElementById('epgList');
-      const now = new Date();
+      const now = getChinaNow();
       const hour = now.getHours();
       const schedules = [
         { t: '06:00', n: 'Morning News' },
