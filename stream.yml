@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { background: #111; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        video { width: 100%; max-width: 700px; background: #000; border: 2px solid #333; }
+    </style>
+</head>
+<body>
+
+    <h2>Stream Test Page</h2>
+    <video id="video" controls autoplay playsinline></video>
+
+    <script>
+        var video = document.getElementById('video');
+        var videoSrc = 'https://bloxyplay.duckdns.org/api/live/cctv6.m3u8';
+
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+        }
+    </script>
+</body>
+</html>
