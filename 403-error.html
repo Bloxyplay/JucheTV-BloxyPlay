@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloxy Play CCTV6HD. LIVE STREAM</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #202124;
+      --surface: #2c2c2e;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --text-muted: #5f6368;
+      --accent: #8ab4f8;
+      --warn: #f28b82;
+      --border: #3c4043;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: 'Roboto', sans-serif;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 90%;
+      padding: 32px 24px 40px;
+      animation: fadeUp 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Animated SVG Icon ─────────────────────────────── */
+    .icon-wrap {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 28px;
+    }
+
+    .icon-wrap svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Page body */
+    .page-body {
+      animation: drawStroke 0.6s ease 0.1s both;
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+    }
+    @keyframes drawStroke {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Fold corner */
+    .page-fold {
+      animation: drawStroke 0.35s ease 0.55s both;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 80;
+    }
+
+    /* Lock icon inside page */
+    .lock-body {
+      opacity: 0;
+      transform-origin: 36px 44px;
+      animation: lockPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.85s forwards;
+    }
+    .lock-shackle {
+      opacity: 0;
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: drawStroke 0.35s ease 1.05s forwards, fadeIn 0s ease 1.05s forwards;
+    }
+    @keyframes lockPop {
+      from { opacity: 0; transform: scale(0.4); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Exclamation pulse after it appears */
+    .exclaim {
+      opacity: 0;
+      animation: fadeIn 0s ease 1.3s forwards, pulse 1.8s ease-in-out 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);   opacity: 1; }
+      50%       { transform: scale(1.15); opacity: 0.7; }
+    }
+
+    /* Broken-lines on page */
+    .line1, .line2, .line3 {
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      opacity: 0;
+    }
+    .line1 { animation: drawStroke 0.3s ease 0.35s forwards, fadeIn 0s ease 0.35s forwards; }
+    .line2 { animation: drawStroke 0.3s ease 0.50s forwards, fadeIn 0s ease 0.50s forwards; }
+    .line3 { animation: drawStroke 0.25s ease 0.65s forwards, fadeIn 0s ease 0.65s forwards; }
+
+    /* ─── Typography ────────────────────────────────────── */
+    h1 {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 6px;
+      animation: fadeUp 0.5s ease 0.3s both;
+    }
+
+    .error-code {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      animation: fadeUp 0.5s ease 0.38s both;
+    }
+
+    /* ─── Divider ────────────────────────────────────────── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease 0.45s both;
+    }
+
+    /* ─── Custom Message ─────────────────────────────────── */
+    .custom-msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #2a2a2c;
+      border: 1px solid #444;
+      border-left: 3px solid var(--warn);
+      border-radius: 6px;
+      padding: 14px 16px;
+      animation: fadeUp 0.5s ease 0.55s both;
+    }
+
+    .custom-msg .warning-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .custom-msg p {
+      font-size: 13px;
+      color: #c5c5c7;
+      line-height: 1.65;
+    }
+
+    .custom-msg p strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--warn);
+      margin-bottom: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─── Reload Button ──────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 28px;
+      animation: fadeUp 0.5s ease 0.65s both;
+    }
+
+    .reload-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      padding: 8px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+      outline: none;
+    }
+    .reload-btn:hover {
+      background: rgba(138, 180, 248, 0.08);
+      border-color: var(--accent);
+    }
+    .reload-btn:active {
+      background: rgba(138, 180, 248, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Animated SVG icon -->
+    <div class="icon-wrap">
+      <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Page body -->
+        <rect class="page-body" x="10" y="6" width="44" height="56" rx="3"
+              stroke="#9aa0a6" stroke-width="2.2" fill="none"/>
+
+        <!-- Fold corner -->
+        <polyline class="page-fold" points="38,6 54,22" stroke="#9aa0a6" stroke-width="2.2" fill="none"/>
+        <polyline class="page-fold" points="38,6 38,22 54,22" stroke="#9aa0a6" stroke-width="2.2" fill="none"/>
+
+        <!-- Lines on page -->
+        <line class="line1" x1="18" y1="34" x2="36" y2="34" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
+        <line class="line2" x1="18" y1="41" x2="44" y2="41" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
+        <line class="line3" x1="18" y1="48" x2="30" y2="48" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Lock body -->
+        <g class="lock-body">
+          <rect x="27" y="16" width="18" height="13" rx="2.5" fill="#f28b82"/>
+          <!-- Keyhole -->
+          <circle cx="36" cy="21.5" r="2.2" fill="#202124"/>
+          <rect x="34.7" y="21.5" width="2.6" height="4" rx="1" fill="#202124"/>
+        </g>
+
+        <!-- Lock shackle -->
+        <path class="lock-shackle"
+              d="M29,16 v-4 a7,7 0 0,1 14,0 v4"
+              stroke="#f28b82" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+
+        <!-- Exclamation (pulsing) -->
+        <g class="exclaim" style="transform-origin:36px 37px;">
+          <rect x="34.5" y="29" width="3" height="7" rx="1.5" fill="#f28b82"/>
+          <circle cx="36" cy="39.5" r="1.8" fill="#f28b82"/>
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- Heading -->
+    <h1>Access to https://bloxyplay.duckdns.org/api/epg was denied</h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle">You don't have authorization to view this page.</p>
+
+    <!-- Error code -->
+    <p class="error-code">HTTP ERROR 403</p>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Custom message block -->
+    <div class="custom-msg">
+      <!-- Warning triangle SVG -->
+      <svg class="warning-icon" width="18" height="18" viewBox="0 0 20 20" fill="none">
+        <path d="M9.14 2.77a1 1 0 0 1 1.72 0l7.57 13.1A1 1 0 0 1 17.57 17H2.43a1 1 0 0 1-.86-1.5z"
+              stroke="#f28b82" stroke-width="1.5" fill="none"/>
+        <line x1="10" y1="8" x2="10" y2="12" stroke="#f28b82" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="10" cy="14.5" r="0.75" fill="#f28b82"/>
+      </svg>
+      <p>
+        <strong>Nice try, though.</strong>
+        I know what you're gonna do to my stream — but I guess today is your unlucky day.
+      </p>
+    </div>
+
+    <!-- Reload button -->
+    <div class="btn-row">
+      <button class="reload-btn" onclick="location.reload()">Reload</button>
+    </div>
+
+  </div>
+</body>
+</html>
