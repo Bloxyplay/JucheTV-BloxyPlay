@@ -371,6 +371,53 @@
       margin: 2px 0;
     }
 
+    /* ── Language icon SVG ── */
+    .lang-icon-svg {
+      width: 18px; height: 18px; flex-shrink: 0; overflow: visible;
+    }
+    .lang-globe-ring {
+      transform-origin: 11px 11px;
+      animation: globeRingPulse 3s ease-in-out infinite;
+    }
+    @keyframes globeRingPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .5; }
+    }
+    .lang-lat { animation: latDrift 4s ease-in-out infinite; }
+    @keyframes latDrift {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-1.2px); }
+    }
+    .lang-meridian {
+      transform-origin: 11px 11px;
+      animation: meridianSpin 2.6s ease-in-out infinite;
+    }
+    @keyframes meridianSpin {
+      0%   { transform: scaleX(1);  opacity: .55; }
+      25%  { transform: scaleX(0);  opacity: .15; }
+      50%  { transform: scaleX(-1); opacity: .55; }
+      75%  { transform: scaleX(0);  opacity: .15; }
+      100% { transform: scaleX(1);  opacity: .55; }
+    }
+    .lang-letter { transform-origin: 11px 13px; font-weight: 700; }
+    .lang-letter.flipping {
+      animation: letterFlip .38s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes letterFlip {
+      0%   { transform: scaleY(1) scaleX(1); opacity: 1; }
+      35%  { transform: scaleY(0) scaleX(.5); opacity: 0; }
+      65%  { transform: scaleY(0) scaleX(.5); opacity: 0; }
+      100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+    }
+    .lang-globe-ring.burst {
+      animation: globeBurst .38s ease-out forwards, globeRingPulse 3s ease-in-out infinite .38s;
+    }
+    @keyframes globeBurst {
+      0%   { stroke-width: 1.5; opacity: 1; }
+      40%  { stroke-width: 3.5; opacity: .7; }
+      100% { stroke-width: 1.5; opacity: 1; }
+    }
+
     /* Live clock */
     .epg-clock {
       font-family: 'SF Mono', monospace;
@@ -453,7 +500,20 @@
           <span class="epg-clock" id="epgClock"></span>
           <div class="epg-lang-wrap">
             <button class="epg-lang-btn" id="langBtn" onclick="toggleLangMenu()">
-              🌐 <span id="langLabel">English</span>
+              <svg class="lang-icon-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- outer ring -->
+                <circle class="lang-globe-ring" cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.5"/>
+                <!-- latitude lines -->
+                <g class="lang-lat">
+                  <path d="M2.8 8h16.4" stroke="currentColor" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
+                  <path d="M2.8 14h16.4" stroke="currentColor" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
+                </g>
+                <!-- spinning meridian -->
+                <ellipse class="lang-meridian" cx="11" cy="11" rx="4" ry="8.5" stroke="currentColor" stroke-width=".9"/>
+                <!-- script letter -->
+                <text class="lang-letter" id="langIconLetter" x="11" y="14.5" text-anchor="middle" font-size="7.5" fill="currentColor">A</text>
+              </svg>
+              <span id="langLabel">English</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="epg-lang-menu" id="langMenu">
@@ -549,6 +609,31 @@
       const isOpen = menu.classList.toggle('show');
       btn.classList.toggle('open', isOpen);
     }
+    // Script letter shown inside the globe per language
+    const LANG_LETTER = {
+      'en': 'A', 'zh-CN': '文', 'my': 'က', 'ug': 'ئ',
+      'bo': 'ཀ', 'id': 'A', 'tl': 'A'
+    };
+
+    function animateLangIcon(lang) {
+      const letter = document.getElementById('langIconLetter');
+      const ring   = document.querySelector('.lang-globe-ring');
+      if (!letter || !ring) return;
+      const newChar = LANG_LETTER[lang] || 'A';
+
+      // Burst on the ring
+      ring.classList.remove('burst');
+      void ring.offsetWidth; // reflow
+      ring.classList.add('burst');
+
+      // Flip the letter — swap character at the midpoint (opacity=0)
+      letter.classList.remove('flipping');
+      void letter.offsetWidth;
+      letter.classList.add('flipping');
+      setTimeout(() => { letter.textContent = newChar; }, 130);
+      letter.addEventListener('animationend', () => letter.classList.remove('flipping'), { once: true });
+    }
+
     function selectLang(el) {
       currentLang = el.dataset.lang;
       document.getElementById('langLabel').textContent = el.dataset.label;
@@ -556,6 +641,7 @@
       el.classList.add('active');
       document.getElementById('langMenu').classList.remove('show');
       document.getElementById('langBtn').classList.remove('open');
+      animateLangIcon(currentLang);
       if (_lastItems) {
         document.getElementById('epgList').innerHTML = '<div class="epg-loading">Translating…</div>';
         renderEPG(_lastItems);
