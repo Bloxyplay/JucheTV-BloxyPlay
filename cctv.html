@@ -426,6 +426,270 @@
       letter-spacing: .5px;
     }
 
+    /* ===== FULLSCREEN EPG OVERLAY ===== */
+
+    /* Bottom info bar — always visible in FS */
+    .vjs-fs-epg-bar {
+      display: none;
+      position: absolute;
+      bottom: 52px; /* sits just above the control bar */
+      left: 0; right: 0;
+      z-index: 10;
+      padding: 0 24px 16px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .video-js.vjs-fullscreen .vjs-fs-epg-bar { display: block; }
+    .video-js.vjs-fullscreen.fs-epg-visible .vjs-fs-epg-bar { opacity: 1; pointer-events: auto; }
+
+    .fs-epg-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(10,10,10,.72);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      padding: 12px 18px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.55);
+    }
+    .fs-epg-now-badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      color: #fff;
+      background: #e5001a;
+      padding: 3px 9px;
+      border-radius: 100px;
+    }
+    .fs-epg-now-time {
+      flex-shrink: 0;
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .3px;
+    }
+    .fs-epg-now-title {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -.1px;
+    }
+    .fs-epg-progress-wrap {
+      flex: 0 0 120px;
+      height: 3px;
+      background: rgba(255,255,255,.18);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .fs-epg-progress-fill {
+      height: 100%;
+      background: #e5001a;
+      border-radius: 2px;
+      transition: width 10s linear;
+    }
+    .fs-epg-next-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+    .fs-epg-next-label {
+      font-size: 10px;
+      color: rgba(255,255,255,.4);
+      font-weight: 500;
+      letter-spacing: .5px;
+    }
+    .fs-epg-next-title {
+      font-size: 12px;
+      color: rgba(255,255,255,.7);
+      font-weight: 500;
+      max-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fs-epg-more-btn {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 100px;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, transform .15s;
+      letter-spacing: .1px;
+    }
+    .fs-epg-more-btn:hover {
+      background: rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.35);
+      transform: scale(1.03);
+    }
+    .fs-epg-more-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── Full EPG Panel (modal) ── */
+    .fs-epg-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: flex-end;
+      justify-content: stretch;
+    }
+    .fs-epg-panel.open { display: flex; }
+    .fs-epg-panel-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fsBackdropIn .3s ease;
+    }
+    @keyframes fsBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+    .fs-epg-panel-sheet {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-height: 72vh;
+      background: rgba(14,14,14,.97);
+      border-top: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      animation: fsSheetUp .32s cubic-bezier(.22,1,.36,1);
+      box-shadow: 0 -24px 80px rgba(0,0,0,.7);
+    }
+    @keyframes fsSheetUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .fs-epg-panel-sheet.closing {
+      animation: fsSheetDown .25s cubic-bezier(.4,0,.6,1) forwards;
+    }
+    @keyframes fsSheetDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
+
+    .fs-epg-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      flex-shrink: 0;
+    }
+    .fs-epg-panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .fs-epg-panel-title h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -.2px;
+    }
+    .fs-epg-panel-title .fs-channel-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,.6);
+      background: rgba(255,255,255,.1);
+      border-radius: 6px;
+      padding: 3px 8px;
+      letter-spacing: .4px;
+    }
+    .fs-epg-panel-date {
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,.35);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .fs-epg-close-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+    .fs-epg-close-btn:hover { background: rgba(255,255,255,.18); }
+    .fs-epg-close-btn svg { width: 16px; height: 16px; color: #fff; }
+
+    .fs-epg-panel-list {
+      overflow-y: auto;
+      flex: 1;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.15) transparent;
+    }
+    .fs-epg-panel-list::-webkit-scrollbar { width: 4px; }
+    .fs-epg-panel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+
+    .fs-epg-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 13px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.055);
+      position: relative;
+      transition: background .15s;
+    }
+    .fs-epg-row:last-child { border-bottom: none; }
+    .fs-epg-row:hover { background: rgba(255,255,255,.04); }
+    .fs-epg-row.fs-current {
+      background: rgba(229,0,26,.07);
+      border-left: 3px solid #e5001a;
+      padding-left: 21px;
+    }
+    .fs-epg-row .fs-row-time {
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,.38);
+      min-width: 46px;
+      flex-shrink: 0;
+      letter-spacing: .2px;
+    }
+    .fs-epg-row.fs-current .fs-row-time { color: #e5001a; }
+    .fs-epg-row .fs-row-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,.88);
+      line-height: 1.35;
+    }
+    .fs-epg-row.fs-current .fs-row-name { color: #fff; font-weight: 600; }
+    .fs-epg-row .fs-row-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      flex-shrink: 0;
+    }
+    .fs-row-badge.fs-now { background: rgba(229,0,26,.15); color: #e5001a; }
+    .fs-row-badge.fs-later { background: rgba(255,255,255,.08); color: rgba(255,255,255,.35); }
+    .fs-epg-row .fs-row-prog {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      background: rgba(229,0,26,.35);
+      pointer-events: none;
+    }
+
     /* ===== INFO ===== */
     .info-section {
       margin-top: 24px;
@@ -479,9 +743,10 @@
 
     <!-- Video Player -->
     <div class="player-container">
+      <div class="live-corner"><span class="dot"></span>LIVE</div>
       <video id="vid" class="video-js vjs-big-play-centered"
              playsinline preload="auto">
-        <source src="https://play.kankanlive.com/live/1720408280309109.m3u8?provider_id=juche_tv012" type="application/x-mpegURL">
+        <source src="https://bloxyplaytv.duckdns.org/live/cctv1.m3u8" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
       </video>
     </div>
@@ -545,6 +810,29 @@
     <a href="index.html">Back to Channels</a>
   </footer>
 
+  <!-- Full EPG Panel Modal (body-level so it works inside & outside fullscreen) -->
+  <div class="fs-epg-panel" id="fsEpgPanel">
+    <div class="fs-epg-panel-backdrop" onclick="closeFsEpgPanel()"></div>
+    <div class="fs-epg-panel-sheet" id="fsEpgSheet">
+      <div class="fs-epg-panel-head">
+        <div class="fs-epg-panel-title">
+          <h2>Program Guide</h2>
+          <span class="fs-channel-badge">CCTV-1 HD</span>
+        </div>
+        <div class="fs-epg-panel-date">
+          <span id="fsPanelDate"></span>
+          <span id="fsPanelClock"></span>
+        </div>
+        <button class="fs-epg-close-btn" onclick="closeFsEpgPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="fs-epg-panel-list" id="fsEpgList">
+        <div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">Loading…</div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
   <script>
     // ===================== THEME =====================
@@ -588,6 +876,57 @@
     player.ready(function() {
       player.play().catch(() => {});
       fetchEPG(EPG_NAME);
+
+      // ── Inject EPG bar into the vjs element ──
+      const vjsEl = player.el();
+      vjsEl.insertAdjacentHTML('beforeend', `
+        <div class="vjs-fs-epg-bar" id="fsEpgBar">
+          <div class="fs-epg-bar-inner">
+            <span class="fs-epg-now-badge">LIVE</span>
+            <span class="fs-epg-now-time" id="fsNowTime">--:--</span>
+            <span class="fs-epg-now-title" id="fsNowTitle">Loading program guide…</span>
+            <div class="fs-epg-progress-wrap">
+              <div class="fs-epg-progress-fill" id="fsNowProgress" style="width:0%"></div>
+            </div>
+            <div class="fs-epg-next-wrap">
+              <span class="fs-epg-next-label">UP NEXT</span>
+              <span class="fs-epg-next-title" id="fsNextTitle">—</span>
+            </div>
+            <button class="fs-epg-more-btn" onclick="openFsEpgPanel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              More
+            </button>
+          </div>
+        </div>
+      `);
+
+      // ── Show/hide bar on FS enter/exit ──
+      let fsHideTimer = null;
+
+      function showFsBar() {
+        vjsEl.classList.add('fs-epg-visible');
+        clearTimeout(fsHideTimer);
+        fsHideTimer = setTimeout(() => {
+          if (!document.getElementById('fsEpgPanel').classList.contains('open')) {
+            vjsEl.classList.remove('fs-epg-visible');
+          }
+        }, 4000);
+      }
+
+      player.on('fullscreenchange', function() {
+        if (player.isFullscreen()) {
+          updateFsBarContent();
+          showFsBar();
+          vjsEl.addEventListener('mousemove', showFsBar);
+          vjsEl.addEventListener('touchstart', showFsBar, { passive: true });
+        } else {
+          clearTimeout(fsHideTimer);
+          vjsEl.classList.remove('fs-epg-visible');
+          vjsEl.removeEventListener('mousemove', showFsBar);
+          vjsEl.removeEventListener('touchstart', showFsBar);
+          closeFsEpgPanel();
+        }
+      });
     });
 
     document.addEventListener('contextmenu', e => e.preventDefault());
@@ -595,6 +934,142 @@
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) || (e.ctrlKey && ['u','U'].includes(e.key))) {
         e.preventDefault();
       }
+    });
+
+    // ===================== FULLSCREEN EPG =====================
+    function updateFsBarContent() {
+      if (!_lastItems || !_lastItems.length) return;
+      const now = getChinaNow();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      const nowSec = nowMin * 60 + now.getSeconds();
+      let curIdx = -1;
+      for (let i = 0; i < _lastItems.length; i++) {
+        const [h, m] = (_lastItems[i].time || '0:0').split(':').map(Number);
+        const itemMin = h * 60 + m;
+        if (itemMin <= nowMin) curIdx = i;
+        else break;
+      }
+      if (curIdx < 0) curIdx = 0;
+      const cur = _lastItems[curIdx];
+      const nxt = _lastItems[curIdx + 1] || null;
+
+      const curTime = cur.time || '--:--';
+      const curName = cur._translated || cur.name || '—';
+      const nxtName = nxt ? (nxt._translated || nxt.name || '—') : '—';
+
+      const fsTime = document.getElementById('fsNowTime');
+      const fsTitle = document.getElementById('fsNowTitle');
+      const fsProg = document.getElementById('fsNowProgress');
+      const fsNext = document.getElementById('fsNextTitle');
+      if (fsTime) fsTime.textContent = curTime;
+      if (fsTitle) fsTitle.textContent = curName;
+      if (fsNext) fsNext.textContent = nxtName;
+
+      if (fsProg && nxt) {
+        const [ch, cm] = curTime.split(':').map(Number);
+        const [nh, nm] = (nxt.time || '23:59').split(':').map(Number);
+        const dur = ((nh * 60 + nm) - (ch * 60 + cm)) * 60;
+        const elapsed = nowSec - (ch * 60 + cm) * 60;
+        fsProg.style.width = Math.min(100, Math.round(elapsed / dur * 100)) + '%';
+      }
+    }
+
+    // Patch renderEPG to cache translated names on items for FS bar
+    const _origRenderEPG = window.renderEPG;
+
+    function openFsEpgPanel() {
+      const panel = document.getElementById('fsEpgPanel');
+      const sheet = document.getElementById('fsEpgSheet');
+      panel.classList.add('open');
+      sheet.classList.remove('closing');
+      updateFsPanelList();
+      updateFsPanelClock();
+      // Keep FS bar visible while panel is open
+      const vjsEl = player.el();
+      vjsEl.classList.add('fs-epg-visible');
+    }
+
+    function closeFsEpgPanel() {
+      const panel = document.getElementById('fsEpgPanel');
+      const sheet = document.getElementById('fsEpgSheet');
+      sheet.classList.add('closing');
+      setTimeout(() => {
+        panel.classList.remove('open');
+        sheet.classList.remove('closing');
+      }, 260);
+    }
+
+    function updateFsPanelList() {
+      const list = document.getElementById('fsEpgList');
+      if (!_lastItems || !_lastItems.length) {
+        list.innerHTML = '<div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">No EPG data available yet. Wait for the guide to load below.</div>';
+        return;
+      }
+      const now = getChinaNow();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      const nowSec = nowMin * 60 + now.getSeconds();
+      let foundCurrent = false;
+      let html = '';
+
+      _lastItems.forEach((item, idx) => {
+        const [h, m] = (item.time || '0:0').split(':').map(Number);
+        const itemMin = h * 60 + m;
+        const next = _lastItems[idx + 1];
+        let isCurrent = false;
+
+        if (!foundCurrent && itemMin <= nowMin) {
+          if (!next || nowMin < (function(){ const [nh,nm]=(next.time||'23:59').split(':').map(Number); return nh*60+nm; }())) {
+            isCurrent = true; foundCurrent = true;
+          }
+        }
+
+        const name = item._translated || item.name || '—';
+        let progHtml = '';
+        if (isCurrent && next) {
+          const [nh, nm] = (next.time || '23:59').split(':').map(Number);
+          const dur = ((nh * 60 + nm) - (h * 60 + m)) * 60;
+          const elapsed = nowSec - (h * 60 + m) * 60;
+          const pct = Math.min(100, Math.round(elapsed / dur * 100));
+          progHtml = `<div class="fs-row-prog" style="width:${pct}%"></div>`;
+        }
+
+        const badge = isCurrent
+          ? '<span class="fs-row-badge fs-now">ON NOW</span>'
+          : (foundCurrent
+              ? '<span class="fs-row-badge fs-later">LATER</span>'
+              : '<span class="fs-row-badge fs-later">PAST</span>');
+
+        html += `<div class="fs-epg-row${isCurrent ? ' fs-current' : ''}" data-idx="${idx}">
+          <span class="fs-row-time">${item.time}</span>
+          <span class="fs-row-name">${name}</span>
+          ${badge}
+          ${progHtml}
+        </div>`;
+      });
+
+      list.innerHTML = html || '<div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">No programs found.</div>';
+      // scroll to current
+      setTimeout(() => {
+        const cur = list.querySelector('.fs-current');
+        if (cur) cur.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }, 80);
+    }
+
+    let _fsPanelClockTimer = null;
+    function updateFsPanelClock() {
+      const d = getChinaNow();
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      const ss = String(d.getSeconds()).padStart(2,'0');
+      const dateEl = document.getElementById('fsPanelDate');
+      const clkEl = document.getElementById('fsPanelClock');
+      if (dateEl) dateEl.textContent = getTodayDate();
+      if (clkEl) clkEl.textContent = `${hh}:${mm}:${ss} CST`;
+      _fsPanelClockTimer = setTimeout(updateFsPanelClock, 1000);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeFsEpgPanel();
     });
 
     // ===================== EPG =====================
@@ -829,6 +1304,9 @@
         items.map(item => googleTranslate(item.name, currentLang))
       );
 
+      // cache translations on items for FS bar access
+      items.forEach((item, idx) => { item._translated = translatedNames[idx] || item.name; });
+
       let html = '';
       const now = getChinaNow();
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -883,6 +1361,10 @@
       epgList.innerHTML = html;
       const currentEl = epgList.querySelector('.current');
       if (currentEl) setTimeout(() => currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150);
+
+      // Update fullscreen EPG bar & panel with fresh data
+      updateFsBarContent();
+      if (document.getElementById('fsEpgPanel').classList.contains('open')) updateFsPanelList();
     }
 
     function showFallbackEPG() {
