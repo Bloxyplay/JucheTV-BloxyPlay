@@ -235,43 +235,45 @@
     });
 
     // ===================== VIDEO.JS INIT =====================
-    const player = videojs('vid', {
-      controls: true,
-      autoplay: 'any',
-      muted: true,
-      liveui: true,
-      fluid: true,
-      responsive: true,
-      playbackRates: [],
-      html5: {
-        vhs: {
-          overrideNative:                   true,
-          enableLowInitialPlaylist:          false,
-          bandwidth:                         10_000_000,
-          allowSeeksWithinUnsafeLiveWindow:  true,
-          smoothQualityChange:               true,
-          limitRenditionByPlayerDimensions:  false,
-        },
-        nativeAudioTracks: false,
-        nativeVideoTracks: false,
-      },
-    });
-
     // ===================== SIGNED URL LOADER =====================
     async function loadSignedStream() {
       try {
         const res = await fetch('/api/sign-stream?path=/live/fyzq.m3u8');
-        if (!res.ok) throw new Error('Failed to get signed URL');
+        if (!res.ok) throw new Error('API error: ' + res.status);
         const { url } = await res.json();
 
-        player.src({ src: url, type: 'application/x-mpegURL' });
+        const player = videojs('vid', {
+          controls: true,
+          autoplay: 'any',
+          muted: true,
+          liveui: true,
+          fluid: true,
+          responsive: true,
+          playbackRates: [],
+          sources: [{ src: url, type: 'application/x-mpegURL' }],
+          html5: {
+            vhs: {
+              overrideNative:                  true,
+              enableLowInitialPlaylist:         false,
+              bandwidth:                        10_000_000,
+              allowSeeksWithinUnsafeLiveWindow: true,
+              smoothQualityChange:              true,
+              limitRenditionByPlayerDimensions: false,
+            },
+            nativeAudioTracks: false,
+            nativeVideoTracks: false,
+          },
+        });
 
         player.ready(function () {
           if (player.liveTracker) player.liveTracker.seekToLiveEdge();
           player.play().catch(() => {});
         });
+
       } catch (err) {
         console.error('Stream error:', err);
+        document.querySelector('.player-container').insertAdjacentHTML('afterend',
+          '<p style="color:red;text-align:center;padding:20px">Stream unavailable. Please try again later.</p>');
       }
     }
 
