@@ -197,11 +197,10 @@
       </div>
     </div>
 
-    <!-- Video Player — source stays in HTML exactly as original -->
+    <!-- Video Player — source loaded dynamically via signed URL -->
     <div class="player-container">
       <video id="vid" class="video-js vjs-big-play-centered"
              playsinline preload="auto">
-        <source src="https://bloxyplaytv.duckdns.org/live/fyzq.m3u8?provider=juchetv" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
       </video>
     </div>
@@ -238,17 +237,17 @@
     // ===================== VIDEO.JS INIT =====================
     const player = videojs('vid', {
       controls: true,
-      autoplay: 'any',   // tries unmuted → falls back to muted; faster than true
+      autoplay: 'any',
       muted: true,
       liveui: true,
-      fluid: true,       // kept — same as original working version
-      responsive: true,  // kept — same as original working version
+      fluid: true,
+      responsive: true,
       playbackRates: [],
       html5: {
         vhs: {
           overrideNative:                   true,
-          enableLowInitialPlaylist:          false,  // skip quality ladder climbing
-          bandwidth:                         10_000_000, // assume 10 Mbps → best rendition immediately
+          enableLowInitialPlaylist:          false,
+          bandwidth:                         10_000_000,
           allowSeeksWithinUnsafeLiveWindow:  true,
           smoothQualityChange:               true,
           limitRenditionByPlayerDimensions:  false,
@@ -258,13 +257,25 @@
       },
     });
 
-    player.ready(function () {
-      // Seek straight to live edge the moment player is ready
-      if (player.liveTracker) {
-        player.liveTracker.seekToLiveEdge();
+    // ===================== SIGNED URL LOADER =====================
+    async function loadSignedStream() {
+      try {
+        const res = await fetch('/api/sign-stream?path=/live/fyzq.m3u8');
+        if (!res.ok) throw new Error('Failed to get signed URL');
+        const { url } = await res.json();
+
+        player.src({ src: url, type: 'application/x-mpegURL' });
+
+        player.ready(function () {
+          if (player.liveTracker) player.liveTracker.seekToLiveEdge();
+          player.play().catch(() => {});
+        });
+      } catch (err) {
+        console.error('Stream error:', err);
       }
-      player.play().catch(() => {});
-    });
+    }
+
+    loadSignedStream();
 
     // ===================== DEV-TOOLS GUARD =====================
     document.addEventListener('contextmenu', e => e.preventDefault());
