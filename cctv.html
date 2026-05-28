@@ -545,7 +545,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 9999;
+      z-index: 2147483647;
       align-items: flex-end;
       justify-content: stretch;
     }
@@ -553,9 +553,9 @@
     .fs-epg-panel-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(4,8,24,.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       animation: fsBackdropIn .3s ease;
     }
     @keyframes fsBackdropIn { from { opacity: 0; } to { opacity: 1; } }
@@ -564,13 +564,13 @@
       z-index: 1;
       width: 100%;
       max-height: 72vh;
-      background: rgba(14,14,14,.97);
-      border-top: 1px solid rgba(255,255,255,.1);
-      border-radius: 20px 20px 0 0;
+      background: linear-gradient(180deg, #0d1535 0%, #08102a 100%);
+      border-top: 2px solid rgba(30,90,220,.45);
+      border-radius: 22px 22px 0 0;
       display: flex;
       flex-direction: column;
       animation: fsSheetUp .32s cubic-bezier(.22,1,.36,1);
-      box-shadow: 0 -24px 80px rgba(0,0,0,.7);
+      box-shadow: 0 -20px 80px rgba(10,30,100,.6), 0 -2px 0 rgba(30,90,220,.3);
     }
     @keyframes fsSheetUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .fs-epg-panel-sheet.closing {
@@ -582,9 +582,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 24px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(30,80,200,.25);
       flex-shrink: 0;
+      background: linear-gradient(90deg, rgba(20,50,140,.5) 0%, rgba(13,21,53,.0) 100%);
     }
     .fs-epg-panel-title {
       display: flex;
@@ -594,14 +595,15 @@
     .fs-epg-panel-title h2 {
       font-size: 17px;
       font-weight: 700;
-      color: #fff;
+      color: #e8eeff;
       letter-spacing: -.2px;
     }
     .fs-epg-panel-title .fs-channel-badge {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255,255,255,.6);
-      background: rgba(255,255,255,.1);
+      color: #7aaeff;
+      background: rgba(30,80,220,.25);
+      border: 1px solid rgba(30,80,220,.4);
       border-radius: 6px;
       padding: 3px 8px;
       letter-spacing: .4px;
@@ -609,7 +611,7 @@
     .fs-epg-panel-date {
       font-family: 'SF Mono', ui-monospace, monospace;
       font-size: 12px;
-      color: rgba(255,255,255,.35);
+      color: rgba(150,180,255,.45);
       display: flex;
       align-items: center;
       gap: 12px;
@@ -617,76 +619,76 @@
     .fs-epg-close-btn {
       width: 32px; height: 32px;
       border-radius: 50%;
-      background: rgba(255,255,255,.1);
-      border: none;
+      background: rgba(30,80,220,.2);
+      border: 1px solid rgba(30,80,220,.35);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background .2s;
+      transition: background .2s, border-color .2s;
       flex-shrink: 0;
     }
-    .fs-epg-close-btn:hover { background: rgba(255,255,255,.18); }
-    .fs-epg-close-btn svg { width: 16px; height: 16px; color: #fff; }
+    .fs-epg-close-btn:hover { background: rgba(30,80,220,.4); border-color: rgba(30,80,220,.6); }
+    .fs-epg-close-btn svg { width: 16px; height: 16px; color: #a0c0ff; }
 
     .fs-epg-panel-list {
       overflow-y: auto;
       flex: 1;
       scroll-behavior: smooth;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,.15) transparent;
+      scrollbar-color: rgba(30,80,220,.35) transparent;
     }
     .fs-epg-panel-list::-webkit-scrollbar { width: 4px; }
-    .fs-epg-panel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+    .fs-epg-panel-list::-webkit-scrollbar-thumb { background: rgba(30,80,220,.35); border-radius: 2px; }
 
     .fs-epg-row {
       display: flex;
       align-items: center;
       gap: 16px;
       padding: 13px 24px;
-      border-bottom: 1px solid rgba(255,255,255,.055);
+      border-bottom: 1px solid rgba(30,60,160,.18);
       position: relative;
       transition: background .15s;
     }
     .fs-epg-row:last-child { border-bottom: none; }
-    .fs-epg-row:hover { background: rgba(255,255,255,.04); }
+    .fs-epg-row:hover { background: rgba(30,80,220,.07); }
     .fs-epg-row.fs-current {
-      background: rgba(229,0,26,.07);
+      background: linear-gradient(90deg, rgba(229,0,26,.1) 0%, rgba(229,0,26,.03) 100%);
       border-left: 3px solid #e5001a;
       padding-left: 21px;
     }
     .fs-epg-row .fs-row-time {
       font-family: 'SF Mono', ui-monospace, monospace;
       font-size: 12px;
-      color: rgba(255,255,255,.38);
+      color: rgba(120,160,255,.55);
       min-width: 46px;
       flex-shrink: 0;
       letter-spacing: .2px;
     }
-    .fs-epg-row.fs-current .fs-row-time { color: #e5001a; }
+    .fs-epg-row.fs-current .fs-row-time { color: #ff4d6a; font-weight: 600; }
     .fs-epg-row .fs-row-name {
       flex: 1;
       font-size: 14px;
       font-weight: 500;
-      color: rgba(255,255,255,.88);
+      color: rgba(200,220,255,.8);
       line-height: 1.35;
     }
-    .fs-epg-row.fs-current .fs-row-name { color: #fff; font-weight: 600; }
+    .fs-epg-row.fs-current .fs-row-name { color: #fff; font-weight: 700; }
     .fs-epg-row .fs-row-badge {
       font-size: 10px;
       font-weight: 700;
       letter-spacing: .6px;
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 100px;
       flex-shrink: 0;
     }
-    .fs-row-badge.fs-now { background: rgba(229,0,26,.15); color: #e5001a; }
-    .fs-row-badge.fs-later { background: rgba(255,255,255,.08); color: rgba(255,255,255,.35); }
+    .fs-row-badge.fs-now { background: rgba(229,0,26,.18); color: #ff3355; border: 1px solid rgba(229,0,26,.3); }
+    .fs-row-badge.fs-later { background: rgba(30,80,220,.12); color: rgba(120,160,255,.6); border: 1px solid rgba(30,80,220,.2); }
     .fs-epg-row .fs-row-prog {
       position: absolute;
       bottom: 0; left: 0;
       height: 2px;
-      background: rgba(229,0,26,.35);
+      background: linear-gradient(90deg, #e5001a, rgba(229,0,26,.3));
       pointer-events: none;
     }
 
@@ -746,7 +748,7 @@
       <div class="live-corner"><span class="dot"></span>LIVE</div>
       <video id="vid" class="video-js vjs-big-play-centered"
              playsinline preload="auto">
-        <source src="https://bloxyplaytv.duckdns.org/live/cctv1.m3u8" type="application/x-mpegURL">
+        <source src="https://play.kankanlive.com/live/1720408280309109.m3u8?provider_id=juche_tv012" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
       </video>
     </div>
@@ -892,7 +894,7 @@
               <span class="fs-epg-next-label">UP NEXT</span>
               <span class="fs-epg-next-title" id="fsNextTitle">—</span>
             </div>
-            <button class="fs-epg-more-btn" onclick="openFsEpgPanel()">
+            <button class="fs-epg-more-btn" id="fsMoreBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               More
             </button>
@@ -900,30 +902,23 @@
         </div>
       `);
 
-      // ── Show/hide bar on FS enter/exit ──
-      let fsHideTimer = null;
+      // Bind More button AFTER injection (avoids onclick-in-innerHTML issues)
+      document.getElementById('fsMoreBtn').addEventListener('click', openFsEpgPanel);
 
-      function showFsBar() {
-        vjsEl.classList.add('fs-epg-visible');
-        clearTimeout(fsHideTimer);
-        fsHideTimer = setTimeout(() => {
-          if (!document.getElementById('fsEpgPanel').classList.contains('open')) {
-            vjsEl.classList.remove('fs-epg-visible');
-          }
-        }, 4000);
-      }
+      // ── Sync EPG bar visibility with VJS useractive/userinactive ──
+      player.on('useractive', function() {
+        if (player.isFullscreen()) vjsEl.classList.add('fs-epg-visible');
+      });
+      player.on('userinactive', function() {
+        if (!_fsEpgPanelOpen) vjsEl.classList.remove('fs-epg-visible');
+      });
 
       player.on('fullscreenchange', function() {
         if (player.isFullscreen()) {
           updateFsBarContent();
-          showFsBar();
-          vjsEl.addEventListener('mousemove', showFsBar);
-          vjsEl.addEventListener('touchstart', showFsBar, { passive: true });
+          vjsEl.classList.add('fs-epg-visible');
         } else {
-          clearTimeout(fsHideTimer);
           vjsEl.classList.remove('fs-epg-visible');
-          vjsEl.removeEventListener('mousemove', showFsBar);
-          vjsEl.removeEventListener('touchstart', showFsBar);
           closeFsEpgPanel();
         }
       });
@@ -931,6 +926,7 @@
 
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeFsEpgPanel();
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) || (e.ctrlKey && ['u','U'].includes(e.key))) {
         e.preventDefault();
       }
@@ -976,26 +972,35 @@
 
     // Patch renderEPG to cache translated names on items for FS bar
     const _origRenderEPG = window.renderEPG;
+    let _fsEpgPanelOpen = false;
 
     function openFsEpgPanel() {
       const panel = document.getElementById('fsEpgPanel');
       const sheet = document.getElementById('fsEpgSheet');
+
+      // Mount panel inside the fullscreen element so it renders above the video
+      const fsRoot = document.fullscreenElement || document.webkitFullscreenElement || player.el();
+      if (panel.parentElement !== fsRoot) fsRoot.appendChild(panel);
+
       panel.classList.add('open');
       sheet.classList.remove('closing');
+      _fsEpgPanelOpen = true;
       updateFsPanelList();
       updateFsPanelClock();
-      // Keep FS bar visible while panel is open
-      const vjsEl = player.el();
-      vjsEl.classList.add('fs-epg-visible');
+      // Keep bar visible while panel is open
+      player.el().classList.add('fs-epg-visible');
     }
 
     function closeFsEpgPanel() {
       const panel = document.getElementById('fsEpgPanel');
       const sheet = document.getElementById('fsEpgSheet');
+      _fsEpgPanelOpen = false;
       sheet.classList.add('closing');
       setTimeout(() => {
         panel.classList.remove('open');
         sheet.classList.remove('closing');
+        // Return panel to body
+        if (panel.parentElement !== document.body) document.body.appendChild(panel);
       }, 260);
     }
 
@@ -1067,10 +1072,6 @@
       if (clkEl) clkEl.textContent = `${hh}:${mm}:${ss} CST`;
       _fsPanelClockTimer = setTimeout(updateFsPanelClock, 1000);
     }
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeFsEpgPanel();
-    });
 
     // ===================== EPG =====================
     // ===================== LANGUAGE =====================
