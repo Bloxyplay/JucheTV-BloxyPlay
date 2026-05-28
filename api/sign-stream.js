@@ -10,10 +10,9 @@ module.exports = function handler(req, res) {
 
   const expires = Math.floor(Date.now() / 1000) + 7200;
 
-  // Note the space between streamPath and secret — must match Nginx exactly
   const token = crypto
     .createHash('md5')
-    .update(`${expires}${streamPath} ${secret}`)
+    .update(`${expires}${streamPath}${secret}`)
     .digest('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
