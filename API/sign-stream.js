@@ -1,11 +1,6 @@
-import crypto from 'crypto';
+const crypto = require('crypto');
 
-export default function handler(req, res) {
-  const origin = req.headers.origin;
-  if (origin !== 'https://juche-tv-streaming.vercel.app') {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
+module.exports = function handler(req, res) {
   const secret = process.env.STREAM_SECRET;
   const streamPath = req.query.path;
 
@@ -13,7 +8,6 @@ export default function handler(req, res) {
     return res.status(400).json({ error: 'Invalid path' });
   }
 
-  // Expires in 2 hours
   const expires = Math.floor(Date.now() / 1000) + 7200;
 
   const token = crypto
@@ -26,5 +20,6 @@ export default function handler(req, res) {
 
   const signedUrl = `https://bloxyplaytv.duckdns.org${streamPath}?token=${token}&expires=${expires}`;
 
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.json({ url: signedUrl });
-}
+};
