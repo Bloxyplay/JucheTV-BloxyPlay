@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KCTV Archives - Juche TV</title>
-  <!-- Video.js CSS -->
-  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet">
   <style>
     :root {
       --bg: #f6f7f9;
@@ -18,6 +16,13 @@
       --radius: 14px;
       --accent: #e5001a;
       --accent-light: rgba(229,0,26,0.08);
+      --player-bg: #0a0a0a;
+      --player-bar: rgba(10,10,10,0.92);
+      --player-track: rgba(255,255,255,0.15);
+      --player-buffered: rgba(255,255,255,0.3);
+      --player-played: #e5001a;
+      --player-text: rgba(255,255,255,0.9);
+      --player-muted: rgba(255,255,255,0.4);
     }
     :root.dark {
       --bg: #0a0a0f;
@@ -38,6 +43,8 @@
       flex-direction: column;
       transition: background 0.3s ease, color 0.3s ease;
     }
+
+    /* ===== HEADER ===== */
     .header {
       position: sticky; top: 0; z-index: 100;
       background: var(--theme);
@@ -95,6 +102,7 @@
     .lang-option.active { font-weight: 600; }
     .lang-option.active::after { content: '\2713'; color: var(--accent); font-size: 12px; }
 
+    /* ===== MAIN ===== */
     .main {
       flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;
       padding: 24px 20px 40px;
@@ -108,7 +116,6 @@
     }
     .back-link:hover { color: var(--primary); }
     .back-link svg { width: 16px; height: 16px; }
-
     .page-header {
       display: flex; align-items: center; gap: 16px;
       margin-bottom: 20px; flex-wrap: wrap;
@@ -120,6 +127,7 @@
     .page-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
     .page-header p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
+    /* ===== NOTICE BANNER ===== */
     .notice-banner {
       background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
       border: 1px solid rgba(245,158,11,0.25);
@@ -138,8 +146,7 @@
       border-color: rgba(245,158,11,0.3);
     }
     .notice-banner svg {
-      width: 22px;
-      height: 22px;
+      width: 22px; height: 22px;
       color: #f59e0b;
       flex-shrink: 0;
       margin-top: 1px;
@@ -148,9 +155,7 @@
       font-weight: 700;
       color: #b45309;
     }
-    :root.dark .notice-banner strong {
-      color: #fbbf24;
-    }
+    :root.dark .notice-banner strong { color: #fbbf24; }
     .notice-banner code {
       background: rgba(245,158,11,0.15);
       padding: 1px 6px;
@@ -160,6 +165,389 @@
       font-weight: 600;
     }
 
+    /* ===== CUSTOM VIDEO PLAYER ===== */
+    .vod-player {
+      position: relative;
+      width: 100%;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      user-select: none;
+      outline: none;
+    }
+    .vod-player::before {
+      content: '';
+      display: block;
+      padding-top: 56.25%;
+    }
+    .vod-player video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      cursor: pointer;
+    }
+
+    /* Loading spinner */
+    .vod-loader {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px;
+      height: 48px;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .vod-loader.show { opacity: 1; }
+    .vod-loader svg {
+      width: 100%; height: 100%;
+      animation: vodSpin 1s linear infinite;
+    }
+    @keyframes vodSpin { 100% { transform: rotate(360deg); } }
+
+    /* Big play button overlay */
+    .vod-big-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(229,0,26,0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 4;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 4px 24px rgba(229,0,26,0.4);
+    }
+    .vod-big-play.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .vod-big-play:hover {
+      transform: translate(-50%, -50%) scale(1.08);
+      background: rgba(229,0,26,0.95);
+    }
+    .vod-big-play svg {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      margin-left: 4px;
+    }
+
+    /* Center play indicator (brief flash) */
+    .vod-center-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.6);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    .vod-center-icon.flash {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .vod-center-icon svg {
+      width: 24px; height: 24px;
+      color: #fff;
+    }
+
+    /* Title overlay (top) */
+    .vod-title-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 16px 20px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .vod-title-overlay.show {
+      opacity: 1;
+    }
+    .vod-title-overlay h4 {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .vod-title-overlay p {
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    /* Control bar */
+    .vod-controls {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 16px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+    .vod-controls.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Progress bar area */
+    .vod-progress-area {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .vod-progress-track {
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.2);
+      position: relative;
+      overflow: visible;
+      transition: height 0.15s ease;
+    }
+    .vod-progress-area:hover .vod-progress-track {
+      height: 5px;
+    }
+    .vod-progress-buffered {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.35);
+      transition: width 0.2s linear;
+    }
+    .vod-progress-played {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #ff1a33, #e5001a);
+      transition: width 0.1s linear;
+    }
+    .vod-progress-thumb {
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.4);
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.15s ease;
+      pointer-events: none;
+    }
+    .vod-progress-area:hover .vod-progress-thumb,
+    .vod-progress-area.seeking .vod-progress-thumb {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    /* Time tooltip on hover */
+    .vod-time-tooltip {
+      position: absolute;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+    .vod-progress-area:hover .vod-time-tooltip.visible {
+      opacity: 1;
+    }
+
+    /* Control buttons row */
+    .vod-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .vod-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      opacity: 0.85;
+    }
+    .vod-btn:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.1);
+    }
+    .vod-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .vod-btn.play-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Time display */
+    .vod-time {
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      margin: 0 8px;
+      white-space: nowrap;
+      min-width: 100px;
+      letter-spacing: 0.3px;
+    }
+    .vod-time .vod-time-sep {
+      color: rgba(255,255,255,0.4);
+      margin: 0 3px;
+    }
+
+    /* Volume */
+    .vod-volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+    .vod-volume-slider {
+      width: 0;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.15);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      transition: width 0.2s ease;
+    }
+    .vod-volume-wrap:hover .vod-volume-slider {
+      width: 70px;
+    }
+    .vod-volume-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: #fff;
+      transition: width 0.05s linear;
+    }
+
+    /* Spacer */
+    .vod-spacer { flex: 1; }
+
+    /* Settings / Speed */
+    .vod-settings-menu {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      background: rgba(20,20,25,0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 140px;
+      display: none;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+    .vod-settings-menu.show { display: block; }
+    .vod-settings-menu .vod-setting-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 10px 4px;
+    }
+    .vod-speed-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .vod-speed-option:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .vod-speed-option.active {
+      color: #fff;
+      font-weight: 600;
+    }
+    .vod-speed-option.active::after {
+      content: '\2713';
+      color: var(--accent);
+      font-size: 11px;
+    }
+    .vod-settings-wrap {
+      position: relative;
+    }
+
+    /* Play next/prev overlay arrows */
+    .vod-skip-overlay {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.2s ease, background 0.2s ease;
+      pointer-events: none;
+    }
+    .vod-skip-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .vod-skip-overlay:hover {
+      background: rgba(0,0,0,0.6);
+    }
+    .vod-skip-overlay svg {
+      width: 24px; height: 24px;
+      color: #fff;
+    }
+    .vod-skip-prev { left: 12px; }
+    .vod-skip-next { right: 12px; }
+
+    /* ===== STATES ===== */
     .loading {
       text-align: center; padding: 48px;
       color: var(--secondary); font-size: 14px;
@@ -170,7 +558,6 @@
       margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-
     .error {
       text-align: center; padding: 48px 24px;
       color: var(--secondary);
@@ -186,7 +573,7 @@
     }
     .retry-btn:hover { background: var(--tertiary); border-color: var(--secondary); }
 
-    /* ===== Folder Grid ===== */
+    /* ===== FOLDER GRID ===== */
     .folder-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -208,12 +595,9 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
       transform: translateY(-2px);
     }
-    .folder-card:active {
-      transform: translateY(0);
-    }
+    .folder-card:active { transform: translateY(0); }
     .folder-icon {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border-radius: 12px;
       background: var(--accent-light);
       display: flex;
@@ -221,81 +605,29 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .folder-icon svg {
-      width: 24px;
-      height: 24px;
-      color: var(--accent);
-    }
-    .folder-info h3 {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .folder-info p {
-      font-size: 12px;
-      color: var(--secondary);
-    }
+    .folder-icon svg { width: 24px; height: 24px; color: var(--accent); }
+    .folder-info h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .folder-info p { font-size: 12px; color: var(--secondary); }
 
-    /* ===== Video Player ===== */
-    .player-section {
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-    .player-wrap {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: #000;
-      position: relative;
-    }
-    .player-wrap .video-js {
-      width: 100%;
-      height: 100%;
-    }
-    .player-info {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-    }
-    .player-info h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .player-info p {
-      font-size: 13px;
-      color: var(--secondary);
-    }
-
-    /* ===== Timeline ===== */
+    /* ===== TIMELINE ===== */
     .timeline-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
     }
-    .timeline-header h2 {
-      font-size: 16px;
-      font-weight: 600;
-    }
+    .timeline-header h2 { font-size: 16px; font-weight: 600; }
     .timeline-count {
-      font-size: 12px;
-      color: var(--secondary);
-      background: var(--tertiary);
-      padding: 4px 12px;
+      font-size: 12px; color: var(--secondary);
+      background: var(--tertiary); padding: 4px 12px;
       border-radius: 100px;
     }
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .timeline { display: flex; flex-direction: column; gap: 8px; }
     .timeline-item {
       background: var(--entry);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 14px 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
@@ -303,10 +635,10 @@
       transition: all 0.2s ease;
     }
     .timeline-item:hover {
-      border-color: var(--secondary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(229,0,26,0.08);
     }
-    .timeline-item.active {
+    .timeline-item.playing {
       border-color: var(--accent);
       background: var(--accent-light);
     }
@@ -315,8 +647,7 @@
       color: #fff;
     }
     .play-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px; height: 38px;
       border-radius: 10px;
       background: var(--tertiary);
       display: flex;
@@ -325,25 +656,15 @@
       flex-shrink: 0;
       transition: all 0.2s ease;
     }
-    .play-icon svg {
-      width: 18px;
-      height: 18px;
-    }
-    .timeline-meta {
-      flex: 1;
-      min-width: 0;
-    }
+    .play-icon svg { width: 16px; height: 16px; }
+    .timeline-meta { flex: 1; min-width: 0; }
     .timeline-meta h4 {
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 13px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       margin-bottom: 2px;
     }
     .timeline-meta p {
-      font-size: 12px;
-      color: var(--secondary);
+      font-size: 12px; color: var(--secondary);
       font-family: 'SF Mono', monospace;
     }
     .timeline-actions {
@@ -366,16 +687,21 @@
       text-decoration: none;
       transition: all 0.15s ease;
     }
-    .timeline-btn:hover {
-      background: var(--border);
+    .timeline-btn:hover { background: var(--border); }
+
+    /* Player info below video */
+    .player-meta {
+      margin-bottom: 24px;
+      padding: 0 4px;
     }
-    .timeline-btn.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
+    .player-meta h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
-    .timeline-btn.primary:hover {
-      background: #c40016;
+    .player-meta p {
+      font-size: 13px;
+      color: var(--secondary);
     }
 
     .footer {
@@ -392,6 +718,8 @@
       .page-header h1 { font-size: 18px; }
       .notice-banner { flex-direction: column; gap: 10px; }
       .timeline-actions { display: none; }
+      .vod-big-play { width: 60px; height: 60px; }
+      .vod-big-play svg { width: 24px; height: 24px; }
     }
   </style>
 </head>
@@ -428,7 +756,6 @@
   </header>
 
   <main class="main">
-    <!-- Breadcrumb / Back -->
     <a class="back-link" id="backLink" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       <span data-i18n="backToFolders">Back to Folders</span>
@@ -442,7 +769,6 @@
       </div>
     </div>
 
-    <!-- Deinterlacing Notice Banner -->
     <div class="notice-banner" id="noticeBanner">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -455,25 +781,106 @@
       </div>
     </div>
 
-    <!-- Video Player Section (hidden until a video is selected) -->
-    <div class="player-section" id="playerSection" style="display:none">
-      <div class="player-wrap">
-        <video
-          id="archivePlayer"
-          class="video-js vjs-default-skin vjs-big-play-centered"
-          controls
-          preload="auto"
-          playsinline
-        >
-        </video>
+    <!-- ===== CUSTOM VOD PLAYER ===== -->
+    <div class="vod-player" id="vodPlayer" style="display:none" tabindex="0">
+      <video id="videoEl" preload="metadata" playsinline></video>
+
+      <!-- Loader -->
+      <div class="vod-loader" id="vodLoader">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
       </div>
-      <div class="player-info">
-        <h3 id="playerTitle">-</h3>
-        <p id="playerDate">-</p>
+
+      <!-- Big Play Button -->
+      <div class="vod-big-play" id="vodBigPlay">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+
+      <!-- Center Play/Pause Indicator -->
+      <div class="vod-center-icon" id="vodCenterIcon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+
+      <!-- Title Overlay (top) -->
+      <div class="vod-title-overlay" id="vodTitleOverlay">
+        <h4 id="vodOverlayTitle">-</h4>
+        <p id="vodOverlayDate">-</p>
+      </div>
+
+      <!-- Skip Buttons -->
+      <div class="vod-skip-overlay vod-skip-prev" id="vodSkipPrev" title="Previous">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </div>
+      <div class="vod-skip-overlay vod-skip-next" id="vodSkipNext" title="Next">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </div>
+
+      <!-- Controls -->
+      <div class="vod-controls" id="vodControls">
+        <!-- Progress Bar -->
+        <div class="vod-progress-area" id="vodProgressArea">
+          <div class="vod-progress-track" id="vodProgressTrack">
+            <div class="vod-progress-buffered" id="vodProgressBuffered"></div>
+            <div class="vod-progress-played" id="vodProgressPlayed"></div>
+            <div class="vod-progress-thumb" id="vodProgressThumb"></div>
+          </div>
+          <div class="vod-time-tooltip" id="vodTimeTooltip">0:00</div>
+        </div>
+
+        <!-- Buttons Row -->
+        <div class="vod-controls-row">
+          <button class="vod-btn play-btn" id="vodPlayBtn" title="Play/Pause (Space)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+
+          <button class="vod-btn" id="vodNextBtn" title="Next">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+
+          <div class="vod-volume-wrap">
+            <button class="vod-btn" id="vodMuteBtn" title="Mute (M)">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+            <div class="vod-volume-slider" id="vodVolumeSlider">
+              <div class="vod-volume-fill" id="vodVolumeFill" style="width:100%"></div>
+            </div>
+          </div>
+
+          <div class="vod-time" id="vodTimeDisplay">
+            <span id="vodCurrentTime">0:00</span>
+            <span class="vod-time-sep">/</span>
+            <span id="vodDuration">0:00</span>
+          </div>
+
+          <div class="vod-spacer"></div>
+
+          <div class="vod-settings-wrap">
+            <button class="vod-btn" id="vodSpeedBtn" title="Playback speed">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 8v8l6-4-6-4zm2-6C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            </button>
+            <div class="vod-settings-menu" id="vodSpeedMenu">
+              <div class="vod-setting-label">Speed</div>
+              <div class="vod-speed-option" data-speed="0.5">0.5x</div>
+              <div class="vod-speed-option active" data-speed="1">1x (Normal)</div>
+              <div class="vod-speed-option" data-speed="1.25">1.25x</div>
+              <div class="vod-speed-option" data-speed="1.5">1.5x</div>
+              <div class="vod-speed-option" data-speed="2">2x</div>
+            </div>
+          </div>
+
+          <button class="vod-btn" id="vodFullscreenBtn" title="Fullscreen (F)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Player Meta Info -->
+    <div class="player-meta" id="playerMeta" style="display:none">
+      <h3 id="playerMetaTitle">-</h3>
+      <p id="playerMetaDate">-</p>
+    </div>
+
+    <!-- Content Area -->
     <div id="contentArea">
       <div class="loading">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
@@ -487,8 +894,6 @@
     <a href="kctv.html" data-i18n="back">Back to KCTV</a>
   </footer>
 
-  <!-- Video.js -->
-  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
   <script>
     // ===================== I18N =====================
     let translations = {};
@@ -496,52 +901,28 @@
 
     const DEFAULT_TRANSLATIONS = {
       en: {
-        brand: 'Juche TV',
-        channels: 'Channels',
-        back: 'Back to KCTV',
+        brand: 'Juche TV', channels: 'Channels', back: 'Back to KCTV',
         archivesTitle: 'KCTV Archives',
         archivesDesc: 'Browse and watch recorded broadcasts from Korean Central Television.',
-        fetchingArchives: 'Fetching archives...',
-        error: 'Error',
-        fetchError: 'Failed to load archives. Please try again.',
-        retry: 'Retry',
-        noArchives: 'No archives found.',
-        noticeTitle: 'Video Quality Notice',
+        fetchingArchives: 'Fetching archives...', error: 'Error',
+        fetchError: 'Failed to load archives. Please try again.', retry: 'Retry',
+        noArchives: 'No archives found.', noticeTitle: 'Video Quality Notice',
         noticeText: 'Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC\'s "Yadif" or ffmpeg -vf yadif) for proper viewing.',
-        timeSlot: 'Time Slot',
-        recording: 'recordings',
-        date: 'Date',
-        download: 'Download',
-        watch: 'Watch',
-        footer: 'Juche TV. Not affiliated with any broadcasting entity.',
-        backToFolders: 'Back to Folders',
-        recordingsIn: 'Recordings in',
-        video: 'video',
-        unknownDate: 'Unknown Date'
+        recording: 'recordings', backToFolders: 'Back to Folders',
+        recordingsIn: 'Recordings in', unknownDate: 'Unknown Date',
+        footer: 'Juche TV. Not affiliated with any broadcasting entity.'
       },
       zh: {
-        brand: 'Juche TV',
-        channels: '频道',
-        back: '返回 KCTV',
-        archivesTitle: 'KCTV 档案',
-        archivesDesc: '浏览和观看朝鲜中央电视台的录播节目。',
-        fetchingArchives: '正在获取档案...',
-        error: '错误',
-        fetchError: '加载档案失败，请重试。',
-        retry: '重试',
-        noArchives: '未找到档案。',
-        noticeTitle: '视频质量提示',
-        noticeText: '2026年6月14日之前的录制为隔行扫描，运动时可能出现梳状或模糊。请使用去隔行滤镜（如 VLC 的"Yadif"或 ffmpeg -vf yadif）以获得最佳观看效果。',
-        timeSlot: '时段',
-        recording: '个录像',
-        date: '日期',
-        download: '下载',
-        watch: '播放',
-        footer: 'Juche TV。与任何广播机构无关。',
-        backToFolders: '返回文件夹',
-        recordingsIn: '录像列表',
-        video: '个视频',
-        unknownDate: '未知日期'
+        brand: 'Juche TV', channels: '\u9891\u9053', back: '\u8fd4\u56de KCTV',
+        archivesTitle: 'KCTV \u6863\u6848',
+        archivesDesc: '\u6d4f\u89c8\u548c\u89c2\u770b\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\u7684\u5f55\u64ad\u8282\u76ee\u3002',
+        fetchingArchives: '\u6b63\u5728\u83b7\u53d6\u6863\u6848...', error: '\u9519\u8bef',
+        fetchError: '\u52a0\u8f7d\u6863\u6848\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5\u3002', retry: '\u91cd\u8bd5',
+        noArchives: '\u672a\u627e\u5230\u6863\u6848\u3002', noticeTitle: '\u89c6\u9891\u8d28\u91cf\u63d0\u793a',
+        noticeText: '2026\u5e746\u670814\u65e5\u4e4b\u524d\u7684\u5f55\u5236\u4e3a\u9694\u884c\u626b\u63cf\uff0c\u8fd0\u52a8\u65f6\u53ef\u80fd\u51fa\u73b0\u68b3\u72b6\u6216\u6a21\u7cca\u3002\u8bf7\u4f7f\u7528\u53bb\u9694\u884c\u6ee4\u955c\uff08\u5982 VLC \u7684"Yadif"\u6216 ffmpeg -vf yadif\uff09\u4ee5\u83b7\u5f97\u6700\u4f73\u89c2\u770b\u6548\u679c\u3002',
+        recording: '\u4e2a\u5f55\u50cf', backToFolders: '\u8fd4\u56de\u6587\u4ef6\u5939',
+        recordingsIn: '\u5f55\u50cf\u5217\u8868', unknownDate: '\u672a\u77e5\u65e5\u671f',
+        footer: 'Juche TV\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u673a\u6784\u65e0\u5173\u3002'
       }
     };
 
@@ -549,17 +930,13 @@
       try {
         const res = await fetch('language.json');
         translations = await res.json();
-      } catch(e) {
-        translations = DEFAULT_TRANSLATIONS;
-      }
+      } catch(e) { translations = DEFAULT_TRANSLATIONS; }
       applyLanguage(currentLang);
     }
-
     function t(key) {
       const lang = translations[currentLang] || translations['en'] || DEFAULT_TRANSLATIONS['en'];
       return lang[key] || DEFAULT_TRANSLATIONS['en'][key] || key;
     }
-
     function applyLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('lang', lang);
@@ -569,33 +946,18 @@
         if (tx[key]) el.textContent = tx[key];
       });
       document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\u6587' : 'English';
-      document.querySelectorAll('.lang-option').forEach(o => {
-        o.classList.toggle('active', o.dataset.lang === lang);
-      });
+      document.querySelectorAll('.lang-option').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     }
-
-    function toggleLangMenu() {
-      document.getElementById('langMenu').classList.toggle('show');
-    }
-
+    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
     function selectLang(el) {
       applyLanguage(el.dataset.lang);
       document.getElementById('langMenu').classList.remove('show');
-      // Re-render current view to update text
-      if (currentFolder) {
-        renderTimeline(currentFolder, currentFiles);
-      } else {
-        renderFolders(folders);
-      }
+      if (currentFolder) renderTimeline(currentFolder, currentFiles);
+      else renderFolders(folders);
     }
-
     document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(o => {
-      o.addEventListener('click', () => selectLang(o));
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
-    });
+    document.querySelectorAll('.lang-option').forEach(o => o.addEventListener('click', () => selectLang(o)));
+    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
 
     // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
@@ -613,57 +975,380 @@
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
+    // ===================== CUSTOM VOD PLAYER =====================
+    const playerWrap = document.getElementById('vodPlayer');
+    const video = document.getElementById('videoEl');
+    const loader = document.getElementById('vodLoader');
+    const bigPlay = document.getElementById('vodBigPlay');
+    const centerIcon = document.getElementById('vodCenterIcon');
+    const controls = document.getElementById('vodControls');
+    const titleOverlay = document.getElementById('vodTitleOverlay');
+    const playBtn = document.getElementById('vodPlayBtn');
+    const muteBtn = document.getElementById('vodMuteBtn');
+    const volumeSlider = document.getElementById('vodVolumeSlider');
+    const volumeFill = document.getElementById('vodVolumeFill');
+    const progressArea = document.getElementById('vodProgressArea');
+    const progressTrack = document.getElementById('vodProgressTrack');
+    const progressPlayed = document.getElementById('vodProgressPlayed');
+    const progressBuffered = document.getElementById('vodProgressBuffered');
+    const progressThumb = document.getElementById('vodProgressThumb');
+    const timeTooltip = document.getElementById('vodTimeTooltip');
+    const currentTimeEl = document.getElementById('vodCurrentTime');
+    const durationEl = document.getElementById('vodDuration');
+    const fullscreenBtn = document.getElementById('vodFullscreenBtn');
+    const speedBtn = document.getElementById('vodSpeedBtn');
+    const speedMenu = document.getElementById('vodSpeedMenu');
+    const skipPrev = document.getElementById('vodSkipPrev');
+    const skipNext = document.getElementById('vodSkipNext');
+    const nextBtn = document.getElementById('vodNextBtn');
+
+    let controlsTimeout = null;
+    let isSeeking = false;
+    let hasPlayedOnce = false;
+
+    // ---- Icons (SVG strings) ----
+    const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+    const ICON_MUTE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
+    const ICON_VOLUME = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+    const ICON_VOLUME_LOW = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>';
+    const ICON_FULLSCREEN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
+    const ICON_FULLSCREEN_EXIT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>';
+
+    // ---- Format time ----
+    function fmtTime(s) {
+      if (isNaN(s)) return '0:00';
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = Math.floor(s % 60);
+      if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+      return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    // ---- Show/hide controls ----
+    function showControls() {
+      controls.classList.add('show');
+      titleOverlay.classList.add('show');
+      skipPrev.classList.add('show');
+      skipNext.classList.add('show');
+      clearTimeout(controlsTimeout);
+      if (!video.paused) {
+        controlsTimeout = setTimeout(hideControls, 3000);
+      }
+    }
+    function hideControls() {
+      if (isSeeking) return;
+      controls.classList.remove('show');
+      titleOverlay.classList.remove('show');
+      skipPrev.classList.remove('show');
+      skipNext.classList.remove('show');
+      speedMenu.classList.remove('show');
+    }
+    function resetControlsTimeout() {
+      showControls();
+    }
+
+    playerWrap.addEventListener('mousemove', resetControlsTimeout);
+    playerWrap.addEventListener('mouseleave', () => {
+      if (!video.paused) hideControls();
+    });
+
+    // ---- Big play button ----
+    bigPlay.addEventListener('click', () => {
+      video.play().catch(() => {});
+    });
+
+    // ---- Play/Pause ----
+    function togglePlay() {
+      if (video.paused || video.ended) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+
+    function updatePlayButton() {
+      if (video.paused) {
+        playBtn.innerHTML = ICON_PLAY;
+        bigPlay.classList.add('show');
+      } else {
+        playBtn.innerHTML = ICON_PAUSE;
+        bigPlay.classList.remove('show');
+      }
+    }
+
+    playBtn.addEventListener('click', togglePlay);
+    video.addEventListener('play', () => { updatePlayButton(); hasPlayedOnce = true; showControls(); });
+    video.addEventListener('pause', () => { updatePlayButton(); showControls(); });
+    video.addEventListener('ended', () => { updatePlayButton(); showControls(); });
+
+    // Center icon flash
+    function flashCenterIcon(playing) {
+      centerIcon.innerHTML = playing ? ICON_PLAY : ICON_PAUSE;
+      centerIcon.classList.add('flash');
+      setTimeout(() => centerIcon.classList.remove('flash'), 500);
+    }
+    video.addEventListener('play', () => { if (hasPlayedOnce) flashCenterIcon(false); });
+    video.addEventListener('pause', () => { if (hasPlayedOnce) flashCenterIcon(true); });
+
+    // Double-click fullscreen
+    video.addEventListener('dblclick', () => toggleFullscreen());
+
+    // ---- Progress bar ----
+    function updateProgress() {
+      if (!video.duration) return;
+      const pct = (video.currentTime / video.duration) * 100;
+      progressPlayed.style.width = pct + '%';
+      progressThumb.style.left = pct + '%';
+      currentTimeEl.textContent = fmtTime(video.currentTime);
+
+      // Buffered
+      if (video.buffered.length > 0) {
+        const end = video.buffered.end(video.buffered.length - 1);
+        const bufPct = (end / video.duration) * 100;
+        progressBuffered.style.width = bufPct + '%';
+      }
+    }
+    video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('progress', updateProgress);
+
+    function seekToRatio(ratio) {
+      if (!video.duration) return;
+      ratio = Math.max(0, Math.min(1, ratio));
+      video.currentTime = ratio * video.duration;
+    }
+
+    progressArea.addEventListener('click', (e) => {
+      const rect = progressTrack.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      seekToRatio(ratio);
+    });
+
+    progressArea.addEventListener('mousedown', (e) => {
+      isSeeking = true;
+      progressArea.classList.add('seeking');
+      seekToRatio((e.clientX - progressTrack.getBoundingClientRect().left) / progressTrack.getBoundingClientRect().width);
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!isSeeking) return;
+      const rect = progressTrack.getBoundingClientRect();
+      seekToRatio((e.clientX - rect.left) / rect.width);
+    });
+    document.addEventListener('mouseup', () => {
+      if (isSeeking) { isSeeking = false; progressArea.classList.remove('seeking'); }
+    });
+
+    // Time tooltip on hover
+    progressArea.addEventListener('mousemove', (e) => {
+      if (!video.duration) return;
+      const rect = progressTrack.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      timeTooltip.textContent = fmtTime(ratio * video.duration);
+      timeTooltip.style.left = (ratio * 100) + '%';
+      timeTooltip.classList.add('visible');
+    });
+    progressArea.addEventListener('mouseleave', () => {
+      timeTooltip.classList.remove('visible');
+    });
+
+    // ---- Duration ----
+    video.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = fmtTime(video.duration);
+    });
+    video.addEventListener('durationchange', () => {
+      durationEl.textContent = fmtTime(video.duration);
+    });
+
+    // ---- Loading ----
+    video.addEventListener('waiting', () => loader.classList.add('show'));
+    video.addEventListener('canplay', () => loader.classList.remove('show'));
+    video.addEventListener('playing', () => loader.classList.remove('show'));
+
+    // ---- Volume ----
+    function setVolume(v) {
+      v = Math.max(0, Math.min(1, v));
+      video.volume = v;
+      volumeFill.style.width = (v * 100) + '%';
+      updateMuteIcon();
+    }
+    function updateMuteIcon() {
+      if (video.muted || video.volume === 0) {
+        muteBtn.innerHTML = ICON_MUTE;
+      } else if (video.volume < 0.5) {
+        muteBtn.innerHTML = ICON_VOLUME_LOW;
+      } else {
+        muteBtn.innerHTML = ICON_VOLUME;
+      }
+    }
+    muteBtn.addEventListener('click', () => { video.muted = !video.muted; updateMuteIcon(); });
+    video.addEventListener('volumechange', updateMuteIcon);
+
+    volumeSlider.addEventListener('click', (e) => {
+      const rect = volumeSlider.getBoundingClientRect();
+      setVolume((e.clientX - rect.left) / rect.width);
+    });
+    // Drag volume
+    let volDragging = false;
+    volumeSlider.addEventListener('mousedown', (e) => {
+      volDragging = true;
+      const rect = volumeSlider.getBoundingClientRect();
+      setVolume((e.clientX - rect.left) / rect.width);
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!volDragging) return;
+      const rect = volumeSlider.getBoundingClientRect();
+      setVolume((e.clientX - rect.left) / rect.width);
+    });
+    document.addEventListener('mouseup', () => { volDragging = false; });
+
+    // ---- Speed ----
+    speedBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      speedMenu.classList.toggle('show');
+    });
+    document.querySelectorAll('.vod-speed-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const speed = parseFloat(opt.dataset.speed);
+        video.playbackRate = speed;
+        document.querySelectorAll('.vod-speed-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        speedMenu.classList.remove('show');
+      });
+    });
+    document.addEventListener('click', () => speedMenu.classList.remove('show'));
+
+    // ---- Fullscreen ----
+    function toggleFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        playerWrap.requestFullscreen();
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', () => {
+      fullscreenBtn.innerHTML = document.fullscreenElement ? ICON_FULLSCREEN_EXIT : ICON_FULLSCREEN;
+      if (document.fullscreenElement) {
+        playerWrap.style.borderRadius = '0';
+      } else {
+        playerWrap.style.borderRadius = '16px';
+      }
+    });
+
+    // ---- Keyboard ----
+    playerWrap.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case ' ':
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          video.currentTime = Math.max(0, video.currentTime - 5);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setVolume(video.volume + 0.1);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          setVolume(video.volume - 0.1);
+          break;
+        case 'f':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case 'm':
+          e.preventDefault();
+          video.muted = !video.muted;
+          updateMuteIcon();
+          break;
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+          e.preventDefault();
+          const pct = parseInt(e.key) * 10;
+          if (video.duration) video.currentTime = (pct / 100) * video.duration;
+          break;
+        case 'n':
+          e.preventDefault();
+          playNext();
+          break;
+      }
+    });
+
+    // ---- Skip prev/next ----
+    skipPrev.addEventListener('click', (e) => { e.stopPropagation(); playPrev(); });
+    skipNext.addEventListener('click', (e) => { e.stopPropagation(); playNext(); });
+    nextBtn.addEventListener('click', playNext);
+
+    function playNext() {
+      if (!currentFolder || !currentFiles.length) return;
+      const idx = currentFiles.findIndex(f => f.path === currentPlayingPath);
+      if (idx >= 0 && idx < currentFiles.length - 1) {
+        const next = currentFiles[idx + 1]; // next = older (list is newest first)
+        window.playVideo(next.path, cleanFilename(next.name), parseDateFromFilename(next.name));
+      }
+    }
+    function playPrev() {
+      if (!currentFolder || !currentFiles.length) return;
+      const idx = currentFiles.findIndex(f => f.path === currentPlayingPath);
+      if (idx > 0) {
+        const prev = currentFiles[idx - 1]; // prev = newer (list is newest first)
+        window.playVideo(prev.path, cleanFilename(prev.name), parseDateFromFilename(prev.name));
+      }
+    }
+
     // ===================== ARCHIVES BROWSER =====================
     const API_BASE = 'https://kctv.koryofront.org';
     const contentArea = document.getElementById('contentArea');
     const backLink = document.getElementById('backLink');
-    const playerSection = document.getElementById('playerSection');
-    const playerTitle = document.getElementById('playerTitle');
-    const playerDate = document.getElementById('playerDate');
+    const playerMeta = document.getElementById('playerMeta');
+    const playerMetaTitle = document.getElementById('playerMetaTitle');
+    const playerMetaDate = document.getElementById('playerMetaDate');
+    const vodOverlayTitle = document.getElementById('vodOverlayTitle');
+    const vodOverlayDate = document.getElementById('vodOverlayDate');
 
-    // State
     let folders = [];
     let currentFolder = null;
     let currentFiles = [];
-    let player = null;
-
-    // ---- Helper functions ----
+    let currentPlayingPath = null;
 
     function parseDateFromFilename(name) {
       const match = name.match(/(\d{4}-\d{2}-\d{2})/);
       return match ? match[1] : '';
     }
-
     function parseTimeFromFilename(name) {
       const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/);
       if (match) {
-        const hour = match[2];
-        const min = match[3];
-        const h = parseInt(hour, 10);
+        const h = parseInt(match[2], 10);
         const ampm = h >= 12 ? 'PM' : 'AM';
         const h12 = h % 12 || 12;
-        return `${h12}:${min} ${ampm}`;
+        return h12 + ':' + match[3] + ' ' + ampm;
       }
       return '';
     }
-
     function formatDate(dateStr) {
       if (!dateStr) return t('unknownDate');
       const d = new Date(dateStr + 'T00:00:00');
-      return d.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', {
-        year: 'numeric', month: 'short', day: 'numeric'
-      });
+      return d.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
-
     function formatFolderName(name) {
-      // Extract time from folder name like "Korean Central Television (KCTV) @ 9PM"
       const match = name.match(/@\s*(.+)$/);
       return match ? match[1] : name;
     }
-
     function cleanFilename(name) {
-      // Remove .mp4 and the trailing timestamp part to get a cleaner title
       return name.replace('.mp4', '').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/, '');
+    }
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     }
 
     function showLoading() {
@@ -673,7 +1358,6 @@
           <span>${t('fetchingArchives')}</span>
         </div>`;
     }
-
     function showError() {
       contentArea.innerHTML = `
         <div class="error">
@@ -685,12 +1369,9 @@
           </button>
         </div>`;
     }
-
     function showEmpty() {
       contentArea.innerHTML = `<div class="loading"><span>${t('noArchives')}</span></div>`;
     }
-
-    // ---- API ----
 
     async function fetchFolders() {
       showLoading();
@@ -699,8 +1380,6 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         folders = (data || []).filter(item => item.type === 'dir');
-
-        // Sort folders by time slot
         const slotOrder = ['9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM'];
         folders.sort((a, b) => {
           const slotA = formatFolderName(a.name);
@@ -710,7 +1389,6 @@
           if (idxA !== -1 && idxB !== -1) return idxA - idxB;
           return a.name.localeCompare(b.name);
         });
-
         if (!folders.length) { showEmpty(); return; }
         renderFolders(folders);
       } catch (e) {
@@ -722,19 +1400,15 @@
     async function loadFolder(folder) {
       showLoading();
       try {
-        // path is already URL-encoded from the API
         const res = await fetch(API_BASE + folder.path + '/');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         const files = (data || []).filter(f => f.type === 'file' && f.name.endsWith('.mp4'));
-
-        // Sort by date descending (newest first)
         files.sort((a, b) => {
           const dateA = parseDateFromFilename(a.name);
           const dateB = parseDateFromFilename(b.name);
           return dateB.localeCompare(dateA);
         });
-
         currentFolder = folder;
         currentFiles = files;
         renderTimeline(folder, files);
@@ -744,29 +1418,23 @@
       }
     }
 
-    // ---- Rendering ----
-
     function renderFolders(folderList) {
       currentFolder = null;
       currentFiles = [];
       backLink.style.display = 'none';
-
       let html = '<div class="folder-grid">';
       folderList.forEach(folder => {
         const slot = formatFolderName(folder.name);
         html += `
           <div class="folder-card" onclick="openFolder('${folder.path}')">
             <div class="folder-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div class="folder-info">
               <h3>${slot}</h3>
               <p>${folder.name}</p>
             </div>
-          </div>
-        `;
+          </div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
@@ -775,52 +1443,38 @@
     function renderTimeline(folder, files) {
       const slot = formatFolderName(folder.name);
       backLink.style.display = '';
-
       let html = `
         <div class="timeline-header">
           <h2>${t('recordingsIn')} ${slot}</h2>
           <span class="timeline-count">${files.length} ${t('recording')}</span>
         </div>
-        <div class="timeline">
-      `;
-
-      files.forEach((file, idx) => {
+        <div class="timeline">`;
+      files.forEach(file => {
         const date = parseDateFromFilename(file.name);
         const time = parseTimeFromFilename(file.name);
         const title = cleanFilename(file.name);
         const videoUrl = API_BASE + file.path;
-        const isFirst = idx === 0;
-
+        const isActive = currentPlayingPath === file.path;
         html += `
-          <div class="timeline-item ${isFirst ? 'active' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')">
+          <div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')">
             <div class="play-icon">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </div>
             <div class="timeline-meta">
               <h4>${escapeHtml(title)}</h4>
-              <p>${formatDate(date)}${time ? ' &middot; ' + time : ''}</p>
+              <p>${formatDate(date)}${time ? ' \u00b7 ' + time : ''}</p>
             </div>
             <div class="timeline-actions" onclick="event.stopPropagation()">
               <a href="${videoUrl}" download class="timeline-btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                ${t('download')}
+                Download
               </a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
-
       html += '</div>';
       contentArea.innerHTML = html;
     }
-
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    // ---- Navigation ----
 
     window.openFolder = function(encodedPath) {
       const folder = folders.find(f => f.path === encodedPath);
@@ -828,76 +1482,53 @@
     };
 
     backLink.addEventListener('click', () => {
-      // Dispose player
-      if (player) {
-        try { player.dispose(); } catch(e) {}
-        player = null;
-      }
-      playerSection.style.display = 'none';
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      playerWrap.style.display = 'none';
+      playerMeta.style.display = 'none';
+      currentPlayingPath = null;
+      hasPlayedOnce = false;
       renderFolders(folders);
     });
 
-    // ---- Video Playback ----
-
     window.playVideo = function(filePath, title, dateStr) {
       const videoUrl = API_BASE + filePath;
+      currentPlayingPath = filePath;
 
-      // Update player info
-      playerTitle.textContent = title;
-      playerDate.textContent = formatDate(dateStr);
-      playerSection.style.display = '';
+      // Update meta
+      playerMetaTitle.textContent = title;
+      playerMetaDate.textContent = formatDate(dateStr);
+      vodOverlayTitle.textContent = title;
+      vodOverlayDate.textContent = formatDate(dateStr);
+
+      // Show player
+      playerWrap.style.display = '';
+      playerMeta.style.display = '';
 
       // Scroll to player
-      playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      playerWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      // Dispose old player
-      if (player) {
-        try { player.dispose(); } catch(e) {}
-        player = null;
-      }
+      // Set source
+      const wasPlaying = !video.paused && video.currentTime > 0;
+      video.src = videoUrl;
+      video.load();
+      video.play().catch(() => {});
 
-      // Recreate video element
-      const wrap = document.querySelector('.player-wrap');
-      wrap.innerHTML = '<video id="archivePlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline></video>';
-
-      const videoEl = document.getElementById('archivePlayer');
-
-      // Initialize Video.js
-      player = videojs(videoEl, {
-        controls: true,
-        preload: 'auto',
-        fluid: false,
-        fill: true,
-        playbackRates: [0.5, 1, 1.5, 2],
-        controlBar: {
-          pictureInPictureToggle: false
-        },
-        sources: [{
-          src: videoUrl,
-          type: 'video/mp4'
-        }]
-      }, function() {
-        // Auto-play when ready
-        try { this.play(); } catch(e) {}
-      });
-
-      // Highlight active item in timeline
+      // Update timeline highlight
       document.querySelectorAll('.timeline-item').forEach(item => {
-        item.classList.remove('playing');
+        const onclick = item.getAttribute('onclick') || '';
+        item.classList.toggle('playing', onclick.includes(filePath));
       });
-      // Find the clicked item and mark as playing
-      const items = document.querySelectorAll('.timeline-item');
-      items.forEach(item => {
-        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(filePath)) {
-          item.classList.add('playing');
-        }
-      });
+
+      // Show big play if first time
+      if (!hasPlayedOnce) {
+        bigPlay.classList.add('show');
+      }
     };
 
     // ===================== INIT =====================
-    loadTranslations().then(() => {
-      fetchFolders();
-    });
+    loadTranslations().then(() => fetchFolders());
   </script>
 </body>
 </html>

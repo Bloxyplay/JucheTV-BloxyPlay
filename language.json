@@ -51,7 +51,12 @@
     "date": "Date",
     "timeSlot": "Time Slot",
     "back": "Back",
-    "recording": "Recording"
+    "recording": "Recording",
+    "copyEmbed": "Copy Embed Code",
+    "embedTitle": "Embed Code of This Stream",
+    "embedDesc": "Use the code below to embed this live stream on your own website, blog, or platform. The player is fully responsive and will automatically resize to fit its container, making it easy to integrate seamlessly into your existing layout.",
+    "copyCode": "Copy Code",
+    "copied": "Copied!"
   },
   "zh": {
     "brand": "主体电视",
@@ -105,6 +110,11 @@
     "date": "日期",
     "timeSlot": "时段",
     "back": "返回",
-    "recording": "录像"
+    "recording": "录像",
+    "copyEmbed": "复制嵌入代码",
+    "embedTitle": "此直播的嵌入代码",
+    "embedDesc": "您可以使用以下代码将此直播嵌入您自己的网站、博客或平台。播放器具有完全自适应布局，会根据容器自动调整大小，方便您轻松整合到现有页面中。",
+    "copyCode": "复制代码",
+    "copied": "已复制！"
   }
 }

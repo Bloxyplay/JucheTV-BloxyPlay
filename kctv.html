@@ -150,6 +150,109 @@
       border: 0;
     }
 
+    /* Action row below player */
+    .action-row {
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 10px; margin-top: 16px;
+    }
+    .action-row .archives-link { margin-top: 0; }
+    .embed-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px;
+      background: var(--entry); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--primary);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .embed-btn svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+    @media (hover: hover) {
+      .embed-btn:hover {
+        background: var(--tertiary); border-color: var(--secondary);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+    }
+    .embed-btn:active { transform: translateY(0); }
+
+    /* Embed code modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal-card {
+      background: var(--entry);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 540px; width: 100%;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      transform: scale(0.85) translateY(30px);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, box-shadow 0.25s ease;
+    }
+    .modal-overlay.show .modal-card {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    @media (hover: hover) {
+      .modal-overlay.show .modal-card:hover {
+        transform: scale(1) translateY(-4px);
+        box-shadow: 0 26px 70px rgba(0,0,0,0.45);
+      }
+    }
+    .modal-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px;
+    }
+    .modal-card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--tertiary);
+      color: var(--secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    @media (hover: hover) {
+      .modal-close:hover { color: var(--primary); border-color: var(--secondary); transform: rotate(90deg); }
+    }
+    .modal-close svg { width: 14px; height: 14px; }
+    .modal-card .modal-desc {
+      font-size: 13px; color: var(--secondary); line-height: 1.7;
+      margin: 10px 0 18px;
+    }
+    .embed-code-box textarea {
+      display: block; width: 100%; resize: vertical; min-height: 130px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 12px; line-height: 1.6; white-space: pre; overflow: auto;
+      background: var(--tertiary); color: var(--primary);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px;
+      transition: border-color 0.2s ease;
+    }
+    .embed-code-box textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    @media (hover: hover) {
+      .embed-code-box textarea:hover { border-color: var(--secondary); }
+    }
+    .copy-code-btn {
+      margin-top: 14px; width: 100%;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    @media (hover: hover) {
+      .copy-code-btn:hover:not(.copied) { background: #c4001a; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(229,0,26,0.35); }
+    }
+    .copy-code-btn:active { transform: translateY(0) scale(0.98); }
+    .copy-code-btn svg { width: 15px; height: 15px; }
+    .copy-code-btn.copied { background: #16a34a; }
+
     /* Archives link */
     .archives-link {
       display: inline-flex; align-items: center; gap: 8px;
@@ -246,10 +349,16 @@
       </div>
     </div>
 
-    <a href="archives-beta.html" class="archives-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <span data-i18n="archives">Archives Recording</span>
-    </a>
+    <div class="action-row">
+      <a href="archives-beta.html" class="archives-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span data-i18n="archives">Archives Recording</span>
+      </a>
+      <button class="embed-btn" id="embedBtn" type="button" title="Copy Embed Code">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span data-i18n="copyEmbed">Copy Embed Code</span>
+      </button>
+    </div>
 
     <div class="info-section">
       <h3 data-i18n="about">About KCTV</h3>
@@ -261,6 +370,34 @@
     <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
     <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
   </footer>
+
+  <div class="modal-overlay" id="embedOverlay">
+    <div class="modal-card" id="embedCard">
+      <div class="modal-head">
+        <h3 data-i18n="embedTitle">Embed Code of This Stream</h3>
+        <button class="modal-close" id="embedClose" type="button" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <p class="modal-desc" data-i18n="embedDesc">Use the code below to embed this live stream on your own website, blog, or platform. The player is fully responsive and will automatically resize to fit its container, making it easy to integrate seamlessly into your existing layout.</p>
+      <div class="embed-code-box">
+        <textarea id="embedCodeText" readonly spellcheck="false" rows="8"><div style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+  <iframe 
+    src="https://bloxyplay.github.io/Juche-TV-/" 
+    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;" 
+    allow="fullscreen; autoplay; encrypted-media" 
+    allowfullscreen 
+    loading="lazy"
+    title="Korean Central Television LIVE STREAM">
+  </iframe>
+</div></textarea>
+      </div>
+      <button class="copy-code-btn" id="copyCodeBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span data-i18n="copyCode">Copy Code</span>
+      </button>
+    </div>
+  </div>
 
   <script>
     // ===================== I18N =====================
@@ -320,6 +457,49 @@
       moon.style.display = d ? 'none' : '';
       sun.style.display = d ? '' : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
+    });
+
+    // ===================== EMBED MODAL =====================
+    const embedBtn = document.getElementById('embedBtn');
+    const embedOverlay = document.getElementById('embedOverlay');
+    const embedClose = document.getElementById('embedClose');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const embedCodeText = document.getElementById('embedCodeText');
+
+    function openEmbedModal() {
+      embedOverlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeEmbedModal() {
+      embedOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    embedBtn.addEventListener('click', openEmbedModal);
+    embedClose.addEventListener('click', closeEmbedModal);
+    embedOverlay.addEventListener('click', (e) => {
+      if (e.target === embedOverlay) closeEmbedModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && embedOverlay.classList.contains('show')) closeEmbedModal();
+    });
+
+    copyCodeBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(embedCodeText.value);
+      } catch (err) {
+        embedCodeText.select();
+        document.execCommand('copy');
+      }
+      const span = copyCodeBtn.querySelector('span');
+      const original = span.textContent;
+      const t = translations[currentLang] || translations['en'] || {};
+      copyCodeBtn.classList.add('copied');
+      span.textContent = t.copied || 'Copied!';
+      setTimeout(() => {
+        copyCodeBtn.classList.remove('copied');
+        span.textContent = original;
+      }, 1800);
     });
 
     loadTranslations();
