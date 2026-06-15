@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#6fa8d4">
+<meta name="description" content="Support Juche TV — a passion project by a teenage developer.">
+<title>Support Juche TV</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blue:#2880ca;--blue-2:#1a6bb5;--red:#cc0000;--orange:#f57c00;
+  --bg:#f0f4f7;--white:#fff;--text:#111;--text-2:#555;--text-3:#999;
+  --border:#e4e8ec;--nav-h:82px;--bnav-h:58px;--r:8px;--r-lg:14px;
+  --indie:#8b6f47;--warm:#faf7f2;--heart:#e85d5d;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:calc(var(--bnav-h) + env(safe-area-inset-bottom,0px));}
+img{display:block;max-width:100%;}
+button,a{cursor:pointer;font-family:inherit;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{display:none;}
+
+/* ═══ HEADER ═══════════════════════════════════════ */
+.header{position:fixed;top:0;left:0;right:0;z-index:900;background:linear-gradient(180deg,#6fa8d4 0%,#90bedd 55%,#b4d0e8 100%);}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;}
+.logo{display:flex;flex-direction:column;line-height:1;flex-shrink:0;cursor:pointer;}
+.logo-main{font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.02em;}
+.logo-sub{font-size:.48rem;color:rgba(255,255,255,.7);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
+.lang-toggle{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:3px 4px;flex-shrink:0;}
+.lang-btn{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.7);background:none;border:none;padding:4px 10px;border-radius:99px;transition:all .15s;white-space:nowrap;}
+.lang-btn.active{background:rgba(255,255,255,.32);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,.08);}
+
+/* ═══ MAIN ═════════════════════════════════════════ */
+.main{padding-top:var(--nav-h);}
+
+/* ── Teenage Dev Notice ── */
+.dev-notice{background:linear-gradient(135deg,#fff8e1 0%,#fff3e0 100%);border-left:4px solid var(--orange);margin:10px 12px 6px;border-radius:0 var(--r) var(--r) 0;padding:12px 14px;position:relative;}
+.dev-notice::before{content:'*';position:absolute;top:6px;right:10px;font-family:'Caveat',cursive;font-size:1.6rem;color:var(--orange);opacity:.35;line-height:1;}
+.dev-notice-text{font-size:.8rem;font-weight:600;color:var(--indie);line-height:1.6;}
+.dev-notice-sub{font-size:.68rem;color:var(--text-3);margin-top:4px;line-height:1.5;}
+.dev-notice .handwrite{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--orange);font-weight:600;}
+
+/* ── Page Title ── */
+.page-title{text-align:center;padding:18px 16px 10px;}
+.page-title h1{font-size:1.6rem;font-weight:900;color:var(--text);letter-spacing:-.02em;}
+.page-title p{font-size:.82rem;color:var(--text-2);margin-top:6px;max-width:300px;margin-left:auto;margin-right:auto;line-height:1.6;}
+.page-title .heart{display:inline-block;color:var(--heart);animation:heartbeat 2s ease-in-out infinite;}
+@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.15);}28%{transform:scale(1);}42%{transform:scale(1.1);}56%{transform:scale(1);}}
+
+/* ── Donation Card ── */
+.donate-card{background:var(--white);margin:8px 12px;border-radius:var(--r-lg);padding:20px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden;}
+.donate-card::after{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(111,168,212,.08),rgba(111,168,212,.02));pointer-events:none;}
+.donate-card::before{content:'';position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,rgba(245,124,0,.05),rgba(245,124,0,.02));pointer-events:none;}
+.donate-icon-wrap{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;position:relative;z-index:1;}
+.donate-icon-wrap svg{width:36px;height:36px;fill:#43a047;}
+.donate-method-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#43a047;background:#e8f5e9;padding:3px 10px;border-radius:99px;display:inline-block;margin-bottom:10px;position:relative;z-index:1;}
+.donate-card h2{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:6px;position:relative;z-index:1;}
+.donate-card-desc{font-size:.78rem;color:var(--text-2);line-height:1.6;max-width:280px;margin:0 auto 16px;position:relative;z-index:1;}
+
+/* ── QR Code Area ── */
+.qr-wrap{width:180px;height:180px;margin:0 auto 14px;border-radius:12px;background:#f8f9fa;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;z-index:1;transition:border-color .2s;}
+.qr-wrap:hover{border-color:#ccc;}
+.qr-placeholder{width:72px;height:72px;opacity:.2;}
+.qr-error{font-size:.72rem;font-weight:700;color:var(--text-3);text-align:center;padding:0 12px;line-height:1.5;}
+.qr-error-code{font-family:monospace;font-size:.6rem;color:#bbb;margin-top:2px;}
+
+/* ── Info Cards ── */
+.info-sec{background:var(--white);margin:8px 12px;border-radius:var(--r-lg);padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.info-sec-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.info-sec-hdr svg{width:20px;height:20px;fill:var(--blue);flex-shrink:0;}
+.info-sec-hdr h3{font-size:.92rem;font-weight:800;color:var(--text);}
+.info-sec p{font-size:.78rem;color:var(--text-2);line-height:1.7;margin-bottom:10px;}
+.info-sec p:last-child{margin-bottom:0;}
+.info-sec .highlight{color:var(--blue);font-weight:600;}
+.info-sec .handwrite{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--indie);font-weight:600;}
+.info-divider{height:1px;background:var(--border);margin:12px 0;}
+
+/* ── Indie-style tag pills ── */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.tag-pill{font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
+.tag-pill.green{background:#e8f5e9;color:#2e7d32;border-color:#c8e6c9;}
+.tag-pill.orange{background:#fff3e0;color:#e65100;border-color:#ffe0b2;}
+.tag-pill.blue{background:#e3f2fd;color:#1565c0;border-color:#bbdefb;}
+
+/* ── Payment Grid (two cards side by side on wider screens) ── */
+.payment-grid{display:flex;flex-direction:column;gap:10px;margin:8px 12px;}
+.payment-grid .donate-card{margin:0;}
+
+/* ── QR real image ── */
+.qr-img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+
+/* ── Alipay tint ── */
+.alipay-label{background:#e3f2fd;color:#0d47a1;border:none;}
+.alipay-icon-wrap{background:linear-gradient(135deg,#e3f2fd,#bbdefb);}
+.alipay-icon-wrap svg{fill:#1565c0;}
+
+/* ── Myanmar notice ── */
+.myanmar-tag{display:inline-flex;align-items:center;gap:5px;font-size:.66rem;font-weight:800;padding:4px 10px;border-radius:99px;background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;margin-left:4px;vertical-align:middle;}
+
+/* ── Return Home Card ── */
+.return-home-card{background:linear-gradient(135deg,#e3f2fd 0%,#e8f5e9 100%);margin:8px 12px;border-radius:var(--r-lg);padding:20px 18px;text-align:center;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer;}
+.return-home-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);}
+.return-home-icon{font-size:1.8rem;line-height:1;margin-bottom:6px;}
+.return-home-card h3{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+.return-home-card p{font-size:.74rem;color:var(--text-2);}
+/* ── No Pressure Card ── */
+.no-pressure{background:linear-gradient(135deg,#f3e5f5 0%,#fce4ec 50%,#fff3e0 100%);margin:8px 12px 20px;border-radius:var(--r-lg);padding:22px 18px;text-align:center;position:relative;overflow:hidden;}
+.no-pressure::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.4);pointer-events:none;}
+.no-pressure-icon{font-size:2.2rem;line-height:1;margin-bottom:8px;position:relative;z-index:1;}
+.no-pressure h3{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:8px;position:relative;z-index:1;}
+.no-pressure p{font-size:.78rem;color:var(--text-2);line-height:1.7;max-width:280px;margin:0 auto;position:relative;z-index:1;}
+.no-pressure .handwrite{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--indie);display:block;margin-top:8px;}
+
+/* ── Footer ── */
+.page-footer{background:var(--white);margin-top:8px;padding:16px 14px;text-align:center;}
+.page-footer p{font-size:.68rem;color:var(--text-3);line-height:1.9;}
+
+/* ═══ BOTTOM NAV ═══════════════════════════════════ */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bnav-h);background:var(--white);border-top:1px solid var(--border);display:flex;align-items:stretch;z-index:900;padding-bottom:env(safe-area-inset-bottom,0);}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:var(--text-3);transition:color .15s;text-decoration:none;}
+.bnav-item.active{color:var(--blue);}
+.bnav-item svg{width:21px;height:21px;fill:currentColor;}
+.bnav-label{font-size:.58rem;font-weight:600;letter-spacing:.2px;}
+
+/* ═══ TOAST ════════════════════════════════════════ */
+#toast{position:fixed;bottom:calc(var(--bnav-h) + 14px);left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#fff;font-size:.76rem;font-weight:500;padding:8px 16px;border-radius:99px;white-space:nowrap;z-index:920;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 2rem);text-align:center;}
+#toast.show{opacity:1;}
+
+/* ═══════════════════════════════════════════════════
+   DESKTOP LAYOUT  >= 900 px
+═══════════════════════════════════════════════════ */
+@media(min-width:900px){
+  body{padding-bottom:0;background:#eef0f4;}
+  .bnav{display:none !important;}
+  .main{padding-top:0;max-width:720px;margin:0 auto;}
+  .header{position:relative;}
+
+  /* Desktop Header */
+  #dt-root{display:block !important;}
+  #mobile-root{display:none !important;}
+}
+
+@media(max-width:899px){
+  #dt-root{display:none !important;}
+}
+
+/* ── Desktop wrapper ── */
+#dt-root{display:none;min-height:100vh;}
+.dt-header{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.94);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);border-bottom:1px solid rgba(0,0,0,.09);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;box-shadow:0 1px 10px rgba(0,0,0,.07);}
+.dt-logo{display:flex;flex-direction:column;line-height:1;cursor:pointer;text-decoration:none;}
+.dt-logo-main{font-size:1.3rem;font-weight:900;color:#cc0000;letter-spacing:-.03em;}
+.dt-logo-sub{font-size:.44rem;color:#bbb;letter-spacing:1.4px;text-transform:uppercase;margin-top:2px;}
+.dt-lang{display:flex;align-items:center;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px 4px;}
+.dt-lang-btn{font-size:.78rem;font-weight:600;color:var(--text-3);background:none;border:none;padding:5px 14px;border-radius:99px;transition:all .15s;cursor:pointer;font-family:inherit;}
+.dt-lang-btn.active{background:var(--blue);color:#fff;}
+.dt-container{max-width:680px;margin:0 auto;padding:28px 24px 60px;}
+.dt-footer{text-align:center;padding:20px 28px 32px;border-top:1px solid #e4e6ea;background:#eef0f4;}
+.dt-footer p{font-size:.72rem;color:#bbb;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ MOBILE ═══════════════════ -->
+<div id="mobile-root">
+  <header class="header">
+    <div class="header-top">
+      <div class="logo" onclick="location.href='index.html'">
+        <div class="logo-main">JUCHE TV</div>
+        <div class="logo-sub">방송 아카이브</div>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Teenage Dev Notice -->
+    <div class="dev-notice">
+      <div class="dev-notice-text" data-i18n="devNotice">
+        Due to the creator being a teenage developer based in Myanmar — where setting up a proper PayPal or any real international payment thing is basically impossible — these are the only methods we can offer right now!
+      </div>
+      <div class="dev-notice-sub" data-i18n="devNoticeSub">
+        <span class="handwrite">sorry about that ~</span> huge thanks to our Chinese contacts who made this happen 🙏
+      </div>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+      <h1 data-i18n="pageTitle">Support the Project <span class="heart">&#9829;</span></h1>
+      <p data-i18n="pageSubtitle">This is a passion project run by a solo teenage developer. Every bit of support keeps it alive!</p>
+    </div>
+
+    <!-- Payment Methods Grid -->
+    <div class="payment-grid">
+
+      <!-- WeChat Card -->
+      <div class="donate-card">
+        <div class="donate-method-label" data-i18n="wechatLabel">WeChat Pay</div>
+        <div class="donate-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M9.5 4C5.36 4 2 6.92 2 10.5c0 1.95 1.05 3.73 2.75 4.95L4 18l3.35-1.67c.7.19 1.42.29 2.15.29.26 0 .51-.01.76-.04-.16-.45-.26-.94-.26-1.44C10 12.39 13.19 10 17 10c.28 0 .56.02.83.05C17.14 6.64 13.67 4 9.5 4zM7 8.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM17 11.5c-3.31 0-6 2.24-6 5s2.69 5 6 5c.95 0 1.86-.22 2.65-.6L22 22l-.62-2.83C22.6 18.11 23 16.87 23 15.5c0-2.76-2.69-4-6-4zm-1.5 3c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm3 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>
+        </div>
+        <h2 data-i18n="wechatTitle">微信支付 WeChat Pay</h2>
+        <p class="donate-card-desc" data-i18n="wechatDesc">Scan with WeChat — works great if you've got a Chinese account. Our friends over there made this possible! <span style="font-family:'Caveat',cursive;font-size:1rem;color:var(--indie);">thank you 谢谢 ~</span></p>
+        <div class="qr-wrap" id="qr-wrap" style="border:2px solid #c8e6c9;background:#f1f8f1;">
+          <img class="qr-img" src="https://i.postimg.cc/bJTYtKsw/mmexport1780577610253.jpg" alt="WeChat Pay QR Code" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <div style="display:none;text-align:center;padding:12px;">
+            <div class="qr-error">Couldn't load QR image</div>
+            <div class="qr-error-code">wechat-qr-load-fail</div>
+          </div>
+        </div>
+        <div class="tag-row" style="justify-content:center;">
+          <span class="tag-pill green" data-i18n="tagChinaFriends">🇨🇳 Via Chinese Contact</span>
+          <span class="tag-pill orange" data-i18n="tagMM">🇲🇲 Myanmar Dev</span>
+        </div>
+      </div>
+
+      <!-- Alipay Card -->
+      <div class="donate-card">
+        <div class="donate-method-label alipay-label" data-i18n="alipayLabel">Alipay 支付宝</div>
+        <div class="donate-icon-wrap alipay-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21.422 15.358c-3.83-1.153-6.055-1.84-7.671-2.376.449-.87.802-1.816 1.039-2.982H18v-1.5h-2.917V7h-1.625v1.5h-4.75V7H7.083v1.5H4v1.5h3.064c.2.98.487 1.851.853 2.609C5.48 13.727 2 15.436 2 18c0 2.21 2.165 4 4.833 4 2.35 0 4.717-1.44 6.46-4h4.374l.91 1H21v-3h.422zm-14.59 3.975C5.25 19.333 4 18.23 4 18c0-1.06 1.348-2.074 3.505-2.87.795 1.254 1.746 2.26 2.757 2.89-1.028.765-2.071 1.214-3.43 1.313zm5.484-3.433c-.97.621-1.948 1.625-2.72 2.694-.636-.438-1.26-1.066-1.826-1.877 1.41-.424 2.951-.762 4.546-.817z"/></svg>
+        </div>
+        <h2 data-i18n="alipayTitle">支付宝 Alipay</h2>
+        <p class="donate-card-desc" data-i18n="alipayDesc">Prefer Alipay? Same deal — scan below. Also set up through our lovely Chinese contacts who helped bridge the gap. <span style="font-family:'Caveat',cursive;font-size:1rem;color:var(--indie);">really couldn't do this without them ~</span></p>
+        <div class="qr-wrap" id="alipay-qr-wrap" style="border:2px solid #bbdefb;background:#f1f6fb;">
+          <img class="qr-img" src="https://i.postimg.cc/sXcfhtvd/mmexport1780577667808.jpg" alt="Alipay QR Code" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <div style="display:none;text-align:center;padding:12px;">
+            <div class="qr-error">Couldn't load QR image</div>
+            <div class="qr-error-code">alipay-qr-load-fail</div>
+          </div>
+        </div>
+        <div class="tag-row" style="justify-content:center;">
+          <span class="tag-pill blue" data-i18n="tagAlipayAlt">Alternative Method</span>
+          <span class="tag-pill green" data-i18n="tagChinaFriends2">🇨🇳 Supported</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-sec">
+      <div class="info-sec-hdr">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <h3 data-i18n="infoTitle">About This Page</h3>
+      </div>
+      <p data-i18n="infoP1">
+        Hey there! <span class="handwrite">thanks for even opening this page</span> — seriously, it means a lot. This whole project is built and maintained by one teenager who just loves coding and sharing cool stuff.
+      </p>
+      <p data-i18n="infoP2">
+        So here's the real situation — the creator is based in <span class="highlight">Myanmar</span>, where setting up a legit PayPal or any international payment gateway is basically a nightmare (or flat out impossible). So we reached out to some <span class="highlight">Chinese contacts</span> who were kind enough to let us use their WeChat Pay and Alipay — and that's how these two methods exist! It's a bit indie, a bit scrappy, but it works.
+      </p>
+      <div class="info-divider"></div>
+      <p data-i18n="infoP3">
+        If you're outside China and can't use either method — sharing the project or just vibing with the content is honestly just as valuable! <span class="handwrite">you're awesome either way ~</span>
+      </p>
+      <div class="tag-row">
+        <span class="tag-pill blue" data-i18n="tagTeen">Teenage Dev</span>
+        <span class="tag-pill blue" data-i18n="tagSolo">Solo Project</span>
+        <span class="tag-pill blue" data-i18n="tagOpenSource">Community Driven</span>
+      </div>
+    </div>
+
+    <!-- Return to Home Card -->
+    <a href="index.html" style="text-decoration:none;display:block;color:inherit;">
+      <div class="return-home-card">
+        <div class="return-home-icon">&#8592;</div>
+        <h3 data-i18n="returnHome">Return to Juche TV</h3>
+        <p data-i18n="returnHomeSub">Head back to the live streams</p>
+      </div>
+    </a>
+
+    <!-- No Pressure Card -->
+    <div class="no-pressure">
+      <div class="no-pressure-icon">&#127807;</div>
+      <h3 data-i18n="noPressureTitle">Can't Donate? That's Totally Fine!</h3>
+      <p data-i18n="noPressureText">
+        This is just a <strong>supporting project</strong>, not an urgent fundraiser. The site will keep running either way. If you can't donate, no worries at all — just enjoy the content! <span class="handwrite">your support in spirit is enough ~</span>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+      <p data-i18n="footer">Juche TV Archive v3.1 &middot; Powered by love + caffeine<br>&copy; 2025&ndash;2026 &middot; Educational use only &middot; Not affiliated with any state</p>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bnav">
+    <a class="bnav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span class="bnav-label" data-i18n="navHome">Home</span>
+    </a>
+    <a class="bnav-item active" href="donate.html">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <span class="bnav-label" data-i18n="navSupport">Support</span>
+    </a>
+    <a class="bnav-item" href="index.html#account" onclick="event.preventDefault();location.href='index.html#tab-account'">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span class="bnav-label" data-i18n="navAccount">Account</span>
+    </a>
+  </nav>
+</div>
+
+<!-- ═══════════════════ DESKTOP ═══════════════════ -->
+<div id="dt-root">
+  <div class="dt-header">
+    <a class="dt-logo" href="index.html">
+      <div class="dt-logo-main">JUCHE TV</div>
+      <div class="dt-logo-sub">방송 아카이브</div>
+    </a>
+    <div class="dt-lang">
+      <button class="dt-lang-btn active" id="dt-lang-en" onclick="setLang('en')">EN</button>
+      <button class="dt-lang-btn" id="dt-lang-zh" onclick="setLang('zh')">中文</button>
+    </div>
+  </div>
+
+  <div class="dt-container">
+    <!-- Dev Notice -->
+    <div class="dev-notice" style="margin:0 0 16px;">
+      <div class="dev-notice-text" data-i18n="devNotice">Due to the creator being a teenage developer based in Myanmar — where setting up a proper PayPal or any real international payment thing is basically impossible — these are the only methods we can offer right now!</div>
+      <div class="dev-notice-sub" data-i18n="devNoticeSub"><span class="handwrite">sorry about that ~</span> huge thanks to our Chinese contacts who made this happen 🙏</div>
+    </div>
+
+    <!-- Title -->
+    <div class="page-title" style="padding:20px 0 14px;">
+      <h1 style="font-size:1.9rem;" data-i18n="pageTitle">Support the Project <span class="heart">&#9829;</span></h1>
+      <p style="max-width:380px;font-size:.88rem;" data-i18n="pageSubtitle">This is a passion project run by a solo teenage developer. Every bit of support keeps it alive!</p>
+    </div>
+
+    <!-- Payment Methods -->
+    <div style="display:flex;flex-direction:column;gap:14px;margin:0 0 16px;">
+
+      <!-- WeChat Desktop Card -->
+      <div class="donate-card" style="margin:0;padding:28px 24px;">
+        <div class="donate-method-label" data-i18n="wechatLabel">WeChat Pay</div>
+        <div class="donate-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M9.5 4C5.36 4 2 6.92 2 10.5c0 1.95 1.05 3.73 2.75 4.95L4 18l3.35-1.67c.7.19 1.42.29 2.15.29.26 0 .51-.01.76-.04-.16-.45-.26-.94-.26-1.44C10 12.39 13.19 10 17 10c.28 0 .56.02.83.05C17.14 6.64 13.67 4 9.5 4zM7 8.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM17 11.5c-3.31 0-6 2.24-6 5s2.69 5 6 5c.95 0 1.86-.22 2.65-.6L22 22l-.62-2.83C22.6 18.11 23 16.87 23 15.5c0-2.76-2.69-4-6-4zm-1.5 3c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm3 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>
+        </div>
+        <h2 style="font-size:1.25rem;" data-i18n="wechatTitle">微信支付 WeChat Pay</h2>
+        <p class="donate-card-desc" style="max-width:360px;font-size:.84rem;" data-i18n="wechatDesc">Scan with WeChat — works great if you've got a Chinese account. Our friends over there made this possible! <span style="font-family:'Caveat',cursive;font-size:1rem;color:var(--indie);">thank you 谢谢 ~</span></p>
+        <div class="qr-wrap" id="dt-qr-wrap" style="width:200px;height:200px;border:2px solid #c8e6c9;background:#f1f8f1;">
+          <img class="qr-img" src="https://i.postimg.cc/bJTYtKsw/mmexport1780577610253.jpg" alt="WeChat Pay QR Code" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <div style="display:none;text-align:center;padding:12px;">
+            <div class="qr-error">Couldn't load QR image</div>
+            <div class="qr-error-code">wechat-qr-load-fail</div>
+          </div>
+        </div>
+        <div class="tag-row" style="justify-content:center;">
+          <span class="tag-pill green" data-i18n="tagChinaFriends">🇨🇳 Via Chinese Contact</span>
+          <span class="tag-pill orange" data-i18n="tagMM">🇲🇲 Myanmar Dev</span>
+        </div>
+      </div>
+
+      <!-- Alipay Desktop Card -->
+      <div class="donate-card" style="margin:0;padding:28px 24px;">
+        <div class="donate-method-label alipay-label" data-i18n="alipayLabel">Alipay 支付宝</div>
+        <div class="donate-icon-wrap alipay-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21.422 15.358c-3.83-1.153-6.055-1.84-7.671-2.376.449-.87.802-1.816 1.039-2.982H18v-1.5h-2.917V7h-1.625v1.5h-4.75V7H7.083v1.5H4v1.5h3.064c.2.98.487 1.851.853 2.609C5.48 13.727 2 15.436 2 18c0 2.21 2.165 4 4.833 4 2.35 0 4.717-1.44 6.46-4h4.374l.91 1H21v-3h.422zm-14.59 3.975C5.25 19.333 4 18.23 4 18c0-1.06 1.348-2.074 3.505-2.87.795 1.254 1.746 2.26 2.757 2.89-1.028.765-2.071 1.214-3.43 1.313zm5.484-3.433c-.97.621-1.948 1.625-2.72 2.694-.636-.438-1.26-1.066-1.826-1.877 1.41-.424 2.951-.762 4.546-.817z"/></svg>
+        </div>
+        <h2 style="font-size:1.25rem;" data-i18n="alipayTitle">支付宝 Alipay</h2>
+        <p class="donate-card-desc" style="max-width:360px;font-size:.84rem;" data-i18n="alipayDesc">Prefer Alipay? Same deal — scan below. Also set up through our lovely Chinese contacts who helped bridge the gap. <span style="font-family:'Caveat',cursive;font-size:1rem;color:var(--indie);">really couldn't do this without them ~</span></p>
+        <div class="qr-wrap" id="dt-alipay-qr-wrap" style="width:200px;height:200px;border:2px solid #bbdefb;background:#f1f6fb;">
+          <img class="qr-img" src="https://i.postimg.cc/sXcfhtvd/mmexport1780577667808.jpg" alt="Alipay QR Code" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <div style="display:none;text-align:center;padding:12px;">
+            <div class="qr-error">Couldn't load QR image</div>
+            <div class="qr-error-code">alipay-qr-load-fail</div>
+          </div>
+        </div>
+        <div class="tag-row" style="justify-content:center;">
+          <span class="tag-pill blue" data-i18n="tagAlipayAlt">Alternative Method</span>
+          <span class="tag-pill green" data-i18n="tagChinaFriends2">🇨🇳 Supported</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Info -->
+    <div class="info-sec" style="margin:0 0 16px;">
+      <div class="info-sec-hdr">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <h3 data-i18n="infoTitle">About This Page</h3>
+      </div>
+      <p data-i18n="infoP1">Hey there! <span class="handwrite">thanks for even opening this page</span> — seriously, it means a lot. This whole project is built and maintained by one teenager who just loves coding and sharing cool stuff.</p>
+      <p data-i18n="infoP2">So here's the real situation — the creator is based in <span class="highlight">Myanmar</span>, where setting up a legit PayPal or any international payment gateway is basically a nightmare (or flat out impossible). So we reached out to some <span class="highlight">Chinese contacts</span> who were kind enough to let us use their WeChat Pay and Alipay — and that's how these two methods exist! It's a bit indie, a bit scrappy, but it works.</p>
+      <div class="info-divider"></div>
+      <p data-i18n="infoP3">If you're outside China and can't use either method — sharing the project or just vibing with the content is honestly just as valuable! <span class="handwrite">you're awesome either way ~</span></p>
+      <div class="tag-row">
+        <span class="tag-pill blue" data-i18n="tagTeen">Teenage Dev</span>
+        <span class="tag-pill blue" data-i18n="tagSolo">Solo Project</span>
+        <span class="tag-pill blue" data-i18n="tagOpenSource">Community Driven</span>
+      </div>
+    </div>
+
+    <!-- Return to Home -->
+    <a href="index.html" style="text-decoration:none;display:block;color:inherit;margin:0 0 16px;">
+      <div class="return-home-card" style="margin:0;">
+        <div class="return-home-icon">&#8592;</div>
+        <h3 style="font-size:1.15rem;" data-i18n="returnHome">Return to Juche TV</h3>
+        <p data-i18n="returnHomeSub">Head back to the live streams</p>
+      </div>
+    </a>
+
+    <!-- No Pressure -->
+    <div class="no-pressure" style="margin:0 0 16px;padding:28px 24px;">
+      <div class="no-pressure-icon">&#127807;</div>
+      <h3 style="font-size:1.15rem;" data-i18n="noPressureTitle">Can't Donate? That's Totally Fine!</h3>
+      <p style="max-width:380px;font-size:.84rem;" data-i18n="noPressureText">This is just a <strong>supporting project</strong>, not an urgent fundraiser. The site will keep running either way. If you can't donate, no worries at all — just enjoy the content! <span class="handwrite">your support in spirit is enough ~</span></p>
+    </div>
+  </div>
+
+  <div class="dt-footer">
+    <p data-i18n="dtFooter">Juche TV Archive v3.1 &middot; Powered by love + caffeine &middot; &copy; 2025&ndash;2026 &middot; Educational use only</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  I18N - English / Chinese
+// ═══════════════════════════════════════════════════
+const i18n = {
+  en: {
+    devNotice: "Due to the creator being a teenage developer based in Myanmar — where setting up a proper PayPal or any real international payment thing is basically impossible — these are the only methods we can offer right now!",
+    devNoticeSub: "<span class='handwrite'>sorry about that ~</span> huge thanks to our Chinese contacts who made this happen 🙏",
+    pageTitle: "Support the Project <span class='heart'>&#9829;</span>",
+    pageSubtitle: "This is a passion project run by a solo teenage developer. Every bit of support keeps it alive!",
+    wechatLabel: "WeChat Pay",
+    wechatTitle: "微信支付 WeChat Pay",
+    wechatDesc: "Scan with WeChat — works great if you've got a Chinese account. Our friends over there made this possible! <span style='font-family:Caveat,cursive;font-size:1rem;color:var(--indie)'>thank you 谢谢 ~</span>",
+    alipayLabel: "Alipay 支付宝",
+    alipayTitle: "支付宝 Alipay",
+    alipayDesc: "Prefer Alipay? Same deal — scan below. Also set up through our lovely Chinese contacts who helped bridge the gap. <span style='font-family:Caveat,cursive;font-size:1rem;color:var(--indie)'>really couldn't do this without them ~</span>",
+    tagChinaFriends: "🇨🇳 Via Chinese Contact",
+    tagMM: "🇲🇲 Myanmar Dev",
+    tagAlipayAlt: "Alternative Method",
+    tagChinaFriends2: "🇨🇳 Supported",
+    infoTitle: "About This Page",
+    infoP1: "Hey there! <span class='handwrite'>thanks for even opening this page</span> — seriously, it means a lot. This whole project is built and maintained by one teenager who just loves coding and sharing cool stuff.",
+    infoP2: "So here's the real situation — the creator is based in <span class='highlight'>Myanmar</span>, where setting up a legit PayPal or any international payment gateway is basically a nightmare (or flat out impossible). So we reached out to some <span class='highlight'>Chinese contacts</span> who were kind enough to let us use their WeChat Pay and Alipay — and that's how these two methods exist! It's a bit indie, a bit scrappy, but it works.",
+    infoP3: "If you're outside China and can't use either method — sharing the project or just vibing with the content is honestly just as valuable! <span class='handwrite'>you're awesome either way ~</span>",
+    returnHome: "Return to Juche TV",
+    returnHomeSub: "Head back to the live streams",
+    tagTeen: "Teenage Dev",
+    tagSolo: "Solo Project",
+    tagOpenSource: "Community Driven",
+    noPressureTitle: "Can't Donate? That's Totally Fine!",
+    noPressureText: "This is just a <strong>supporting project</strong>, not an urgent fundraiser. The site will keep running either way. If you can't donate, no worries at all — just enjoy the content! <span class='handwrite'>your support in spirit is enough ~</span>",
+    footer: "Juche TV Archive v3.1 &middot; Powered by love + caffeine<br>&copy; 2025&ndash;2026 &middot; Educational use only &middot; Not affiliated with any state",
+    dtFooter: "Juche TV Archive v3.1 &middot; Powered by love + caffeine &middot; &copy; 2025&ndash;2026 &middot; Educational use only",
+    navHome: "Home",
+    navSupport: "Support",
+    navAccount: "Account"
+  },
+  zh: {
+    devNotice: "由于这个项目的创作者是一名来自缅甸的青少年开发者 — 在那里根本没办法注册正规的 PayPal 或任何国际支付平台 — 所以我们目前只能提供这两种方式！",
+    devNoticeSub: "<span class='handwrite'>抱歉啦 ~</span> 非常感谢我们的中国朋友，是他们让这一切成为可能 🙏",
+    pageTitle: "支持这个项目 <span class='heart'>&#9829;</span>",
+    pageSubtitle: "这是一个由青少年独立开发者运营的热爱项目。每一份支持都能让它继续走下去！",
+    wechatLabel: "微信支付",
+    wechatTitle: "微信支付 WeChat Pay",
+    wechatDesc: "用微信扫描下方二维码 — 如果你有中国账户的话超方便的。是我们那边的朋友帮忙搞定的！<span style='font-family:Caveat,cursive;font-size:1rem;color:var(--indie)'>谢谢你们 ~</span>",
+    alipayLabel: "支付宝",
+    alipayTitle: "支付宝 Alipay",
+    alipayDesc: "更喜欢用支付宝？同样的，扫下面的码就好。也是通过我们的中国朋友帮忙设置的，真的超级感谢他们。<span style='font-family:Caveat,cursive;font-size:1rem;color:var(--indie)'>没有他们真的做不到 ~</span>",
+    tagChinaFriends: "🇨🇳 通过中国联系人",
+    tagMM: "🇲🇲 缅甸开发者",
+    tagAlipayAlt: "备选方式",
+    tagChinaFriends2: "🇨🇳 已支持",
+    infoTitle: "关于此页面",
+    infoP1: "嘿！<span class='handwrite'>感谢你点开了这个页面</span> — 真的，这本身就很有意义。整个项目由一位热爱编程和分享的青少年独立开发和维护。",
+    infoP2: "说真的 — 创作者在<span class='highlight'>缅甸</span>，那边想注册 PayPal 或任何国际支付平台基本是不可能的事。所以我们联系了一些<span class='highlight'>中国朋友</span>，他们超好心地让我们用他们的微信支付和支付宝 — 这两种方式就是这样来的！有点独立，有点土，但真的能用。",
+    infoP3: "如果你在中国以外、两种方式都用不了 — 把项目分享出去或者单纯来看内容，说真的同样珍贵！<span class='handwrite'>不管怎样你都很棒 ~</span>",
+    returnHome: "返回 Juche TV",
+    returnHomeSub: "回到直播页面",
+    tagTeen: "青少年开发",
+    tagSolo: "独立项目",
+    tagOpenSource: "社区驱动",
+    noPressureTitle: "无法捐赠？完全没关系！",
+    noPressureText: "这只是一个<strong>支持性项目</strong>，不是紧急筹款。网站无论如何都会继续运行。如果你无法捐赠，完全不用担心 — 好好享受内容就好！<span class='handwrite'>精神上的支持就足够了 ~</span>",
+    footer: "Juche TV 档案 v3.1 &middot; 由热爱 + 咖啡因驱动<br>&copy; 2025&ndash;2026 &middot; 仅用于教育目的 &middot; 不隶属于任何组织",
+    dtFooter: "Juche TV 档案 v3.1 &middot; 由热爱 + 咖啡因驱动 &middot; &copy; 2025&ndash;2026 &middot; 仅用于教育目的",
+    navHome: "首页",
+    navSupport: "支持",
+    navAccount: "账户"
+  }
+};
+
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  
+  // Update toggle buttons (mobile)
+  document.getElementById('lang-en')?.classList.toggle('active', lang === 'en');
+  document.getElementById('lang-zh')?.classList.toggle('active', lang === 'zh');
+  
+  // Update toggle buttons (desktop)
+  document.getElementById('dt-lang-en')?.classList.toggle('active', lang === 'en');
+  document.getElementById('dt-lang-zh')?.classList.toggle('active', lang === 'zh');
+  
+  // Update all i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang][key]) {
+      el.innerHTML = i18n[lang][key];
+    }
+  });
+  
+  // Update html lang attribute
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  
+  // Save preference
+  try { localStorage.setItem('juche-lang', lang); } catch(e) {}
+}
+
+// Load saved language preference
+(function() {
+  try {
+    const saved = localStorage.getItem('juche-lang');
+    if (saved === 'zh') setLang('zh');
+  } catch(e) {}
+})();
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
