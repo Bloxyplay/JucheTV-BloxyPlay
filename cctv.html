@@ -4,711 +4,264 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CCTV-1 HD - Juche TV</title>
-  <link rel="stylesheet" href="style.css">
   <link href="https://unpkg.com/video.js@8/dist/video-js.min.css" rel="stylesheet" />
   <style>
-    /* ===== CCTV-1 PAGE STYLES ===== */
+    :root {
+      --bg: #f6f7f9;
+      --theme: #ffffff;
+      --entry: #ffffff;
+      --primary: #1a1a1a;
+      --secondary: #6b7280;
+      --border: #e5e7eb;
+      --tertiary: #f3f4f6;
+      --radius: 14px;
+      --accent: #e5001a;
+      --accent-light: rgba(229,0,26,0.08);
+    }
+    :root.dark {
+      --bg: #0a0a0f;
+      --theme: #14141a;
+      --entry: #1a1a22;
+      --primary: #f0f0f5;
+      --secondary: #8888a0;
+      --border: #2a2a3a;
+      --tertiary: #22222e;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    /* Header */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--theme);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 56px;
+    }
+    .logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 17px; font-weight: 700; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.3px;
+    }
+    .logo svg { width: 22px; height: 22px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    #menu a {
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    #menu a:hover { color: var(--primary); background: var(--tertiary); }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--tertiary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; color: var(--secondary);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    /* Language selector */
+    .lang-wrap { position: relative; }
+    .lang-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 500; padding: 6px 12px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--tertiary); color: var(--secondary);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px);
+      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
+      overflow: hidden;
+    }
+    .lang-menu.show { display: block; }
+    .lang-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; font-size: 13px; cursor: pointer;
+      transition: background 0.12s; color: var(--primary);
+    }
+    .lang-option:hover { background: var(--tertiary); }
+    .lang-option.active { font-weight: 600; }
+    .lang-option.active::after { content: '✓'; color: var(--accent); font-size: 12px; }
+    /* Main */
+    .main {
+      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
     .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--secondary);
-      margin-bottom: 16px;
-      padding: 4px 0;
-      transition: color 0.2s ease;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      margin-bottom: 16px; padding: 4px 0;
+      transition: color 0.2s ease; text-decoration: none;
     }
     .back-link:hover { color: var(--primary); }
     .back-link svg { width: 16px; height: 16px; }
-
-    /* ===== VIDEO PLAYER (Video.js overrides) ===== */
+    /* Channel meta */
+    .channel-meta {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .channel-meta img {
+      width: 56px; height: 56px; object-fit: contain;
+      background: var(--tertiary); border-radius: 12px; padding: 6px;
+    }
+    .channel-meta h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+    .channel-meta p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      background: var(--accent-light); padding: 4px 10px;
+      border-radius: 100px; margin-left: auto;
+    }
+    .live-badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    /* Player */
     .player-container {
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
+      border-radius: 16px; overflow: hidden; position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
     }
     .video-js {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      max-height: 70vh;
+      width: 100%; aspect-ratio: 16/9; max-height: 70vh;
       background: #000;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-    /* Big center play button — dark circle matching reference */
     .video-js .vjs-big-play-button {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: rgba(48,48,48,.88);
-      border: none;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      margin: 0;
-      box-shadow: 0 4px 24px rgba(0,0,0,.35);
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(48,48,48,.88); border: none;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      margin: 0; box-shadow: 0 4px 24px rgba(0,0,0,.35);
       transition: background .2s ease, transform .2s ease;
     }
     .video-js:hover .vjs-big-play-button,
     .video-js .vjs-big-play-button:focus {
-      background: rgba(60,60,60,.95);
-      transform: translate(-50%, -50%) scale(1.05);
+      background: rgba(60,60,60,.95); transform: translate(-50%,-50%) scale(1.05);
     }
-    /* Let Video.js control visibility — don't override with display:flex */
     .video-js.vjs-has-started .vjs-big-play-button { display: none; }
-    .video-js.vjs-has-started.vjs-paused .vjs-big-play-button { display: none; }
     .video-js .vjs-big-play-button .vjs-icon-placeholder:before {
-      font-size: 28px;
-      line-height: 72px;
-      color: #fff;
+      font-size: 28px; line-height: 72px; color: #fff;
     }
-    /* Control bar */
     .video-js .vjs-control-bar {
-      background: rgba(0,0,0,.82);
-      height: 44px;
-      padding: 0 10px;
-      align-items: center;
+      background: rgba(0,0,0,.82); height: 44px; padding: 0 10px; align-items: center;
     }
-    /* Progress / seek bar */
-    .video-js .vjs-progress-control {
-      flex: 1;
-      align-items: center;
-      height: 100%;
-    }
-    .video-js .vjs-progress-holder {
-      height: 3px;
-      margin: 0;
-      border-radius: 2px;
-    }
-    .video-js .vjs-load-progress { border-radius: 2px; }
-    .video-js .vjs-play-progress {
-      background: #e5001a;
-      border-radius: 2px;
-    }
-    .video-js .vjs-play-progress:before {
-      color: #e5001a;
-      font-size: 13px;
-      top: -5px;
-    }
-    .video-js .vjs-slider {
-      background: rgba(255,255,255,.15);
-      border-radius: 2px;
-    }
-    /* Volume */
+    .video-js .vjs-progress-control { flex: 1; align-items: center; height: 100%; }
+    .video-js .vjs-progress-holder { height: 3px; margin: 0; border-radius: 2px; }
+    .video-js .vjs-play-progress { background: var(--accent); border-radius: 2px; }
+    .video-js .vjs-play-progress:before { color: var(--accent); font-size: 13px; top: -5px; }
+    .video-js .vjs-slider { background: rgba(255,255,255,.15); border-radius: 2px; }
     .video-js .vjs-volume-bar.vjs-slider-horizontal { height: 3px; border-radius: 2px; }
     .video-js .vjs-volume-level { background: #fff; border-radius: 2px; }
-    .video-js .vjs-volume-level:before { color: #fff; font-size: 11px; top: -4px; }
-    /* Live controls */
-    .video-js .vjs-live-control,
-    .video-js .vjs-seek-to-live-button { display: flex; align-items: center; padding: 0 6px; }
-    .video-js .vjs-seek-to-live-button .vjs-icon-placeholder:before { font-size: 11px; font-weight: 700; letter-spacing: .5px; }
-    /* Buttons */
     .video-js .vjs-button > .vjs-icon-placeholder:before { font-size: 20px; line-height: 44px; }
     .video-js .vjs-play-control, .video-js .vjs-mute-control, .video-js .vjs-fullscreen-control { width: 36px; }
-
-    /* Corner LIVE chip */
     .live-corner {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      background: rgba(229,0,26,.85);
-      padding: 4px 10px;
-      border-radius: 100px;
-      z-index: 6;
-      letter-spacing: .5px;
+      position: absolute; top: 12px; left: 12px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: #fff;
+      background: rgba(229,0,26,.85); padding: 4px 10px;
+      border-radius: 100px; z-index: 6; letter-spacing: .5px;
       backdrop-filter: blur(4px);
     }
     .live-corner .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #fff;
-      animation: pulse 1.8s ease infinite;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #fff; animation: pulse 1.8s ease infinite;
     }
-
-
-    /* ===== EPG SECTION ===== */
+    /* Info section */
+    .info-section {
+      margin-top: 24px; padding: 24px;
+      background: var(--entry); border: 1px solid var(--border);
+      border-radius: var(--radius); transition: background 0.3s, border-color 0.3s;
+    }
+    .info-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
+    /* EPG */
     .epg-section {
       margin-top: 24px;
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+      background: var(--entry); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
     }
     .epg-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
     }
     .epg-header h3 {
-      font-size: 15px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 15px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
     }
     .epg-header h3 svg { width: 16px; height: 16px; }
-    .epg-date {
-      font-size: 12px;
-      color: var(--secondary);
-      font-family: 'SF Mono', monospace;
-    }
-    .epg-list {
-      max-height: 360px;
-      overflow-y: auto;
-    }
+    .epg-date { font-size: 12px; color: var(--secondary); font-family: 'SF Mono', monospace; }
+    .epg-list { max-height: 360px; overflow-y: auto; }
     .epg-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background .15s ease;
-      font-size: 13px;
+      display: flex; align-items: center; gap: 16px;
+      padding: 10px 20px; border-bottom: 1px solid var(--border);
+      transition: background .15s ease; font-size: 13px; position: relative;
     }
     .epg-item:last-child { border-bottom: none; }
-    .epg-item:hover { background: var(--theme); }
+    .epg-item:hover { background: var(--tertiary); }
     .epg-item.current {
-      background: rgba(229,0,26,.04);
-      border-left: 3px solid #e5001a;
+      background: rgba(229,0,26,.04); border-left: 3px solid var(--accent);
       padding-left: 17px;
     }
     .epg-time {
-      font-family: 'SF Mono', monospace;
-      font-size: 12px;
-      color: var(--secondary);
-      white-space: nowrap;
-      min-width: 72px;
+      font-family: 'SF Mono', monospace; font-size: 12px;
+      color: var(--secondary); white-space: nowrap; min-width: 72px;
     }
-    .epg-name {
-      flex: 1;
-      font-weight: 500;
-    }
+    .epg-item.current .epg-time { color: var(--accent); font-weight: 600; }
+    .epg-name { flex: 1; font-weight: 500; }
     .epg-status {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 100px;
-      white-space: nowrap;
+      font-size: 11px; font-weight: 600; padding: 2px 8px;
+      border-radius: 100px; white-space: nowrap;
     }
-    .epg-status.now {
-      background: rgba(229,0,26,.1);
-      color: #e5001a;
+    .epg-status.now { background: var(--accent-light); color: var(--accent); }
+    .epg-status.next { background: var(--tertiary); color: var(--secondary); }
+    .epg-progress {
+      position: absolute; bottom: 0; left: 0; height: 2px;
+      background: rgba(229,0,26,.35); border-radius: 0 2px 2px 0;
+      pointer-events: none;
     }
-    .epg-status.next {
-      background: var(--tertiary);
-      color: var(--secondary);
-    }
-    .epg-loading {
-      padding: 32px;
-      text-align: center;
-      color: var(--secondary);
-      font-size: 13px;
-    }
-    .epg-error {
-      padding: 32px 24px;
-      text-align: center;
-    }
-    .epg-error-icon {
-      margin-bottom: 8px;
-    }
-    .epg-warn-svg {
-      display: block;
-      margin: 0 auto;
-      animation: warnPulse 2s ease-in-out infinite;
-    }
-    .epg-warn-tri {
-      transform-origin: center;
-      animation: warnShake 2s ease-in-out infinite;
-    }
-    .epg-warn-bang {
-      animation: warnBlink 2s ease-in-out infinite;
-    }
-    .epg-warn-dot {
-      animation: warnBlink 2s ease-in-out infinite 0.1s;
-    }
-    @keyframes warnPulse {
-      0%, 100% { filter: drop-shadow(0 0 0px rgba(229,0,26,0)); }
-      50% { filter: drop-shadow(0 0 6px rgba(229,0,26,0.5)); }
-    }
-    @keyframes warnShake {
-      0%, 100% { transform: rotate(0deg); }
-      10% { transform: rotate(-4deg); }
-      20% { transform: rotate(4deg); }
-      30% { transform: rotate(-2deg); }
-      40% { transform: rotate(2deg); }
-      50%, 90% { transform: rotate(0deg); }
-    }
-    @keyframes warnBlink {
-      0%, 45%, 55%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
-    }
-    .epg-error-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #e5001a;
-      margin-bottom: 4px;
-    }
-    .epg-error-msg {
-      font-size: 13px;
-      color: var(--secondary);
-      margin-bottom: 16px;
-    }
+    .epg-loading { padding: 32px; text-align: center; color: var(--secondary); font-size: 13px; }
+    .epg-error { padding: 32px 24px; text-align: center; }
+    .epg-error-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .epg-error-msg { font-size: 13px; color: var(--secondary); margin-bottom: 16px; }
     .epg-retry-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 7px 16px;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: var(--theme);
-      color: var(--primary);
-      cursor: pointer;
-      transition: background .15s, border-color .15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 7px 16px;
+      border-radius: 100px; border: 1px solid var(--border);
+      background: var(--theme); color: var(--primary);
+      cursor: pointer; transition: all .15s;
     }
     .epg-retry-btn:hover { background: var(--entry); border-color: var(--secondary); }
-    .epg-skeleton-list { padding: 8px 0; }
-    .epg-skeleton-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--border);
+    /* Footer */
+    .footer {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 20px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 12px;
+      color: var(--secondary); border-top: 1px solid var(--border);
     }
-    .epg-skeleton-item:last-child { border-bottom: none; }
-    .skeleton-block {
-      border-radius: 6px;
-      background: linear-gradient(90deg, var(--border) 25%, var(--theme) 50%, var(--border) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s ease infinite;
-    }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .sk-time { width: 52px; height: 13px; flex-shrink: 0; }
-    .sk-name { flex: 1; height: 13px; }
-    .sk-badge { width: 54px; height: 20px; border-radius: 100px; flex-shrink: 0; }
-
-    /* EPG item enhancements */
-    .epg-item {
-      position: relative;
-    }
-    .epg-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      background: rgba(229,0,26,.35);
-      border-radius: 0 2px 2px 0;
-      pointer-events: none;
-    }
-    .epg-item.current .epg-time { color: #e5001a; font-weight: 600; }
-
-    /* Language dropdown */
-    .epg-lang-wrap { position: relative; }
-    .epg-lang-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 11px;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: var(--theme);
-      color: var(--secondary);
-      cursor: pointer;
-      transition: background .15s, color .15s;
-      white-space: nowrap;
-    }
-    .epg-lang-btn:hover { background: var(--entry); color: var(--primary); }
-    .epg-lang-btn svg { width: 13px; height: 13px; transition: transform .2s; }
-    .epg-lang-btn.open svg { transform: rotate(180deg); }
-    .epg-lang-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: calc(100% + 6px);
-      min-width: 180px;
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.14);
-      z-index: 20;
-      overflow: hidden;
-    }
-    .epg-lang-menu.show { display: block; }
-    .epg-lang-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background .12s;
-      color: var(--primary);
-    }
-    .epg-lang-option:hover { background: var(--theme); }
-    .epg-lang-option.active { font-weight: 600; }
-    .epg-lang-option.active::after {
-      content: '✓';
-      color: #e5001a;
-      font-size: 12px;
-    }
-    .epg-lang-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 2px 0;
-    }
-
-    /* ── Language icon SVG ── */
-    .lang-icon-svg {
-      width: 18px; height: 18px; flex-shrink: 0; overflow: visible;
-    }
-    .lang-globe-ring {
-      transform-origin: 11px 11px;
-      animation: globeRingPulse 3s ease-in-out infinite;
-    }
-    @keyframes globeRingPulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .5; }
-    }
-    .lang-lat { animation: latDrift 4s ease-in-out infinite; }
-    @keyframes latDrift {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-1.2px); }
-    }
-    .lang-meridian {
-      transform-origin: 11px 11px;
-      animation: meridianSpin 2.6s ease-in-out infinite;
-    }
-    @keyframes meridianSpin {
-      0%   { transform: scaleX(1);  opacity: .55; }
-      25%  { transform: scaleX(0);  opacity: .15; }
-      50%  { transform: scaleX(-1); opacity: .55; }
-      75%  { transform: scaleX(0);  opacity: .15; }
-      100% { transform: scaleX(1);  opacity: .55; }
-    }
-    .lang-letter { transform-origin: 11px 13px; font-weight: 700; }
-    .lang-letter.flipping {
-      animation: letterFlip .38s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes letterFlip {
-      0%   { transform: scaleY(1) scaleX(1); opacity: 1; }
-      35%  { transform: scaleY(0) scaleX(.5); opacity: 0; }
-      65%  { transform: scaleY(0) scaleX(.5); opacity: 0; }
-      100% { transform: scaleY(1) scaleX(1); opacity: 1; }
-    }
-    .lang-globe-ring.burst {
-      animation: globeBurst .38s ease-out forwards, globeRingPulse 3s ease-in-out infinite .38s;
-    }
-    @keyframes globeBurst {
-      0%   { stroke-width: 1.5; opacity: 1; }
-      40%  { stroke-width: 3.5; opacity: .7; }
-      100% { stroke-width: 1.5; opacity: 1; }
-    }
-
-    /* Live clock */
-    .epg-clock {
-      font-family: 'SF Mono', monospace;
-      font-size: 12px;
-      color: var(--secondary);
-      letter-spacing: .5px;
-    }
-
-    /* ===== FULLSCREEN EPG OVERLAY ===== */
-
-    /* Bottom info bar — always visible in FS */
-    .vjs-fs-epg-bar {
-      display: none;
-      position: absolute;
-      bottom: 52px; /* sits just above the control bar */
-      left: 0; right: 0;
-      z-index: 10;
-      padding: 0 24px 16px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .35s ease;
-    }
-    .video-js.vjs-fullscreen .vjs-fs-epg-bar { display: block; }
-    .video-js.vjs-fullscreen.fs-epg-visible .vjs-fs-epg-bar { opacity: 1; pointer-events: auto; }
-
-    .fs-epg-bar-inner {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      background: rgba(10,10,10,.72);
-      backdrop-filter: blur(20px) saturate(1.4);
-      -webkit-backdrop-filter: blur(20px) saturate(1.4);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 14px;
-      padding: 12px 18px;
-      box-shadow: 0 8px 40px rgba(0,0,0,.55);
-    }
-    .fs-epg-now-badge {
-      flex-shrink: 0;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .8px;
-      color: #fff;
-      background: #e5001a;
-      padding: 3px 9px;
-      border-radius: 100px;
-    }
-    .fs-epg-now-time {
-      flex-shrink: 0;
-      font-family: 'SF Mono', ui-monospace, monospace;
-      font-size: 12px;
-      color: rgba(255,255,255,.55);
-      letter-spacing: .3px;
-    }
-    .fs-epg-now-title {
-      flex: 1;
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      letter-spacing: -.1px;
-    }
-    .fs-epg-progress-wrap {
-      flex: 0 0 120px;
-      height: 3px;
-      background: rgba(255,255,255,.18);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .fs-epg-progress-fill {
-      height: 100%;
-      background: #e5001a;
-      border-radius: 2px;
-      transition: width 10s linear;
-    }
-    .fs-epg-next-wrap {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-    .fs-epg-next-label {
-      font-size: 10px;
-      color: rgba(255,255,255,.4);
-      font-weight: 500;
-      letter-spacing: .5px;
-    }
-    .fs-epg-next-title {
-      font-size: 12px;
-      color: rgba(255,255,255,.7);
-      font-weight: 500;
-      max-width: 180px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .fs-epg-more-btn {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(255,255,255,.9);
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 100px;
-      padding: 6px 16px;
-      cursor: pointer;
-      transition: background .2s, border-color .2s, transform .15s;
-      letter-spacing: .1px;
-    }
-    .fs-epg-more-btn:hover {
-      background: rgba(255,255,255,.22);
-      border-color: rgba(255,255,255,.35);
-      transform: scale(1.03);
-    }
-    .fs-epg-more-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
-
-    /* ── Full EPG Panel (modal) ── */
-    .fs-epg-panel {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2147483647;
-      align-items: flex-end;
-      justify-content: stretch;
-    }
-    .fs-epg-panel.open { display: flex; }
-    .fs-epg-panel-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(4,8,24,.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      animation: fsBackdropIn .3s ease;
-    }
-    @keyframes fsBackdropIn { from { opacity: 0; } to { opacity: 1; } }
-    .fs-epg-panel-sheet {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-height: 72vh;
-      background: linear-gradient(180deg, #0d1535 0%, #08102a 100%);
-      border-top: 2px solid rgba(30,90,220,.45);
-      border-radius: 22px 22px 0 0;
-      display: flex;
-      flex-direction: column;
-      animation: fsSheetUp .32s cubic-bezier(.22,1,.36,1);
-      box-shadow: 0 -20px 80px rgba(10,30,100,.6), 0 -2px 0 rgba(30,90,220,.3);
-    }
-    @keyframes fsSheetUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .fs-epg-panel-sheet.closing {
-      animation: fsSheetDown .25s cubic-bezier(.4,0,.6,1) forwards;
-    }
-    @keyframes fsSheetDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
-
-    .fs-epg-panel-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid rgba(30,80,200,.25);
-      flex-shrink: 0;
-      background: linear-gradient(90deg, rgba(20,50,140,.5) 0%, rgba(13,21,53,.0) 100%);
-    }
-    .fs-epg-panel-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .fs-epg-panel-title h2 {
-      font-size: 17px;
-      font-weight: 700;
-      color: #e8eeff;
-      letter-spacing: -.2px;
-    }
-    .fs-epg-panel-title .fs-channel-badge {
-      font-size: 11px;
-      font-weight: 600;
-      color: #7aaeff;
-      background: rgba(30,80,220,.25);
-      border: 1px solid rgba(30,80,220,.4);
-      border-radius: 6px;
-      padding: 3px 8px;
-      letter-spacing: .4px;
-    }
-    .fs-epg-panel-date {
-      font-family: 'SF Mono', ui-monospace, monospace;
-      font-size: 12px;
-      color: rgba(150,180,255,.45);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .fs-epg-close-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: rgba(30,80,220,.2);
-      border: 1px solid rgba(30,80,220,.35);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, border-color .2s;
-      flex-shrink: 0;
-    }
-    .fs-epg-close-btn:hover { background: rgba(30,80,220,.4); border-color: rgba(30,80,220,.6); }
-    .fs-epg-close-btn svg { width: 16px; height: 16px; color: #a0c0ff; }
-
-    .fs-epg-panel-list {
-      overflow-y: auto;
-      flex: 1;
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(30,80,220,.35) transparent;
-    }
-    .fs-epg-panel-list::-webkit-scrollbar { width: 4px; }
-    .fs-epg-panel-list::-webkit-scrollbar-thumb { background: rgba(30,80,220,.35); border-radius: 2px; }
-
-    .fs-epg-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 13px 24px;
-      border-bottom: 1px solid rgba(30,60,160,.18);
-      position: relative;
-      transition: background .15s;
-    }
-    .fs-epg-row:last-child { border-bottom: none; }
-    .fs-epg-row:hover { background: rgba(30,80,220,.07); }
-    .fs-epg-row.fs-current {
-      background: linear-gradient(90deg, rgba(229,0,26,.1) 0%, rgba(229,0,26,.03) 100%);
-      border-left: 3px solid #e5001a;
-      padding-left: 21px;
-    }
-    .fs-epg-row .fs-row-time {
-      font-family: 'SF Mono', ui-monospace, monospace;
-      font-size: 12px;
-      color: rgba(120,160,255,.55);
-      min-width: 46px;
-      flex-shrink: 0;
-      letter-spacing: .2px;
-    }
-    .fs-epg-row.fs-current .fs-row-time { color: #ff4d6a; font-weight: 600; }
-    .fs-epg-row .fs-row-name {
-      flex: 1;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(200,220,255,.8);
-      line-height: 1.35;
-    }
-    .fs-epg-row.fs-current .fs-row-name { color: #fff; font-weight: 700; }
-    .fs-epg-row .fs-row-badge {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .6px;
-      padding: 3px 10px;
-      border-radius: 100px;
-      flex-shrink: 0;
-    }
-    .fs-row-badge.fs-now { background: rgba(229,0,26,.18); color: #ff3355; border: 1px solid rgba(229,0,26,.3); }
-    .fs-row-badge.fs-later { background: rgba(30,80,220,.12); color: rgba(120,160,255,.6); border: 1px solid rgba(30,80,220,.2); }
-    .fs-epg-row .fs-row-prog {
-      position: absolute;
-      bottom: 0; left: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #e5001a, rgba(229,0,26,.3));
-      pointer-events: none;
-    }
-
-    /* ===== INFO ===== */
-    .info-section {
-      margin-top: 24px;
-      padding: 20px;
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .info-section h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .info-section p {
-      font-size: 13px;
-      color: var(--secondary);
-      line-height: 1.6;
+    .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
+    .footer a:hover { color: var(--primary); }
+    /* Responsive */
+    @media (max-width: 640px) {
+      .channel-meta h1 { font-size: 18px; }
+      .live-badge { margin-left: 0; width: 100%; justify-content: center; }
+      .epg-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -717,126 +270,126 @@
     <nav class="nav">
       <a href="index.html" class="logo">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span>Juche TV</span>
+        <span data-i18n="brand">Juche TV</span>
       </a>
       <ul id="menu">
-        <li><a href="index.html">Channels</a></li>
+        <li><a href="index.html" data-i18n="channels">Channels</a></li>
+        <li>
+          <div class="lang-wrap">
+            <button class="lang-btn" id="langBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span id="langLabel">English</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+              <div class="lang-option active" data-lang="en">English</div>
+              <div class="lang-option" data-lang="zh">中文 (Chinese)</div>
+            </div>
+          </div>
+        </li>
         <li>
           <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-            <svg id="moon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
-            </svg>
-            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-              <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
+            <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
         </li>
       </ul>
     </nav>
   </header>
 
-  <main class="main page-transition">
+  <main class="main">
     <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-      Back to Channels
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="backToChannels">Back to Channels</span>
     </a>
 
-    <!-- Video Player -->
+    <div class="channel-meta">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/CCTV-1_Logo.svg" alt="CCTV">
+      <div>
+        <h1 data-i18n="cctvTitle">CCTV-1 HD</h1>
+        <p data-i18n="liveFrom">Live from Pyongyang, DPRK</p>
+      </div>
+      <span class="live-badge"><span class="dot"></span><span data-i18n="live">LIVE</span></span>
+    </div>
+
     <div class="player-container">
-      <div class="live-corner"><span class="dot"></span>LIVE</div>
-      <video id="vid" class="video-js vjs-big-play-centered"
-             playsinline preload="auto">
+      <div class="live-corner"><span class="dot"></span><span data-i18n="live">LIVE</span></div>
+      <video id="vid" class="video-js vjs-big-play-centered" playsinline preload="auto">
         <source src="https://play.kankanlive.com/live/1720408280309109.m3u8?provider_id=juche_tv012" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
       </video>
     </div>
 
-    <!-- EPG Section -->
     <div class="epg-section">
       <div class="epg-header">
         <h3>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          Program Guide (CCTV-1 HD)
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span data-i18n="programGuide">Program Guide</span> (CCTV-1 HD)
         </h3>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <span class="epg-date" id="epgDate"></span>
-          <span class="epg-clock" id="epgClock"></span>
-          <div class="epg-lang-wrap">
-            <button class="epg-lang-btn" id="langBtn" onclick="toggleLangMenu()">
-              <svg class="lang-icon-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <!-- outer ring -->
-                <circle class="lang-globe-ring" cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.5"/>
-                <!-- latitude lines -->
-                <g class="lang-lat">
-                  <path d="M2.8 8h16.4" stroke="currentColor" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
-                  <path d="M2.8 14h16.4" stroke="currentColor" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
-                </g>
-                <!-- spinning meridian -->
-                <ellipse class="lang-meridian" cx="11" cy="11" rx="4" ry="8.5" stroke="currentColor" stroke-width=".9"/>
-                <!-- script letter -->
-                <text class="lang-letter" id="langIconLetter" x="11" y="14.5" text-anchor="middle" font-size="7.5" fill="currentColor">A</text>
-              </svg>
-              <span id="langLabel">English</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="epg-lang-menu" id="langMenu">
-              <div class="epg-lang-option active" data-lang="en" data-label="English" onclick="selectLang(this)">English (Default)</div>
-              <div class="epg-lang-option" data-lang="zh-CN" data-label="中文" onclick="selectLang(this)">Chinese (中文)</div>
-              <div class="epg-lang-divider"></div>
-              <div class="epg-lang-option" data-lang="my" data-label="မြန်မာ" onclick="selectLang(this)">Myanmar (မြန်မာ)</div>
-              <div class="epg-lang-option" data-lang="ug" data-label="ئۇيغۇرچە" onclick="selectLang(this)">Uyghur (ئۇيغۇرچە)</div>
-              <div class="epg-lang-option" data-lang="bo" data-label="བོད་སྐད།" onclick="selectLang(this)">Tibetan (བོད་སྐད།)</div>
-              <div class="epg-lang-option" data-lang="id" data-label="Indonesia" onclick="selectLang(this)">Indonesian</div>
-              <div class="epg-lang-option" data-lang="tl" data-label="Filipino" onclick="selectLang(this)">Filipino</div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="epg-list" id="epgList">
-        <div class="epg-loading">Loading program guide...</div>
+        <div class="epg-loading" data-i18n="loading">Loading...</div>
       </div>
     </div>
 
     <div class="info-section">
-      <h3>About CCTV-1 HD</h3>
-      <p>China Central Television (CCTV) is the national television broadcaster of China. CCTV-1 is the flagship channel broadcasting news, documentaries, and entertainment.</p>
+      <h3 data-i18n="about">About CCTV-1 HD</h3>
+      <p data-i18n="cctvDesc">China Central Television (CCTV) is the national television broadcaster of China. CCTV-1 is the flagship channel broadcasting news, documentaries, and entertainment.</p>
     </div>
   </main>
 
   <footer class="footer">
-    <span>Juche TV</span>
-    <a href="index.html">Back to Channels</a>
+    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
+    <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
   </footer>
-
-  <!-- Full EPG Panel Modal (body-level so it works inside & outside fullscreen) -->
-  <div class="fs-epg-panel" id="fsEpgPanel">
-    <div class="fs-epg-panel-backdrop" onclick="closeFsEpgPanel()"></div>
-    <div class="fs-epg-panel-sheet" id="fsEpgSheet">
-      <div class="fs-epg-panel-head">
-        <div class="fs-epg-panel-title">
-          <h2>Program Guide</h2>
-          <span class="fs-channel-badge">CCTV-1 HD</span>
-        </div>
-        <div class="fs-epg-panel-date">
-          <span id="fsPanelDate"></span>
-          <span id="fsPanelClock"></span>
-        </div>
-        <button class="fs-epg-close-btn" onclick="closeFsEpgPanel()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="fs-epg-panel-list" id="fsEpgList">
-        <div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">Loading…</div>
-      </div>
-    </div>
-  </div>
 
   <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
   <script>
+    // ===================== I18N =====================
+    let translations = {};
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    async function loadTranslations() {
+      try {
+        const res = await fetch('language.json');
+        translations = await res.json();
+        applyLanguage(currentLang);
+      } catch(e) { console.error('Failed to load translations', e); }
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      const t = translations[lang] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      document.getElementById('langLabel').textContent = lang === 'zh' ? '中文' : 'English';
+      document.querySelectorAll('.lang-option').forEach(o => {
+        o.classList.toggle('active', o.dataset.lang === lang);
+      });
+    }
+
+    function toggleLangMenu() {
+      document.getElementById('langMenu').classList.toggle('show');
+    }
+
+    function selectLang(el) {
+      applyLanguage(el.dataset.lang);
+      document.getElementById('langMenu').classList.remove('show');
+    }
+
+    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
+    document.querySelectorAll('.lang-option').forEach(o => {
+      o.addEventListener('click', () => selectLang(o));
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
+    });
+
     // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
@@ -853,431 +406,69 @@
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
-    // ===================== CONFIG =====================
-    const EPG_NAME = 'CCTV-1HD';
-
-    // ===================== VIDEO.JS INIT =====================
+    // ===================== VIDEO.JS =====================
     const player = videojs('vid', {
-      controls: true,
-      autoplay: true,
-      muted: true,
-      liveui: true,
-      fluid: true,
-      responsive: true,
-      playbackRates: [],
-      html5: {
-        vhs: {
-          overrideNative: true,
-          enableLowInitialPlaylist: true,
-        },
-        nativeAudioTracks: false,
-        nativeVideoTracks: false,
-      }
+      controls: true, autoplay: true, muted: true,
+      liveui: true, fluid: true, responsive: true, playbackRates: [],
+      html5: { vhs: { overrideNative: true, enableLowInitialPlaylist: true }, nativeAudioTracks: false, nativeVideoTracks: false }
     });
-
-    player.ready(function() {
-      player.play().catch(() => {});
-      fetchEPG(EPG_NAME);
-
-      // ── Inject EPG bar into the vjs element ──
-      const vjsEl = player.el();
-      vjsEl.insertAdjacentHTML('beforeend', `
-        <div class="vjs-fs-epg-bar" id="fsEpgBar">
-          <div class="fs-epg-bar-inner">
-            <span class="fs-epg-now-badge">LIVE</span>
-            <span class="fs-epg-now-time" id="fsNowTime">--:--</span>
-            <span class="fs-epg-now-title" id="fsNowTitle">Loading program guide…</span>
-            <div class="fs-epg-progress-wrap">
-              <div class="fs-epg-progress-fill" id="fsNowProgress" style="width:0%"></div>
-            </div>
-            <div class="fs-epg-next-wrap">
-              <span class="fs-epg-next-label">UP NEXT</span>
-              <span class="fs-epg-next-title" id="fsNextTitle">—</span>
-            </div>
-            <button class="fs-epg-more-btn" id="fsMoreBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              More
-            </button>
-          </div>
-        </div>
-      `);
-
-      // Bind More button AFTER injection (avoids onclick-in-innerHTML issues)
-      document.getElementById('fsMoreBtn').addEventListener('click', openFsEpgPanel);
-
-      // ── Sync EPG bar visibility with VJS useractive/userinactive ──
-      player.on('useractive', function() {
-        if (player.isFullscreen()) vjsEl.classList.add('fs-epg-visible');
-      });
-      player.on('userinactive', function() {
-        if (!_fsEpgPanelOpen) vjsEl.classList.remove('fs-epg-visible');
-      });
-
-      player.on('fullscreenchange', function() {
-        if (player.isFullscreen()) {
-          updateFsBarContent();
-          vjsEl.classList.add('fs-epg-visible');
-        } else {
-          vjsEl.classList.remove('fs-epg-visible');
-          closeFsEpgPanel();
-        }
-      });
-    });
-
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeFsEpgPanel();
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) || (e.ctrlKey && ['u','U'].includes(e.key))) {
-        e.preventDefault();
-      }
-    });
-
-    // ===================== FULLSCREEN EPG =====================
-    function updateFsBarContent() {
-      if (!_lastItems || !_lastItems.length) return;
-      const now = getChinaNow();
-      const nowMin = now.getHours() * 60 + now.getMinutes();
-      const nowSec = nowMin * 60 + now.getSeconds();
-      let curIdx = -1;
-      for (let i = 0; i < _lastItems.length; i++) {
-        const [h, m] = (_lastItems[i].time || '0:0').split(':').map(Number);
-        const itemMin = h * 60 + m;
-        if (itemMin <= nowMin) curIdx = i;
-        else break;
-      }
-      if (curIdx < 0) curIdx = 0;
-      const cur = _lastItems[curIdx];
-      const nxt = _lastItems[curIdx + 1] || null;
-
-      const curTime = cur.time || '--:--';
-      const curName = cur._translated || cur.name || '—';
-      const nxtName = nxt ? (nxt._translated || nxt.name || '—') : '—';
-
-      const fsTime = document.getElementById('fsNowTime');
-      const fsTitle = document.getElementById('fsNowTitle');
-      const fsProg = document.getElementById('fsNowProgress');
-      const fsNext = document.getElementById('fsNextTitle');
-      if (fsTime) fsTime.textContent = curTime;
-      if (fsTitle) fsTitle.textContent = curName;
-      if (fsNext) fsNext.textContent = nxtName;
-
-      if (fsProg && nxt) {
-        const [ch, cm] = curTime.split(':').map(Number);
-        const [nh, nm] = (nxt.time || '23:59').split(':').map(Number);
-        const dur = ((nh * 60 + nm) - (ch * 60 + cm)) * 60;
-        const elapsed = nowSec - (ch * 60 + cm) * 60;
-        fsProg.style.width = Math.min(100, Math.round(elapsed / dur * 100)) + '%';
-      }
-    }
-
-    // Patch renderEPG to cache translated names on items for FS bar
-    const _origRenderEPG = window.renderEPG;
-    let _fsEpgPanelOpen = false;
-
-    function openFsEpgPanel() {
-      const panel = document.getElementById('fsEpgPanel');
-      const sheet = document.getElementById('fsEpgSheet');
-
-      // Mount panel inside the fullscreen element so it renders above the video
-      const fsRoot = document.fullscreenElement || document.webkitFullscreenElement || player.el();
-      if (panel.parentElement !== fsRoot) fsRoot.appendChild(panel);
-
-      panel.classList.add('open');
-      sheet.classList.remove('closing');
-      _fsEpgPanelOpen = true;
-      updateFsPanelList();
-      updateFsPanelClock();
-      // Keep bar visible while panel is open
-      player.el().classList.add('fs-epg-visible');
-    }
-
-    function closeFsEpgPanel() {
-      const panel = document.getElementById('fsEpgPanel');
-      const sheet = document.getElementById('fsEpgSheet');
-      _fsEpgPanelOpen = false;
-      sheet.classList.add('closing');
-      setTimeout(() => {
-        panel.classList.remove('open');
-        sheet.classList.remove('closing');
-        // Return panel to body
-        if (panel.parentElement !== document.body) document.body.appendChild(panel);
-      }, 260);
-    }
-
-    function updateFsPanelList() {
-      const list = document.getElementById('fsEpgList');
-      if (!_lastItems || !_lastItems.length) {
-        list.innerHTML = '<div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">No EPG data available yet. Wait for the guide to load below.</div>';
-        return;
-      }
-      const now = getChinaNow();
-      const nowMin = now.getHours() * 60 + now.getMinutes();
-      const nowSec = nowMin * 60 + now.getSeconds();
-      let foundCurrent = false;
-      let html = '';
-
-      _lastItems.forEach((item, idx) => {
-        const [h, m] = (item.time || '0:0').split(':').map(Number);
-        const itemMin = h * 60 + m;
-        const next = _lastItems[idx + 1];
-        let isCurrent = false;
-
-        if (!foundCurrent && itemMin <= nowMin) {
-          if (!next || nowMin < (function(){ const [nh,nm]=(next.time||'23:59').split(':').map(Number); return nh*60+nm; }())) {
-            isCurrent = true; foundCurrent = true;
-          }
-        }
-
-        const name = item._translated || item.name || '—';
-        let progHtml = '';
-        if (isCurrent && next) {
-          const [nh, nm] = (next.time || '23:59').split(':').map(Number);
-          const dur = ((nh * 60 + nm) - (h * 60 + m)) * 60;
-          const elapsed = nowSec - (h * 60 + m) * 60;
-          const pct = Math.min(100, Math.round(elapsed / dur * 100));
-          progHtml = `<div class="fs-row-prog" style="width:${pct}%"></div>`;
-        }
-
-        const badge = isCurrent
-          ? '<span class="fs-row-badge fs-now">ON NOW</span>'
-          : (foundCurrent
-              ? '<span class="fs-row-badge fs-later">LATER</span>'
-              : '<span class="fs-row-badge fs-later">PAST</span>');
-
-        html += `<div class="fs-epg-row${isCurrent ? ' fs-current' : ''}" data-idx="${idx}">
-          <span class="fs-row-time">${item.time}</span>
-          <span class="fs-row-name">${name}</span>
-          ${badge}
-          ${progHtml}
-        </div>`;
-      });
-
-      list.innerHTML = html || '<div style="padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;">No programs found.</div>';
-      // scroll to current
-      setTimeout(() => {
-        const cur = list.querySelector('.fs-current');
-        if (cur) cur.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      }, 80);
-    }
-
-    let _fsPanelClockTimer = null;
-    function updateFsPanelClock() {
-      const d = getChinaNow();
-      const hh = String(d.getHours()).padStart(2,'0');
-      const mm = String(d.getMinutes()).padStart(2,'0');
-      const ss = String(d.getSeconds()).padStart(2,'0');
-      const dateEl = document.getElementById('fsPanelDate');
-      const clkEl = document.getElementById('fsPanelClock');
-      if (dateEl) dateEl.textContent = getTodayDate();
-      if (clkEl) clkEl.textContent = `${hh}:${mm}:${ss} CST`;
-      _fsPanelClockTimer = setTimeout(updateFsPanelClock, 1000);
-    }
+    player.ready(function() { player.play().catch(() => {}); });
 
     // ===================== EPG =====================
-    // ===================== LANGUAGE =====================
-    let currentLang = 'en';
-    let _lastItems = null; // cache raw EPG items for re-render on language switch
-    const _translateCache = {}; // keyed as "lang:text"
+    const EPG_NAME = 'CCTV-1HD';
 
-    function toggleLangMenu() {
-      const menu = document.getElementById('langMenu');
-      const btn = document.getElementById('langBtn');
-      const isOpen = menu.classList.toggle('show');
-      btn.classList.toggle('open', isOpen);
-    }
-    // Script letter shown inside the globe per language
-    const LANG_LETTER = {
-      'en': 'A', 'zh-CN': '文', 'my': 'က', 'ug': 'ئ',
-      'bo': 'ཀ', 'id': 'A', 'tl': 'A'
-    };
-
-    function animateLangIcon(lang) {
-      const letter = document.getElementById('langIconLetter');
-      const ring   = document.querySelector('.lang-globe-ring');
-      if (!letter || !ring) return;
-      const newChar = LANG_LETTER[lang] || 'A';
-
-      // Burst on the ring
-      ring.classList.remove('burst');
-      void ring.offsetWidth; // reflow
-      ring.classList.add('burst');
-
-      // Flip the letter — swap character at the midpoint (opacity=0)
-      letter.classList.remove('flipping');
-      void letter.offsetWidth;
-      letter.classList.add('flipping');
-      setTimeout(() => { letter.textContent = newChar; }, 130);
-      letter.addEventListener('animationend', () => letter.classList.remove('flipping'), { once: true });
-    }
-
-    function selectLang(el) {
-      currentLang = el.dataset.lang;
-      document.getElementById('langLabel').textContent = el.dataset.label;
-      document.querySelectorAll('.epg-lang-option').forEach(o => o.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('langMenu').classList.remove('show');
-      document.getElementById('langBtn').classList.remove('open');
-      animateLangIcon(currentLang);
-      if (_lastItems) {
-        document.getElementById('epgList').innerHTML = '<div class="epg-loading">Translating…</div>';
-        renderEPG(_lastItems);
-      }
-    }
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.epg-lang-wrap')) {
-        document.getElementById('langMenu').classList.remove('show');
-        document.getElementById('langBtn').classList.remove('open');
-      }
-    });
-
-    // ===================== CLOCK =====================
-    function updateClock() {
-      const d = getChinaNow();
-      const hh = String(d.getHours()).padStart(2,'0');
-      const mm = String(d.getMinutes()).padStart(2,'0');
-      const ss = String(d.getSeconds()).padStart(2,'0');
-      const el = document.getElementById('epgClock');
-      if (el) el.textContent = `${hh}:${mm}:${ss} CST`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Translation cache so we never hit Google Translate twice for the same string
-    function hasChinese(text) {
-      return /[\u4e00-\u9fff\u3400-\u4dbf]/.test(text);
-    }
-
-    async function googleTranslate(text, targetLang) {
-      if (!text) return '';
-      if (targetLang === 'zh-CN') return text; // show original
-      if (!hasChinese(text)) return text;
-      const cacheKey = targetLang + ':' + text;
-      if (_translateCache[cacheKey]) return _translateCache[cacheKey];
-      try {
-        const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-CN&tl=' + targetLang + '&dt=t&q=' + encodeURIComponent(text);
-        const res = await fetch(url);
-        const json = await res.json();
-        const translated = json[0].map(seg => seg[0]).join('').trim();
-        _translateCache[cacheKey] = translated || text;
-        return _translateCache[cacheKey];
-      } catch {
-        return text;
-      }
-    }
-
-    // Always use China Standard Time (UTC+8) regardless of viewer's device timezone
     function getChinaNow() {
       const now = new Date();
       const utcMs = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
       return new Date(utcMs + 8 * 60 * 60 * 1000);
     }
-
     function getTodayDate() {
       const d = getChinaNow();
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
-    // Normalize any EPG response shape into a flat array of { time, name }
     function normalizeEPGData(data) {
       if (!data) return null;
-
-      // Shape 1: { list: [ { time, title } ] }  — original canghaitv style
       if (Array.isArray(data.list) && data.list.length) return data.list.map(item => ({
         time: item.time || item.start || item.startTime || '',
         name: item.title || item.name || item.program || 'Program',
       }));
-
-      // Shape 2: { programs: [ ... ] }
       if (Array.isArray(data.programs) && data.programs.length) return data.programs.map(item => ({
         time: item.time || item.start || item.startTime || '',
         name: item.title || item.name || item.program || 'Program',
       }));
-
-      // Shape 3: { data: [ ... ] }
       if (Array.isArray(data.data) && data.data.length) return data.data.map(item => ({
         time: item.time || item.start || item.startTime || '',
         name: item.title || item.name || item.program || 'Program',
       }));
-
-      // Shape 4: top-level array  [ { time, title } ]
       if (Array.isArray(data) && data.length) return data.map(item => ({
         time: item.time || item.start || item.startTime || '',
         name: item.title || item.name || item.program || 'Program',
       }));
-
-      // Shape 5: keyed by channel  { "CCTV-1HD": [ ... ] }
       for (const key of Object.keys(data)) {
         if (Array.isArray(data[key]) && data[key].length) return data[key].map(item => ({
           time: item.time || item.start || item.startTime || '',
           name: item.title || item.name || item.program || 'Program',
         }));
       }
-
       return null;
     }
 
+    let _lastItems = null;
     let _retryCount = 0;
-
-    function showSkeletonError(isServerDown) {
-      const epgList = document.getElementById('epgList');
-      const skeletonRows = Array.from({length: 6}, () => `
-        <div class="epg-skeleton-item">
-          <div class="skeleton-block sk-time"></div>
-          <div class="skeleton-block sk-name"></div>
-          <div class="skeleton-block sk-badge"></div>
-        </div>`).join('');
-      const msg = isServerDown
-        ? 'The EPG server appears to be down. Please check back later or refresh the page.'
-        : 'EPG data failed to load.';
-      const btnHtml = isServerDown
-        ? `<p style="font-size:12px;color:var(--secondary);margin-top:8px;">You have reached the retry limit.</p>`
-        : `<button class="epg-retry-btn" onclick="retryEPG()">↻ Try Again</button>`;
-      epgList.innerHTML = `
-        <div class="epg-error">
-          <div class="epg-error-icon">
-            <svg class="epg-warn-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-              <path class="epg-warn-tri" d="M12 3L22 21H2L12 3Z" stroke="#e5001a" stroke-width="1.8" stroke-linejoin="round" fill="rgba(229,0,26,0.08)"/>
-              <line class="epg-warn-bang" x1="12" y1="9" x2="12" y2="14" stroke="#e5001a" stroke-width="2" stroke-linecap="round"/>
-              <circle class="epg-warn-dot" cx="12" cy="17.5" r="1" fill="#e5001a"/>
-            </svg>
-          </div>
-          <div class="epg-error-title">Error</div>
-          <div class="epg-error-msg">${msg}</div>
-          ${btnHtml}
-        </div>
-        <div class="epg-skeleton-list">${skeletonRows}</div>`;
-    }
-
-    function retryEPG() {
-      _retryCount++;
-      if (_retryCount >= 5) {
-        showSkeletonError(true);
-        return;
-      }
-      fetchEPG(EPG_NAME);
-    }
 
     async function fetchEPG(chName) {
       const epgList = document.getElementById('epgList');
       const epgDate = document.getElementById('epgDate');
       const date = getTodayDate();
       epgDate.textContent = date;
-      epgList.innerHTML = '<div class="epg-loading">Loading program guide…</div>';
+      epgList.innerHTML = '<div class="epg-loading">' + (translations[currentLang]?.loading || 'Loading...') + '</div>';
 
       try {
-        // ── Primary source: Juche TV EPG API ──────────────────────────────
         const url = 'https://bloxyplaytvapi.duckdns.org/api/epg?ch=' + encodeURIComponent(chName) + '&date=' + date;
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 10000);
-
-        const response = await fetch(url, {
-          signal: controller.signal,
-          headers: {
-            'Accept': 'application/json,*/*',
-            'Origin': window.location.origin,
-            'Referer': window.location.href,
-          }
-        });
+        const response = await fetch(url, { signal: controller.signal });
         clearTimeout(timeout);
 
         if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1285,28 +476,32 @@
         const items = normalizeEPGData(data);
         if (items && items.length) {
           _retryCount = 0;
-          epgList.innerHTML = '<div class="epg-loading">Translating program guide…</div>';
           await renderEPG(items);
-        } else {
-          throw new Error('empty');
-        }
-      } catch (e) {
-        showSkeletonError(false);
-      }
+        } else { throw new Error('empty'); }
+      } catch (e) { showSkeletonError(); }
+    }
+
+    function showSkeletonError() {
+      const epgList = document.getElementById('epgList');
+      const t = translations[currentLang] || translations['en'];
+      epgList.innerHTML = `
+        <div class="epg-error">
+          <div class="epg-error-title" data-i18n="error">${t.error}</div>
+          <div class="epg-error-msg" data-i18n="fetchError">${t.fetchError}</div>
+          <button class="epg-retry-btn" onclick="retryEPG()">&#x21bb; ${t.retry}</button>
+        </div>`;
+    }
+
+    function retryEPG() {
+      _retryCount++;
+      if (_retryCount >= 5) { showSkeletonError(); return; }
+      fetchEPG(EPG_NAME);
     }
 
     async function renderEPG(items) {
       const epgList = document.getElementById('epgList');
-      if (!items || !items.length) { showSkeletonError(false); return; }
-      _lastItems = items; // cache for language switching
-
-      // Translate all titles in parallel via Google Translate (free public endpoint)
-      const translatedNames = await Promise.all(
-        items.map(item => googleTranslate(item.name, currentLang))
-      );
-
-      // cache translations on items for FS bar access
-      items.forEach((item, idx) => { item._translated = translatedNames[idx] || item.name; });
+      if (!items || !items.length) { showSkeletonError(); return; }
+      _lastItems = items;
 
       let html = '';
       const now = getChinaNow();
@@ -1316,7 +511,7 @@
 
       items.forEach((item, idx) => {
         const time = item.time;
-        const name = translatedNames[idx] || item.name;
+        const name = item.name;
         const parts = time.split(':').map(Number);
         const itemMinutes = (parts[0] || 0) * 60 + (parts[1] || 0);
         let status = '';
@@ -1330,9 +525,8 @@
             const nextMinutes = (np[0] || 0) * 60 + (np[1] || 0);
             if (nowMinutes < nextMinutes) {
               cls += ' current';
-              status = '<span class="epg-status now">ON NOW</span>';
+              status = '<span class="epg-status now" data-i18n="onNow">ON NOW</span>';
               foundCurrent = true;
-              // progress bar
               const dur = (nextMinutes - itemMinutes) * 60;
               const elapsed = nowSeconds - itemMinutes * 60;
               const pct = Math.min(100, Math.round(elapsed / dur * 100));
@@ -1340,75 +534,32 @@
             }
           } else {
             cls += ' current';
-            status = '<span class="epg-status now">ON NOW</span>';
+            status = '<span class="epg-status now" data-i18n="onNow">ON NOW</span>';
             foundCurrent = true;
           }
-        } else if (!foundCurrent && itemMinutes > nowMinutes && idx === 0) {
-          cls += ' current';
-          status = '<span class="epg-status now">ON NOW</span>';
-          foundCurrent = true;
         }
 
         if (!status && !foundCurrent) {
-          status = '<span class="epg-status next">UP NEXT</span>';
+          status = '<span class="epg-status next" data-i18n="upNext">UP NEXT</span>';
         } else if (!status) {
-          status = '<span class="epg-status next">LATER</span>';
+          status = '<span class="epg-status next" data-i18n="later">LATER</span>';
         }
 
         html += `<div class="${cls}"><span class="epg-time">${time}</span><span class="epg-name">${name}</span>${status}${progressHtml}</div>`;
       });
 
-      // Auto-scroll to current programme
       epgList.innerHTML = html;
       const currentEl = epgList.querySelector('.current');
       if (currentEl) setTimeout(() => currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150);
 
-      // Update fullscreen EPG bar & panel with fresh data
-      updateFsBarContent();
-      if (document.getElementById('fsEpgPanel').classList.contains('open')) updateFsPanelList();
+      // Refresh status text after render
+      applyLanguage(currentLang);
     }
 
-    function showFallbackEPG() {
-      const epgList = document.getElementById('epgList');
-      const now = getChinaNow();
-      const hour = now.getHours();
-      const schedules = [
-        { t: '06:00', n: 'Morning News' },
-        { t: '07:00', n: 'News Broadcast' },
-        { t: '08:00', n: 'Focus Interview' },
-        { t: '09:00', n: 'TV Drama Series' },
-        { t: '12:00', n: 'Midday News' },
-        { t: '12:35', n: 'Documentary' },
-        { t: '14:00', n: 'TV Drama Series' },
-        { t: '18:00', n: 'Evening News' },
-        { t: '19:00', n: 'News Network' },
-        { t: '19:38', n: 'Focus Interview' },
-        { t: '20:00', n: 'Prime Time Drama' },
-        { t: '21:00', n: 'Special Program' },
-        { t: '22:00', n: 'Late Night News' },
-        { t: '23:00', n: 'Night Program' },
-      ];
-      let html = '';
-      let foundCurrent = false;
-      schedules.forEach((s, idx) => {
-        const [h, m] = s.t.split(':').map(Number);
-        const itemMinutes = h * 60 + m;
-        const nowMinutes = hour * 60 + now.getMinutes();
-        let cls = 'epg-item';
-        let status = '';
-        if (!foundCurrent && itemMinutes <= nowMinutes) {
-          const next = schedules[idx + 1];
-          if (!next || nowMinutes < (parseInt(next.t) * 60)) {
-            cls += ' current'; status = '<span class="epg-status now">ON NOW</span>'; foundCurrent = true;
-          }
-        }
-        if (!status) status = '<span class="epg-status next">SCHEDULED</span>';
-        html += `<div class="${cls}"><span class="epg-time">${s.t}</span><span class="epg-name">${s.n}</span>${status}</div>`;
-      });
-      epgList.innerHTML = html;
-    }
-
-
+    // ===================== INIT =====================
+    loadTranslations().then(() => {
+      fetchEPG(EPG_NAME);
+    });
   </script>
 </body>
 </html>

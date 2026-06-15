@@ -4,219 +4,214 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KCBS Radio - Juche TV</title>
-  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.0/dist/hls.min.js"></script>
   <style>
+    :root {
+      --bg: #f6f7f9;
+      --theme: #ffffff;
+      --entry: #ffffff;
+      --primary: #1a1a1a;
+      --secondary: #6b7280;
+      --border: #e5e7eb;
+      --tertiary: #f3f4f6;
+      --radius: 14px;
+      --accent: #ea580c;
+      --accent-light: rgba(234,88,12,0.08);
+    }
+    :root.dark {
+      --bg: #0a0a0f;
+      --theme: #14141a;
+      --entry: #1a1a22;
+      --primary: #f0f0f5;
+      --secondary: #8888a0;
+      --border: #2a2a3a;
+      --tertiary: #22222e;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--theme);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 56px;
+    }
+    .logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 17px; font-weight: 700; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.3px;
+    }
+    .logo svg { width: 22px; height: 22px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    #menu a {
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    #menu a:hover { color: var(--primary); background: var(--tertiary); }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--tertiary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; color: var(--secondary);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .lang-wrap { position: relative; }
+    .lang-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 500; padding: 6px 12px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--tertiary); color: var(--secondary);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px);
+      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
+      overflow: hidden;
+    }
+    .lang-menu.show { display: block; }
+    .lang-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; font-size: 13px; cursor: pointer;
+      transition: background 0.12s; color: var(--primary);
+    }
+    .lang-option:hover { background: var(--tertiary); }
+    .lang-option.active { font-weight: 600; }
+    .lang-option.active::after { content: '✓'; color: var(--accent); font-size: 12px; }
+
+    .main {
+      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
     .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--secondary);
-      margin-bottom: 16px;
-      padding: 4px 0;
-      transition: color 0.2s ease;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      margin-bottom: 16px; padding: 4px 0;
+      transition: color 0.2s ease; text-decoration: none;
     }
     .back-link:hover { color: var(--primary); }
     .back-link svg { width: 16px; height: 16px; }
 
+    /* Audio Player */
     .audio-player-wrap {
       background: var(--entry);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 40px;
-      max-width: 560px;
+      padding: 48px 40px;
+      max-width: 520px;
       margin: 0 auto;
       text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
     }
-
-    /* Radio icon animation */
     .radio-icon-wrap {
-      width: 160px;
-      height: 160px;
+      width: 160px; height: 160px;
       margin: 0 auto 28px;
       position: relative;
     }
     .radio-icon {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
       background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
       border-radius: 50%;
-      box-shadow: 0 12px 48px rgba(234, 88, 12, 0.3);
-      position: relative;
-      z-index: 2;
+      box-shadow: 0 12px 48px rgba(234,88,12,0.3);
+      position: relative; z-index: 2;
     }
-    .radio-icon svg {
-      width: 72px;
-      height: 72px;
-      color: #fff;
-    }
-    /* Sound waves */
+    .radio-icon svg { width: 72px; height: 72px; color: #fff; }
     .wave {
-      position: absolute;
-      border: 2.5px solid #ea580c;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      z-index: 1;
+      position: absolute; border: 2.5px solid #ea580c;
+      border-radius: 50%; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); opacity: 0; z-index: 1;
     }
     .wave-1 { width: 180px; height: 180px; }
     .wave-2 { width: 210px; height: 210px; }
     .wave-3 { width: 240px; height: 240px; }
-
-    .playing .wave {
-      animation: radioWave 2.4s ease-out infinite;
-    }
+    .playing .wave { animation: radioWave 2.4s ease-out infinite; }
     .playing .wave-1 { animation-delay: 0s; }
     .playing .wave-2 { animation-delay: 0.6s; }
     .playing .wave-3 { animation-delay: 1.2s; }
-
     @keyframes radioWave {
-      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+      0% { opacity: 0.5; transform: translate(-50%,-50%) scale(0.8); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.5); }
     }
-
-    .station-name {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      margin-bottom: 4px;
-    }
-    .station-desc {
-      font-size: 13px;
-      color: var(--secondary);
-      margin-bottom: 28px;
-    }
-
-    /* Play button */
+    .station-name { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 4px; }
+    .station-desc { font-size: 13px; color: var(--secondary); margin-bottom: 28px; }
     .play-btn {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      border: none;
-      background: #ea580c;
-      color: #fff;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      width: 72px; height: 72px; border-radius: 50%; border: none;
+      background: var(--accent); color: #fff; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
       margin-bottom: 24px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: 0 4px 20px rgba(234, 88, 12, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(234,88,12,0.35);
     }
-    .play-btn:hover {
-      transform: scale(1.06);
-      box-shadow: 0 6px 28px rgba(234, 88, 12, 0.45);
-    }
-    .play-btn:active {
-      transform: scale(0.96);
-    }
-    .play-btn svg {
-      width: 32px;
-      height: 32px;
-      margin-left: 3px;
-    }
-
-    /* Volume */
+    .play-btn:hover { transform: scale(1.06); box-shadow: 0 6px 28px rgba(234,88,12,0.45); }
+    .play-btn:active { transform: scale(0.96); }
+    .play-btn svg { width: 32px; height: 32px; margin-left: 3px; }
     .volume-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 16px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-top: 16px;
     }
     .volume-btn {
-      width: 36px;
-      height: 36px;
-      border: none;
-      background: var(--tertiary);
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary);
-      transition: background 0.2s ease;
-      flex-shrink: 0;
+      width: 36px; height: 36px; border: none;
+      background: var(--tertiary); border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary); transition: background 0.2s ease; flex-shrink: 0;
     }
     .volume-btn:hover { background: var(--border); }
     .volume-btn svg { width: 18px; height: 18px; }
-
     .volume-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 160px;
-      height: 4px;
-      background: var(--tertiary);
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+      width: 160px; height: 4px; background: var(--tertiary);
+      border-radius: 2px; outline: none; cursor: pointer;
     }
     .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #ea580c;
-      cursor: pointer;
-      box-shadow: 0 1px 4px rgba(234, 88, 12, 0.4);
+      -webkit-appearance: none; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--accent); cursor: pointer;
+      box-shadow: 0 1px 4px rgba(234,88,12,0.4);
     }
-    .volume-slider::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #ea580c;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 1px 4px rgba(234, 88, 12, 0.4);
-    }
-
     .status-text {
-      font-size: 12px;
-      color: var(--secondary);
-      margin-top: 16px;
-      min-height: 18px;
-      font-variant-numeric: tabular-nums;
+      font-size: 12px; color: var(--secondary); margin-top: 16px;
+      min-height: 18px; font-variant-numeric: tabular-nums;
     }
-
-    .info-section {
-      margin-top: 24px;
-      padding: 20px;
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .info-section h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .info-section p {
-      font-size: 13px;
-      color: var(--secondary);
-      line-height: 1.6;
-    }
-
-    /* Visualizer bars */
     .visualizer {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 3px;
-      height: 32px;
-      margin-bottom: 20px;
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 3px; height: 32px; margin-bottom: 20px;
     }
     .vbar {
-      width: 4px;
-      background: #ea580c;
-      border-radius: 2px;
-      transition: height 0.1s ease;
+      width: 4px; background: var(--accent);
+      border-radius: 2px; transition: height 0.1s ease;
+    }
+    .info-section {
+      margin-top: 24px; padding: 24px;
+      background: var(--entry); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .info-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
+    .footer {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 20px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 12px;
+      color: var(--secondary); border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
+    .footer a:hover { color: var(--primary); }
+    @media (max-width: 640px) {
+      .audio-player-wrap { padding: 36px 24px; }
     }
   </style>
 </head>
@@ -225,30 +220,36 @@
     <nav class="nav">
       <a href="index.html" class="logo">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span>Juche TV</span>
+        <span data-i18n="brand">Juche TV</span>
       </a>
       <ul id="menu">
-        <li><a href="index.html">Channels</a></li>
+        <li><a href="index.html" data-i18n="channels">Channels</a></li>
+        <li>
+          <div class="lang-wrap">
+            <button class="lang-btn" id="langBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span id="langLabel">English</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+              <div class="lang-option active" data-lang="en">English</div>
+              <div class="lang-option" data-lang="zh">中文 (Chinese)</div>
+            </div>
+          </div>
+        </li>
         <li>
           <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-            <svg id="moon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
-            </svg>
-            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-              <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
+            <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
         </li>
       </ul>
     </nav>
   </header>
 
-  <main class="main page-transition">
+  <main class="main">
     <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-      Back to Channels
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="backToChannels">Back to Channels</span>
     </a>
 
     <div class="audio-player-wrap" id="playerWrap">
@@ -282,48 +283,83 @@
         <div class="vbar" style="height:4px"></div>
       </div>
 
-      <h2 class="station-name">Korean Central Broadcasting Station</h2>
-      <p class="station-desc">Live Radio Stream from Pyongyang</p>
+      <h2 class="station-name" data-i18n="kcbsTitle">Korean Central Broadcasting Station</h2>
+      <p class="station-desc" data-i18n="kcbsLive">Live Radio Stream from Pyongyang</p>
 
       <button class="play-btn" id="playBtn" title="Play/Pause">
-        <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-        <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-          <path d="M6 19h4V5H6zm8-14v14h4V5z"/>
-        </svg>
+        <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
       </button>
 
       <div class="volume-wrap">
         <button class="volume-btn" id="muteBtn" title="Mute/Unmute">
-          <svg id="volIcon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-          </svg>
-          <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>
-          </svg>
+          <svg id="volIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
         </button>
         <input type="range" class="volume-slider" id="volSlider" min="0" max="1" step="0.01" value="1">
       </div>
 
-      <div class="status-text" id="status">Click play to start</div>
+      <div class="status-text" id="status" data-i18n="clickPlay">Click play to start</div>
 
       <audio id="audio" crossorigin="anonymous"></audio>
     </div>
 
     <div class="info-section">
-      <h3>About KCBS</h3>
-      <p>Korean Central Broadcasting Station (KCBS) is the primary domestic radio network of the Democratic People's Republic of Korea. It broadcasts news, music, and cultural programming to listeners across the Korean peninsula. The station operates multiple frequencies on both AM and FM bands.</p>
+      <h3 data-i18n="about">About KCBS</h3>
+      <p data-i18n="kcbsDesc">Korean Central Broadcasting Station (KCBS) is the primary domestic radio network of the Democratic People's Republic of Korea. It broadcasts news, music, and cultural programming to listeners across the Korean peninsula.</p>
     </div>
   </main>
 
   <footer class="footer">
-    <span>Juche TV</span>
-    <a href="index.html">Back to Channels</a>
+    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
+    <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
   </footer>
 
   <script>
-    // Theme
+    // ===================== I18N =====================
+    let translations = {};
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    async function loadTranslations() {
+      try {
+        const res = await fetch('language.json');
+        translations = await res.json();
+        applyLanguage(currentLang);
+      } catch(e) { console.error('Failed to load translations', e); }
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      const t = translations[lang] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      document.getElementById('langLabel').textContent = lang === 'zh' ? '中文' : 'English';
+      document.querySelectorAll('.lang-option').forEach(o => {
+        o.classList.toggle('active', o.dataset.lang === lang);
+      });
+    }
+
+    function toggleLangMenu() {
+      document.getElementById('langMenu').classList.toggle('show');
+    }
+
+    function selectLang(el) {
+      applyLanguage(el.dataset.lang);
+      document.getElementById('langMenu').classList.remove('show');
+    }
+
+    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
+    document.querySelectorAll('.lang-option').forEach(o => {
+      o.addEventListener('click', () => selectLang(o));
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
+    });
+
+    // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
     const sun = document.getElementById('sun');
@@ -339,7 +375,7 @@
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
-    // Audio player
+    // ===================== AUDIO PLAYER =====================
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('playBtn');
     const iconPlay = document.getElementById('iconPlay');
@@ -360,14 +396,9 @@
         hls = new Hls({ enableWorker: true, lowLatencyMode: true });
         hls.loadSource(STREAM);
         hls.attachMedia(audio);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          status.textContent = 'Buffering...';
-        });
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { status.textContent = translations[currentLang]?.buffering || 'Buffering...'; });
         hls.on(Hls.Events.ERROR, (e, d) => {
-          if (d.fatal) {
-            status.textContent = 'Stream error. Retrying...';
-            setTimeout(initHLS, 3000);
-          }
+          if (d.fatal) { status.textContent = translations[currentLang]?.streamError || 'Stream error. Retrying...'; setTimeout(initHLS, 3000); }
         });
       } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
         audio.src = STREAM;
@@ -384,31 +415,25 @@
           iconPlay.style.display = 'none';
           iconPause.style.display = '';
           radioWrap.classList.add('playing');
-          status.textContent = 'Now Playing - KCBS Live';
-        }).catch(e => {
-          status.textContent = 'Playback failed: ' + e.message;
-        });
+          status.textContent = (translations[currentLang]?.nowPlaying || 'Now Playing') + ' - KCBS';
+        }).catch(e => { status.textContent = 'Playback failed: ' + e.message; });
       } else {
         audio.pause();
         iconPlay.style.display = '';
         iconPause.style.display = 'none';
         radioWrap.classList.remove('playing');
-        status.textContent = 'Paused';
+        status.textContent = translations[currentLang]?.paused || 'Paused';
       }
     }
 
     playBtn.addEventListener('click', toggle);
 
-    // Volume
     function syncVol() {
       const muted = audio.muted || audio.volume === 0;
       volIcon.style.display = muted ? 'none' : '';
       muteIcon.style.display = muted ? '' : 'none';
     }
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      syncVol();
-    });
+    muteBtn.addEventListener('click', () => { audio.muted = !audio.muted; syncVol(); });
     volSlider.addEventListener('input', () => {
       audio.volume = parseFloat(volSlider.value);
       audio.muted = audio.volume === 0;
@@ -416,13 +441,10 @@
     });
     syncVol();
 
-    // Visualizer simulation
     let visInterval = null;
     function startVis() {
       visInterval = setInterval(() => {
-        vbars.forEach(bar => {
-          bar.style.height = (4 + Math.random() * 22) + 'px';
-        });
+        vbars.forEach(bar => { bar.style.height = (4 + Math.random() * 22) + 'px'; });
       }, 120);
     }
     function stopVis() {
@@ -432,7 +454,8 @@
     audio.addEventListener('play', startVis);
     audio.addEventListener('pause', stopVis);
 
-    // Init
+    // ===================== INIT =====================
+    loadTranslations();
     initHLS();
   </script>
 </body>

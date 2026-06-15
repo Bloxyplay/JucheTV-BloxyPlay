@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCTV Archives - Juche TV</title>
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --theme: #ffffff;
+      --entry: #ffffff;
+      --primary: #1a1a1a;
+      --secondary: #6b7280;
+      --border: #e5e7eb;
+      --tertiary: #f3f4f6;
+      --radius: 14px;
+      --accent: #e5001a;
+      --accent-light: rgba(229,0,26,0.08);
+    }
+    :root.dark {
+      --bg: #0a0a0f;
+      --theme: #14141a;
+      --entry: #1a1a22;
+      --primary: #f0f0f5;
+      --secondary: #8888a0;
+      --border: #2a2a3a;
+      --tertiary: #22222e;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--theme);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 56px;
+    }
+    .logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 17px; font-weight: 700; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.3px;
+    }
+    .logo svg { width: 22px; height: 22px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    #menu a {
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    #menu a:hover { color: var(--primary); background: var(--tertiary); }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--tertiary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; color: var(--secondary);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .lang-wrap { position: relative; }
+    .lang-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 500; padding: 6px 12px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--tertiary); color: var(--secondary);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px);
+      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
+      overflow: hidden;
+    }
+    .lang-menu.show { display: block; }
+    .lang-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; font-size: 13px; cursor: pointer;
+      transition: background 0.12s; color: var(--primary);
+    }
+    .lang-option:hover { background: var(--tertiary); }
+    .lang-option.active { font-weight: 600; }
+    .lang-option.active::after { content: '\2713'; color: var(--accent); font-size: 12px; }
+
+    .main {
+      flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--secondary);
+      margin-bottom: 16px; padding: 4px 0;
+      transition: color 0.2s ease; text-decoration: none;
+      cursor: pointer;
+    }
+    .back-link:hover { color: var(--primary); }
+    .back-link svg { width: 16px; height: 16px; }
+
+    .page-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .page-header img {
+      width: 48px; height: 48px; object-fit: contain;
+      background: var(--tertiary); border-radius: 12px; padding: 6px;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+    .page-header p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
+
+    .notice-banner {
+      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--primary);
+    }
+    :root.dark .notice-banner {
+      background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
+      border-color: rgba(245,158,11,0.3);
+    }
+    .notice-banner svg {
+      width: 22px;
+      height: 22px;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .notice-banner strong {
+      font-weight: 700;
+      color: #b45309;
+    }
+    :root.dark .notice-banner strong {
+      color: #fbbf24;
+    }
+    .notice-banner code {
+      background: rgba(245,158,11,0.15);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .loading {
+      text-align: center; padding: 48px;
+      color: var(--secondary); font-size: 14px;
+    }
+    .loading svg {
+      width: 32px; height: 32px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .error {
+      text-align: center; padding: 48px 24px;
+      color: var(--secondary);
+    }
+    .error-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+    .error-msg { font-size: 13px; margin-bottom: 16px; }
+    .retry-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; padding: 8px 18px;
+      border-radius: 100px; border: 1px solid var(--border);
+      background: var(--theme); color: var(--primary);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .retry-btn:hover { background: var(--tertiary); border-color: var(--secondary); }
+
+    /* ===== Folder Grid ===== */
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .folder-card {
+      background: var(--entry);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .folder-card:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .folder-card:active {
+      transform: translateY(0);
+    }
+    .folder-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .folder-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--accent);
+    }
+    .folder-info h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .folder-info p {
+      font-size: 12px;
+      color: var(--secondary);
+    }
+
+    /* ===== Video Player ===== */
+    .player-section {
+      background: var(--entry);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .player-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      position: relative;
+    }
+    .player-wrap .video-js {
+      width: 100%;
+      height: 100%;
+    }
+    .player-info {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .player-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .player-info p {
+      font-size: 13px;
+      color: var(--secondary);
+    }
+
+    /* ===== Timeline ===== */
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .timeline-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .timeline-count {
+      font-size: 12px;
+      color: var(--secondary);
+      background: var(--tertiary);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .timeline-item {
+      background: var(--entry);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .timeline-item:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .timeline-item.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .timeline-item.playing .play-icon {
+      background: var(--accent);
+      color: #fff;
+    }
+    .play-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .play-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+    .timeline-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .timeline-meta h4 {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+    .timeline-meta p {
+      font-size: 12px;
+      color: var(--secondary);
+      font-family: 'SF Mono', monospace;
+    }
+    .timeline-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .timeline-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--tertiary);
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .timeline-btn:hover {
+      background: var(--border);
+    }
+    .timeline-btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .timeline-btn.primary:hover {
+      background: #c40016;
+    }
+
+    .footer {
+      max-width: 1200px; width: 100%; margin: 0 auto;
+      padding: 20px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 12px;
+      color: var(--secondary); border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
+    .footer a:hover { color: var(--primary); }
+
+    @media (max-width: 640px) {
+      .folder-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 18px; }
+      .notice-banner { flex-direction: column; gap: 10px; }
+      .timeline-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="kctv.html" class="logo">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <span data-i18n="brand">Juche TV</span>
+      </a>
+      <ul id="menu">
+        <li><a href="index.html" data-i18n="channels">Channels</a></li>
+        <li><a href="kctv.html" data-i18n="back">Back to KCTV</a></li>
+        <li>
+          <div class="lang-wrap">
+            <button class="lang-btn" id="langBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span id="langLabel">English</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+              <div class="lang-option active" data-lang="en">English</div>
+              <div class="lang-option" data-lang="zh">\u4e2d\u6587 (Chinese)</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+            <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main">
+    <!-- Breadcrumb / Back -->
+    <a class="back-link" id="backLink" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="backToFolders">Back to Folders</span>
+    </a>
+
+    <div class="page-header">
+      <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV">
+      <div>
+        <h1 data-i18n="archivesTitle">KCTV Archives</h1>
+        <p data-i18n="archivesDesc">Browse and watch recorded broadcasts from Korean Central Television.</p>
+      </div>
+    </div>
+
+    <!-- Deinterlacing Notice Banner -->
+    <div class="notice-banner" id="noticeBanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div>
+        <strong data-i18n="noticeTitle">Video Quality Notice</strong>
+        <p data-i18n="noticeText">Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC's &quot;Yadif&quot; or <code>ffmpeg -vf yadif</code>) for proper viewing.</p>
+      </div>
+    </div>
+
+    <!-- Video Player Section (hidden until a video is selected) -->
+    <div class="player-section" id="playerSection" style="display:none">
+      <div class="player-wrap">
+        <video
+          id="archivePlayer"
+          class="video-js vjs-default-skin vjs-big-play-centered"
+          controls
+          preload="auto"
+          playsinline
+        >
+        </video>
+      </div>
+      <div class="player-info">
+        <h3 id="playerTitle">-</h3>
+        <p id="playerDate">-</p>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="contentArea">
+      <div class="loading">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+        <span data-i18n="fetchingArchives">Fetching archives...</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
+    <a href="kctv.html" data-i18n="back">Back to KCTV</a>
+  </footer>
+
+  <!-- Video.js -->
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script>
+    // ===================== I18N =====================
+    let translations = {};
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    const DEFAULT_TRANSLATIONS = {
+      en: {
+        brand: 'Juche TV',
+        channels: 'Channels',
+        back: 'Back to KCTV',
+        archivesTitle: 'KCTV Archives',
+        archivesDesc: 'Browse and watch recorded broadcasts from Korean Central Television.',
+        fetchingArchives: 'Fetching archives...',
+        error: 'Error',
+        fetchError: 'Failed to load archives. Please try again.',
+        retry: 'Retry',
+        noArchives: 'No archives found.',
+        noticeTitle: 'Video Quality Notice',
+        noticeText: 'Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC\'s "Yadif" or ffmpeg -vf yadif) for proper viewing.',
+        timeSlot: 'Time Slot',
+        recording: 'recordings',
+        date: 'Date',
+        download: 'Download',
+        watch: 'Watch',
+        footer: 'Juche TV. Not affiliated with any broadcasting entity.',
+        backToFolders: 'Back to Folders',
+        recordingsIn: 'Recordings in',
+        video: 'video',
+        unknownDate: 'Unknown Date'
+      },
+      zh: {
+        brand: 'Juche TV',
+        channels: '频道',
+        back: '返回 KCTV',
+        archivesTitle: 'KCTV 档案',
+        archivesDesc: '浏览和观看朝鲜中央电视台的录播节目。',
+        fetchingArchives: '正在获取档案...',
+        error: '错误',
+        fetchError: '加载档案失败，请重试。',
+        retry: '重试',
+        noArchives: '未找到档案。',
+        noticeTitle: '视频质量提示',
+        noticeText: '2026年6月14日之前的录制为隔行扫描，运动时可能出现梳状或模糊。请使用去隔行滤镜（如 VLC 的"Yadif"或 ffmpeg -vf yadif）以获得最佳观看效果。',
+        timeSlot: '时段',
+        recording: '个录像',
+        date: '日期',
+        download: '下载',
+        watch: '播放',
+        footer: 'Juche TV。与任何广播机构无关。',
+        backToFolders: '返回文件夹',
+        recordingsIn: '录像列表',
+        video: '个视频',
+        unknownDate: '未知日期'
+      }
+    };
+
+    async function loadTranslations() {
+      try {
+        const res = await fetch('language.json');
+        translations = await res.json();
+      } catch(e) {
+        translations = DEFAULT_TRANSLATIONS;
+      }
+      applyLanguage(currentLang);
+    }
+
+    function t(key) {
+      const lang = translations[currentLang] || translations['en'] || DEFAULT_TRANSLATIONS['en'];
+      return lang[key] || DEFAULT_TRANSLATIONS['en'][key] || key;
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      const tx = translations[lang] || translations['en'] || DEFAULT_TRANSLATIONS['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (tx[key]) el.textContent = tx[key];
+      });
+      document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\u6587' : 'English';
+      document.querySelectorAll('.lang-option').forEach(o => {
+        o.classList.toggle('active', o.dataset.lang === lang);
+      });
+    }
+
+    function toggleLangMenu() {
+      document.getElementById('langMenu').classList.toggle('show');
+    }
+
+    function selectLang(el) {
+      applyLanguage(el.dataset.lang);
+      document.getElementById('langMenu').classList.remove('show');
+      // Re-render current view to update text
+      if (currentFolder) {
+        renderTimeline(currentFolder, currentFiles);
+      } else {
+        renderFolders(folders);
+      }
+    }
+
+    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
+    document.querySelectorAll('.lang-option').forEach(o => {
+      o.addEventListener('click', () => selectLang(o));
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
+    });
+
+    // ===================== THEME =====================
+    const themeToggle = document.getElementById('themeToggle');
+    const moon = document.getElementById('moon');
+    const sun = document.getElementById('sun');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none'; sun.style.display = '';
+    }
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const d = document.documentElement.classList.contains('dark');
+      moon.style.display = d ? 'none' : '';
+      sun.style.display = d ? '' : 'none';
+      localStorage.setItem('theme', d ? 'dark' : 'light');
+    });
+
+    // ===================== ARCHIVES BROWSER =====================
+    const API_BASE = 'https://kctv.koryofront.org';
+    const contentArea = document.getElementById('contentArea');
+    const backLink = document.getElementById('backLink');
+    const playerSection = document.getElementById('playerSection');
+    const playerTitle = document.getElementById('playerTitle');
+    const playerDate = document.getElementById('playerDate');
+
+    // State
+    let folders = [];
+    let currentFolder = null;
+    let currentFiles = [];
+    let player = null;
+
+    // ---- Helper functions ----
+
+    function parseDateFromFilename(name) {
+      const match = name.match(/(\d{4}-\d{2}-\d{2})/);
+      return match ? match[1] : '';
+    }
+
+    function parseTimeFromFilename(name) {
+      const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/);
+      if (match) {
+        const hour = match[2];
+        const min = match[3];
+        const h = parseInt(hour, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12}:${min} ${ampm}`;
+      }
+      return '';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return t('unknownDate');
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+    }
+
+    function formatFolderName(name) {
+      // Extract time from folder name like "Korean Central Television (KCTV) @ 9PM"
+      const match = name.match(/@\s*(.+)$/);
+      return match ? match[1] : name;
+    }
+
+    function cleanFilename(name) {
+      // Remove .mp4 and the trailing timestamp part to get a cleaner title
+      return name.replace('.mp4', '').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/, '');
+    }
+
+    function showLoading() {
+      contentArea.innerHTML = `
+        <div class="loading">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+          <span>${t('fetchingArchives')}</span>
+        </div>`;
+    }
+
+    function showError() {
+      contentArea.innerHTML = `
+        <div class="error">
+          <div class="error-title">${t('error')}</div>
+          <div class="error-msg">${t('fetchError')}</div>
+          <button class="retry-btn" onclick="fetchFolders()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+            ${t('retry')}
+          </button>
+        </div>`;
+    }
+
+    function showEmpty() {
+      contentArea.innerHTML = `<div class="loading"><span>${t('noArchives')}</span></div>`;
+    }
+
+    // ---- API ----
+
+    async function fetchFolders() {
+      showLoading();
+      try {
+        const res = await fetch(API_BASE + '/recordings');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        folders = (data || []).filter(item => item.type === 'dir');
+
+        // Sort folders by time slot
+        const slotOrder = ['9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM'];
+        folders.sort((a, b) => {
+          const slotA = formatFolderName(a.name);
+          const slotB = formatFolderName(b.name);
+          const idxA = slotOrder.indexOf(slotA);
+          const idxB = slotOrder.indexOf(slotB);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          return a.name.localeCompare(b.name);
+        });
+
+        if (!folders.length) { showEmpty(); return; }
+        renderFolders(folders);
+      } catch (e) {
+        console.error('Failed to fetch folders:', e);
+        showError();
+      }
+    }
+
+    async function loadFolder(folder) {
+      showLoading();
+      try {
+        // path is already URL-encoded from the API
+        const res = await fetch(API_BASE + folder.path + '/');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const files = (data || []).filter(f => f.type === 'file' && f.name.endsWith('.mp4'));
+
+        // Sort by date descending (newest first)
+        files.sort((a, b) => {
+          const dateA = parseDateFromFilename(a.name);
+          const dateB = parseDateFromFilename(b.name);
+          return dateB.localeCompare(dateA);
+        });
+
+        currentFolder = folder;
+        currentFiles = files;
+        renderTimeline(folder, files);
+      } catch (e) {
+        console.error('Failed to load folder:', e);
+        showError();
+      }
+    }
+
+    // ---- Rendering ----
+
+    function renderFolders(folderList) {
+      currentFolder = null;
+      currentFiles = [];
+      backLink.style.display = 'none';
+
+      let html = '<div class="folder-grid">';
+      folderList.forEach(folder => {
+        const slot = formatFolderName(folder.name);
+        html += `
+          <div class="folder-card" onclick="openFolder('${folder.path}')">
+            <div class="folder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div class="folder-info">
+              <h3>${slot}</h3>
+              <p>${folder.name}</p>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      contentArea.innerHTML = html;
+    }
+
+    function renderTimeline(folder, files) {
+      const slot = formatFolderName(folder.name);
+      backLink.style.display = '';
+
+      let html = `
+        <div class="timeline-header">
+          <h2>${t('recordingsIn')} ${slot}</h2>
+          <span class="timeline-count">${files.length} ${t('recording')}</span>
+        </div>
+        <div class="timeline">
+      `;
+
+      files.forEach((file, idx) => {
+        const date = parseDateFromFilename(file.name);
+        const time = parseTimeFromFilename(file.name);
+        const title = cleanFilename(file.name);
+        const videoUrl = API_BASE + file.path;
+        const isFirst = idx === 0;
+
+        html += `
+          <div class="timeline-item ${isFirst ? 'active' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')">
+            <div class="play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="timeline-meta">
+              <h4>${escapeHtml(title)}</h4>
+              <p>${formatDate(date)}${time ? ' &middot; ' + time : ''}</p>
+            </div>
+            <div class="timeline-actions" onclick="event.stopPropagation()">
+              <a href="${videoUrl}" download class="timeline-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                ${t('download')}
+              </a>
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      contentArea.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ---- Navigation ----
+
+    window.openFolder = function(encodedPath) {
+      const folder = folders.find(f => f.path === encodedPath);
+      if (folder) loadFolder(folder);
+    };
+
+    backLink.addEventListener('click', () => {
+      // Dispose player
+      if (player) {
+        try { player.dispose(); } catch(e) {}
+        player = null;
+      }
+      playerSection.style.display = 'none';
+      renderFolders(folders);
+    });
+
+    // ---- Video Playback ----
+
+    window.playVideo = function(filePath, title, dateStr) {
+      const videoUrl = API_BASE + filePath;
+
+      // Update player info
+      playerTitle.textContent = title;
+      playerDate.textContent = formatDate(dateStr);
+      playerSection.style.display = '';
+
+      // Scroll to player
+      playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Dispose old player
+      if (player) {
+        try { player.dispose(); } catch(e) {}
+        player = null;
+      }
+
+      // Recreate video element
+      const wrap = document.querySelector('.player-wrap');
+      wrap.innerHTML = '<video id="archivePlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline></video>';
+
+      const videoEl = document.getElementById('archivePlayer');
+
+      // Initialize Video.js
+      player = videojs(videoEl, {
+        controls: true,
+        preload: 'auto',
+        fluid: false,
+        fill: true,
+        playbackRates: [0.5, 1, 1.5, 2],
+        controlBar: {
+          pictureInPictureToggle: false
+        },
+        sources: [{
+          src: videoUrl,
+          type: 'video/mp4'
+        }]
+      }, function() {
+        // Auto-play when ready
+        try { this.play(); } catch(e) {}
+      });
+
+      // Highlight active item in timeline
+      document.querySelectorAll('.timeline-item').forEach(item => {
+        item.classList.remove('playing');
+      });
+      // Find the clicked item and mark as playing
+      const items = document.querySelectorAll('.timeline-item');
+      items.forEach(item => {
+        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(filePath)) {
+          item.classList.add('playing');
+        }
+      });
+    };
+
+    // ===================== INIT =====================
+    loadTranslations().then(() => {
+      fetchFolders();
+    });
+  </script>
+</body>
+</html>

@@ -4,51 +4,272 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juche TV - Live Streams</title>
-  <link rel="stylesheet" href="style.css">
   <style>
+    :root {
+      --bg: #f5f6fa;
+      --theme: #ffffff;
+      --entry: #ffffff;
+      --primary: #1a1a2e;
+      --secondary: #6b7280;
+      --border: #e8e8ef;
+      --tertiary: #f0f1f5;
+      --accent: #e5001a;
+      --accent-light: rgba(229,0,26,0.08);
+      --radius: 16px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    :root.dark {
+      --bg: #0a0a0f;
+      --theme: #14141a;
+      --entry: #1c1c24;
+      --primary: #f0f0f5;
+      --secondary: #8b8ba0;
+      --border: #2a2a38;
+      --tertiary: #22222e;
+      --accent: #ff1a35;
+      --accent-light: rgba(255,26,53,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    :root.dark .header {
+      background: rgba(20,20,26,0.85);
+    }
+    .nav {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .logo {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.5px;
+    }
+    .logo svg { width: 24px; height: 24px; color: var(--accent); }
+    #menu { list-style: none; display: flex; align-items: center; gap: 6px; }
+    #menu a {
+      font-size: 13px; font-weight: 600; color: var(--secondary);
+      text-decoration: none; padding: 8px 14px; border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    #menu a:hover { color: var(--primary); background: var(--tertiary); }
+    #menu a.active { color: var(--accent); background: var(--accent-light); }
+    .theme-toggle {
+      width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--tertiary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; color: var(--secondary);
+      transition: all 0.2s ease; margin-left: 8px;
+    }
+    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); background: var(--border); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    /* Main */
+    .main {
+      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+    .page-header {
+      margin-bottom: 36px;
+      text-align: center;
+    }
+    .page-header h1 {
+      font-size: 32px; font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    :root.dark .page-header h1 {
+      background: linear-gradient(135deg, #fff 0%, #8888a0 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .page-header p {
+      font-size: 15px; color: var(--secondary); font-weight: 400;
+    }
+
+    /* Channel Grid */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 640px) {
+      .channel-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 26px; }
+    }
+
+    /* Channel Card */
+    .channel-card {
+      display: flex; align-items: flex-start; gap: 18px;
+      background: var(--entry);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      text-decoration: none; color: inherit;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .channel-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), #ff6b35);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .channel-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent);
+    }
+    .channel-card:hover::before { opacity: 1; }
+
+    .channel-icon {
+      width: 64px; height: 64px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--tertiary);
+      border-radius: 14px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+    .channel-card:hover .channel-icon {
+      background: var(--accent-light);
+      transform: scale(1.05);
+    }
+    .channel-icon img { max-width: 48px; max-height: 48px; object-fit: contain; }
+    .channel-icon svg { width: 40px; height: 40px; }
+
+    .channel-info { flex: 1; min-width: 0; }
+    .channel-info h3 {
+      font-size: 15px; font-weight: 700;
+      margin-bottom: 6px; letter-spacing: -0.2px;
+    }
+    .channel-info p {
+      font-size: 13px; color: var(--secondary);
+      line-height: 1.5; margin-bottom: 10px;
+    }
+
+    /* Badges */
+    .badge-row {
+      display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+    }
+    .channel-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 100px;
+      letter-spacing: 0.3px;
+    }
+    .badge-live {
+      background: rgba(34,197,94,0.1);
+      color: #16a34a;
+    }
+    :root.dark .badge-live {
+      background: rgba(34,197,94,0.15);
+      color: #4ade80;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .badge-radio {
+      background: rgba(59,130,246,0.1);
+      color: #2563eb;
+    }
+    :root.dark .badge-radio {
+      background: rgba(59,130,246,0.15);
+      color: #60a5fa;
+    }
+    .badge-hd {
+      background: rgba(139,92,246,0.1);
+      color: #7c3aed;
+    }
+    :root.dark .badge-hd {
+      background: rgba(139,92,246,0.15);
+      color: #a78bfa;
+    }
+    .badge-http {
+      background: rgba(245,158,11,0.1);
+      color: #b45309;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 100px;
+    }
+    :root.dark .badge-http {
+      background: rgba(245,158,11,0.15);
+      color: #fbbf24;
+    }
+
+    /* Go button */
+    .go-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700;
+      color: var(--accent); margin-top: 12px;
+      opacity: 0; transform: translateX(-6px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .channel-card:hover .go-btn {
+      opacity: 1; transform: translateX(0);
+    }
+    .go-btn svg { width: 14px; height: 14px; }
+
+    /* Animations */
     .stagger-in {
       opacity: 0;
-      transform: translateY(16px);
-      animation: staggerFadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      transform: translateY(20px);
+      animation: staggerFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     @keyframes staggerFadeIn {
       to { opacity: 1; transform: translateY(0); }
     }
-    .go-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #e5001a;
-      margin-top: 12px;
-      opacity: 0;
-      transform: translateX(-4px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
+
+    /* Footer */
+    .footer {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      padding: 24px; display: flex; align-items: center;
+      justify-content: center; flex-direction: column;
+      gap: 4px; font-size: 12px;
+      color: var(--secondary); border-top: 1px solid var(--border);
+      text-align: center;
     }
-    .channel-card:hover .go-btn {
-      opacity: 1;
-      transform: translateX(0);
+
+    /* Section labels */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--secondary); margin-bottom: 16px;
+      padding: 0 4px;
     }
-    .go-btn svg {
-      width: 14px;
-      height: 14px;
-    }
-    .badge-http {
-      background: rgba(245, 158, 11, 0.12);
-      color: #b45309;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 100px;
-      margin-top: 8px;
-    }
-    .dark .badge-http {
-      background: rgba(245, 158, 11, 0.18);
-      color: #fbbf24;
+    .section-label span {
+      display: inline-block; padding: 4px 12px;
+      background: var(--tertiary); border-radius: 8px;
     }
   </style>
 </head>
@@ -77,7 +298,7 @@
     </nav>
   </header>
 
-  <main class="main page-transition">
+  <main class="main">
     <div class="page-header">
       <h1>Live Streams</h1>
       <p>Watch Korean and Chinese television and radio broadcasts live.</p>
@@ -92,7 +313,7 @@
         <div class="channel-info">
           <h3>Korean Central Television</h3>
           <p>Live television broadcast from Pyongyang, DPRK. 24/7 news, cultural programs, and entertainment.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="badge-row">
             <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
           </div>
           <div class="go-btn">
@@ -109,7 +330,6 @@
         <div class="channel-icon">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--primary);overflow:visible">
             <defs>
-              <!-- Signal wave 1 -->
               <style>
                 @keyframes kcbs-wave1 {
                   0%   { opacity: 0; r: 2; }
@@ -180,53 +400,32 @@
               </style>
             </defs>
 
-            <!-- Signal rings emanating from antenna tip -->
             <circle class="kcbs-w1" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
             <circle class="kcbs-w2" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="1" fill="none"/>
             <circle class="kcbs-w3" cx="44" cy="6" r="2" stroke="currentColor" stroke-width="0.8" fill="none"/>
-
-            <!-- Antenna tip dot (pulsing) -->
             <circle class="kcbs-dot" cx="44" cy="6" r="1.5" fill="currentColor"/>
-
-            <!-- Antenna rod -->
             <line x1="44" y1="6" x2="36" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-            <!-- Radio body -->
             <rect x="6" y="18" width="52" height="36" rx="5" ry="5" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.06"/>
-
-            <!-- Speaker grille lines (each independently animated for sound wave feel) -->
             <line class="kcbs-gl1" x1="10" y1="26" x2="10" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <line class="kcbs-gl2" x1="13.5" y1="24" x2="13.5" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <line class="kcbs-gl3" x1="17" y1="23" x2="17" y2="49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <line class="kcbs-gl4" x1="20.5" y1="24" x2="20.5" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <line class="kcbs-gl5" x1="24" y1="26" x2="24" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-
-            <!-- Speaker grille border -->
             <rect x="8" y="22" width="18" height="28" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
-
-            <!-- Tuner dial area -->
             <rect x="30" y="22" width="26" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.08"/>
-
-            <!-- Tuner needle (sweeping left-right) -->
             <g class="kcbs-needle-g">
               <line x1="43" y1="24" x2="43" y2="34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
             </g>
-
-            <!-- Tuner scale ticks (static) -->
             <line x1="33" y1="24" x2="33" y2="27" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
             <line x1="37" y1="24" x2="37" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
             <line x1="41" y1="24" x2="41" y2="28" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
             <line x1="45" y1="24" x2="45" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
             <line x1="49" y1="24" x2="49" y2="27" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
             <line x1="53" y1="24" x2="53" y2="26" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-
-            <!-- Volume knob (slow wobble) -->
             <g class="kcbs-knob-vol">
               <circle cx="37" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
               <line x1="37" y1="40" x2="37" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </g>
-
-            <!-- Tuner knob (continuous spin) -->
             <g class="kcbs-knob-tune">
               <circle cx="51" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
               <line x1="53.5" y1="42" x2="52.2" y2="43.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -236,7 +435,7 @@
         <div class="channel-info">
           <h3>Korean Central Broadcasting Station</h3>
           <p>State radio broadcaster of the Democratic People's Republic of Korea. News, music, and cultural programming.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="badge-row">
             <span class="channel-badge badge-radio">RADIO</span>
             <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
           </div>
@@ -252,12 +451,12 @@
       <!-- Voice of Korea -->
       <a href="vok.html" class="channel-card stagger-in" style="animation-delay:0.15s">
         <div class="channel-icon">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px;max-width:48px;max-height:48px;object-fit:contain">
         </div>
         <div class="channel-info">
           <h3>Voice of Korea</h3>
           <p>International broadcasting service of the DPRK. Shortwave and internet radio in multiple languages.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="badge-row">
             <span class="channel-badge badge-radio">RADIO</span>
             <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
           </div>
@@ -270,109 +469,16 @@
         </div>
       </a>
 
-      <!-- CCTV-1 HD -->
+      <!-- CCTV-1 HD (only CCTV channel kept) -->
       <a href="cctv.html" class="channel-card stagger-in" style="animation-delay:0.2s">
         <div class="channel-icon">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/CCTV-1_Logo.svg" alt="CCTV-1" loading="lazy" style="width:56px">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/CCTV-1_Logo.svg" alt="CCTV-1" loading="lazy" style="width:44px">
         </div>
         <div class="channel-info">
           <h3>CCTV-1 HD</h3>
           <p>China Central Television flagship channel. News, documentaries, and entertainment with EPG.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="badge-row">
             <span class="channel-badge badge-hd">HD</span>
-            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
-          </div>
-          <div class="go-btn">
-            Watch Now
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-        </div>
-      </a>
-
-      <!-- CCTV-4K -->
-      <a href="cctv4k.html" class="channel-card stagger-in" style="animation-delay:0.25s">
-        <div class="channel-icon">
-          <img src="https://static.wikia.nocookie.net/logopedia/images/5/5c/CCTV-4k.png/revision/latest?cb=20220312213639" alt="CCTV-4K" loading="lazy" style="width:64px">
-        </div>
-        <div class="channel-info">
-          <h3>CCTV-4K</h3>
-          <p>China Central Television ultra-high definition channel. Premium 4K content and live events.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <span class="channel-badge badge-hd">4K</span>
-            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
-            <span class="channel-badge badge-http">
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-              HTTP
-            </span>
-          </div>
-          <div class="go-btn">
-            Watch Now
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-        </div>
-      </a>
-
-      <!-- CCTV-8K -->
-      <a href="cctv8k.html" class="channel-card stagger-in" style="animation-delay:0.3s">
-        <div class="channel-icon">
-          <img src="https://i.postimg.cc/FH5RQVy9/CCTV8K.webp" alt="CCTV-8K" loading="lazy" style="width:64px">
-        </div>
-        <div class="channel-info">
-          <h3>CCTV-8K</h3>
-          <p>China Central Television 8K super ultra-high definition channel. The highest resolution broadcast available.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <span class="channel-badge badge-hd">8K</span>
-            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
-            <span class="channel-badge badge-http">
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-              HTTP
-            </span>
-          </div>
-          <div class="go-btn">
-            Watch Now
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-        </div>
-      </a>
-      <!-- CCTV Weapons Technology -->
-      <a href="cctvweapons.html" class="channel-card stagger-in" style="animation-delay:0.35s">
-        <div class="channel-icon">
-          <img src="https://static.wikia.nocookie.net/logopedia/images/e/e6/CCTV-%E5%85%B5%E5%99%A8%E7%A7%91%E6%8A%80.png/revision/latest?cb=20230506143541" alt="CCTV Weapons Technology" loading="lazy" style="width:64px">
-        </div>
-        <div class="channel-info">
-          <h3>CCTV Weapons Technology Channel</h3>
-          <p>China Central Television's dedicated military and defence science channel. Coverage of weapons systems, aerospace technology, and national defence innovation.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
-            <span class="channel-badge badge-http">
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-              HTTP
-            </span>
-          </div>
-          <div class="go-btn">
-            Watch Now
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-        </div>
-      </a>
-
-      <!-- CCTV风云足球 -->
-      <a href="cctvfyzq.html" class="channel-card stagger-in" style="animation-delay:0.4s">
-        <div class="channel-icon">
-          <img src="https://i.postimg.cc/Bbrk6GQ1/5fdf8db1cb1349540923b7564b058558d109b3dedce4.png" alt="CCTV风云足球" loading="lazy" style="width:64px">
-        </div>
-        <div class="channel-info">
-          <h3>CCTV风云足球</h3>
-          <p>CCTV Sports & Football Channel — live coverage of the Chinese Super League, UEFA Champions League, and major international football tournaments, plus sports news and analysis.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <span class="channel-badge badge-live"><span class="badge-dot"></span>LIVE</span>
           </div>
           <div class="go-btn">
@@ -387,7 +493,7 @@
   </main>
 
   <footer class="footer">
-    <span> Juche TV. Not affiliated with any broadcasting entity.</span>
+    <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
     <span>All streams are publicly available sources.</span>
   </footer>
 
