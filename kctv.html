@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KCTV - Juche TV</title>
-  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <style>
     :root {
       --bg: #f6f7f9;
@@ -129,47 +128,18 @@
     }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* Video.js Player */
+    /* Playerjs container */
     .player-wrap {
       background: #000;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    }
-    .video-js {
-      width: 100% !important;
-      height: auto !important;
+      position: relative;
       aspect-ratio: 16 / 9;
     }
-    .video-js .vjs-big-play-button {
-      background: rgba(229, 0, 26, 0.85);
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      line-height: 60px;
-      font-size: 28px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      transition: all 0.2s ease;
-    }
-    .video-js .vjs-big-play-button:hover {
-      background: rgba(229, 0, 26, 1);
-      transform: translate(-50%, -50%) scale(1.1);
-    }
-    .video-js .vjs-control-bar {
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-    }
-    .video-js .vjs-play-progress {
-      background: #e5001a;
-    }
-    .video-js .vjs-slider {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .video-js .vjs-load-progress div {
-      background: rgba(255, 255, 255, 0.3);
+    #kctv-player {
+      width: 100%;
+      height: 100%;
     }
 
     /* Action row below player */
@@ -359,20 +329,7 @@
     </div>
 
     <div class="player-wrap">
-      <video
-        id="kctv-player"
-        class="video-js vjs-big-play-centered vjs-default-skin"
-        controls
-        preload="auto"
-        autoplay
-        muted
-        poster="https://koryo.tv/player_cover.png"
-        data-setup='{}'>
-        <p class="vjs-no-js">
-          To view this video please enable JavaScript, and consider upgrading to a web browser that
-          <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
-        </p>
-      </video>
+      <div id="kctv-player"></div>
     </div>
 
     <div class="action-row">
@@ -425,7 +382,7 @@
     </div>
   </div>
 
-  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="playerjs.js"></script>
   <script>
     // ===================== STREAM PROTECTION =====================
     (function() {
@@ -476,170 +433,61 @@
         var streamUrl = _d();
         if (!streamUrl) return;
 
-        // ===================== VHS CONFIG =====================
-        // Japan server has PCR/timestamp drift causing VHS to speed up/slow down.
-        // These settings make VHS more tolerant of bad timestamps:
-        //   - overrideNative: true       -> Forces Video.js VHS engine (fixes Android HLS)
-        //   - limitRenditionByPlayerDimensions: false
-        //   - useDevicePixelRatio: false -> Prevents quality thrashing
-        //   - handlePartialData: false   -> Avoids timestamp fragmentation issues
-        //   - smoothQualityChange: true  -> Prevents jarring quality switches
-        //   - allowSeeksWithinUnsafeLiveWindow: true
-        // ===================== PLAYBACK RATE NORMALIZER =====================
-        // Forces 1x speed always — blocks VHS from "catching up" via speed changes.
-        // ===================== SEEK/BUFFER STABILIZER =====================
-        // Prevents VHS from over-seeking on timestamp discontinuities.
-        // ===================== ERROR RECOVERY =====================
-        // Exponential backoff retry instead of flat 5s delays.
-
-        var player = videojs('kctv-player', {
-          html5: {
-            vhs: {
-              overrideNative: true,
-              limitRenditionByPlayerDimensions: false,
-              useDevicePixelRatio: false,
-              handlePartialData: false,
-              handleManifestRedirects: true,
-              bandwidth: _isMobile ? 2500000 : 5000000,
-              smoothQualityChange: true,
-              allowSeeksWithinUnsafeLiveWindow: true
-            }
-          },
-          liveui: true,
-          fluid: true,
-          playbackRates: [1],
-          preload: 'auto'
-        });
-
-        player.src({
-          src: streamUrl,
-          type: 'application/x-mpegURL'
-        });
-
-        // ===================== PLAYBACK RATE NORMALIZER =====================
-        var _rateFixInterval = setInterval(function() {
-          if (player && !player.paused() && player.playbackRate() !== 1) {
-            console.log('[KCTV] Rate drift detected: ' + player.playbackRate() + 'x, forcing 1x');
-            player.playbackRate(1);
-          }
-        }, 500);
-
-        player.on('ratechange', function() {
-          var r = player.playbackRate();
-          if (r !== 1) {
-            console.log('[KCTV] Blocking rate change to ' + r + 'x');
-            player.playbackRate(1);
-          }
-        });
-
-        // ===================== SEEK / BUFFER STABILIZER =====================
-        player.on('seeking', function() {
-          var bufEnd = 0;
-          try { bufEnd = player.bufferedEnd(); } catch(e) {}
-          if (player.currentTime() > bufEnd + 2) {
-            console.log('[KCTV] Preventing seek beyond buffer end');
-            player.currentTime(Math.max(0, bufEnd - 1));
-          }
-        });
-
-        // ===================== AUTO-PLAY =====================
-        player.ready(function() {
-          player.playbackRate(1);
-          // Android needs muted autoplay + short delay
-          if (_isAndroid) {
-            player.muted(true);
-            setTimeout(function() {
-              player.play().catch(function(err) {
-                console.log('[KCTV] Android autoplay prevented:', err);
-              });
-            }, 300);
+        // ===================== PLAYERJS SETUP =====================
+        // Wait for Playerjs to be available (loaded externally by the site)
+        function waitForPlayerjs(cb) {
+          if (typeof Playerjs !== 'undefined') {
+            cb();
           } else {
-            player.play().catch(function(err) {
-              console.log('[KCTV] Autoplay prevented:', err);
-            });
+            setTimeout(function() { waitForPlayerjs(cb); }, 50);
           }
-        });
-
-        // ===================== ERROR RECOVERY =====================
-        var _errorCount = 0;
-        var _maxErrors = 5;
-        var _errorResetTimer = null;
-
-        player.on('error', function() {
-          var error = player.error();
-          console.log('[KCTV] Player error:', error);
-          _errorCount++;
-
-          if (_errorCount > _maxErrors) {
-            console.log('[KCTV] Too many errors, stopping retry');
-            return;
-          }
-
-          // Exponential backoff: 3s, 6s, 12s, 24s, 48s
-          var delay = Math.min(3000 * Math.pow(2, _errorCount - 1), 48000);
-          console.log('[KCTV] Retrying in ' + delay + 'ms (attempt ' + _errorCount + ')');
-
-          setTimeout(function() {
-            var currentTime = player.currentTime();
-            player.src({
-              src: streamUrl,
-              type: 'application/x-mpegURL'
-            });
-            player.ready(function() {
-              player.play().catch(function(){});
-              if (currentTime > 0) {
-                try { player.currentTime(currentTime); } catch(e) {}
-              }
-            });
-          }, delay);
-
-          clearTimeout(_errorResetTimer);
-          _errorResetTimer = setTimeout(function() { _errorCount = 0; }, 30000);
-        });
-
-        // ===================== BUFFER STALL RECOVERY =====================
-        // Detects when playback stalls and nudges the player
-        var _lastTime = 0;
-        var _stallCheckInterval = setInterval(function() {
-          if (!player || player.paused() || player.ended()) return;
-          var ct = player.currentTime();
-          if (ct === _lastTime && ct > 0) {
-            console.log('[KCTV] Buffer stall detected, nudging playback');
-            player.currentTime(ct + 0.1);
-          }
-          _lastTime = ct;
-        }, 4000);
-
-        // ===================== CLEANUP =====================
-        window.addEventListener('beforeunload', function() {
-          clearInterval(_rateFixInterval);
-          clearInterval(_stallCheckInterval);
-          clearTimeout(_errorResetTimer);
-        });
-
-        // ===================== EMBED CODE UPDATE =====================
-        var embedTextarea = document.getElementById('embedCodeText');
-        if (embedTextarea) {
-          var embedCode = '<div style="position:relative;width:100%;padding-top:56.25%;border-radius:16px;overflow:hidden;background:#000;">\n' +
-            '  <video id="embedded-kctv" class="video-js vjs-default-skin" controls preload="auto" autoplay muted\n' +
-            '    style="position:absolute;inset:0;width:100%;height:100%;"\n' +
-            '    poster="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">\n' +
-            '    <p class="vjs-no-js">To view this video please enable JavaScript.</p>\n' +
-            '  </video>\n' +
-            '</div>\n' +
-            '<script src="https://vjs.zencdn.net/8.10.0/video.min.js"><\/script>\n' +
-            '<script>\n' +
-            '  var player = videojs("embedded-kctv", {\n' +
-            '    html5: { vhs: { overrideNative: true, limitRenditionByPlayerDimensions: false, smoothQualityChange: true } },\n' +
-            '    liveui: true, fluid: true, playbackRates: [1]\n' +
-            '  });\n' +
-            '  player.src({ src: "' + streamUrl + '", type: "application/x-mpegURL" });\n' +
-            '  setInterval(function() { if (!player.paused() && player.playbackRate() !== 1) player.playbackRate(1); }, 500);\n' +
-            '  player.on("ratechange", function() { if (player.playbackRate() !== 1) player.playbackRate(1); });\n' +
-            '  player.play();\n' +
-            '<\/script>';
-          embedTextarea.value = embedCode;
         }
+
+        waitForPlayerjs(function() {
+          var player = new Playerjs({
+            id: 'kctv-player',
+            file: streamUrl,
+            poster: 'https://koryo.tv/player_cover.png',
+            autoplay: 1,
+            muted: _isAndroid ? 1 : 1,
+            live: 1
+          });
+
+          // ===================== ERROR RECOVERY =====================
+          var _errorCount = 0;
+          var _maxErrors = 5;
+          var _errorResetTimer = null;
+
+          player.api('addEventListener', 'error', function() {
+            _errorCount++;
+            if (_errorCount > _maxErrors) return;
+            var delay = Math.min(3000 * Math.pow(2, _errorCount - 1), 48000);
+            setTimeout(function() {
+              player.api('src', streamUrl);
+            }, delay);
+            clearTimeout(_errorResetTimer);
+            _errorResetTimer = setTimeout(function() { _errorCount = 0; }, 30000);
+          });
+
+          // ===================== EMBED CODE UPDATE =====================
+          var embedTextarea = document.getElementById('embedCodeText');
+          if (embedTextarea) {
+            var embedCode = '<div style="position:relative;width:100%;padding-top:56.25%;border-radius:16px;overflow:hidden;background:#000;">\n' +
+              '  <div id="embedded-kctv"></div>\n' +
+              '</div>\n' +
+              '<script src="playerjs.js"><\/script>\n' +
+              '<script>\n' +
+              '  var player = new Playerjs({\n' +
+              '    id: "embedded-kctv",\n' +
+              '    file: "' + streamUrl + '",\n' +
+              '    autoplay: 1,\n' +
+              '    muted: 1,\n' +
+              '    live: 1\n' +
+              '  });\n' +
+              '<\/script>';
+            embedTextarea.value = embedCode;
+          }
+        });
       }
 
       if (document.readyState === 'loading') {
