@@ -3,94 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
   <title>KCTV Archives - Juche TV</title>
   <style>
     :root {
-      --bg: #f6f7f9;
-      --theme: #ffffff;
-      --entry: #ffffff;
-      --primary: #1a1a1a;
-      --secondary: #6b7280;
-      --border: #e5e7eb;
-      --tertiary: #f3f4f6;
-      --radius: 14px;
-      --accent: #e5001a;
-      --accent-light: rgba(229,0,26,0.08);
-      --player-bg: #0a0a0a;
-      --player-bar: rgba(10,10,10,0.92);
-      --player-track: rgba(255,255,255,0.15);
-      --player-buffered: rgba(255,255,255,0.3);
-      --player-played: #e5001a;
-      --player-text: rgba(255,255,255,0.9);
-      --player-muted: rgba(255,255,255,0.4);
+      --bg: #F2F2F7;
+      --elevated: #FFFFFF;
+      --primary: #1C1C1E;
+      --secondary: #8E8E93;
+      --tertiary: #C7C7CC;
+      --separator: rgba(60, 60, 67, 0.1);
+      --separator-dark: rgba(140, 140, 147, 0.24);
+      --tint: #007AFF;
+      --tint-secondary: #5856D6;
+      --red: #FF3B30;
+      --green: #34C759;
+      --orange: #FF9500;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     }
     :root.dark {
-      --bg: #0a0a0f;
-      --theme: #14141a;
-      --entry: #1a1a22;
-      --primary: #f0f0f5;
-      --secondary: #8888a0;
-      --border: #2a2a3a;
-      --tertiary: #22222e;
+      --bg: #000000;
+      --elevated: #1C1C1E;
+      --primary: #F2F2F7;
+      --secondary: #8E8E93;
+      --tertiary: #48484A;
+      --separator: rgba(140, 140, 147, 0.24);
+      --tint: #0A84FF;
+      --tint-secondary: #5E5CE6;
+      --green: #30D158;
+      --red: #FF453A;
+      --orange: #FF9F0A;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg); color: var(--primary);
+      min-height: 100vh; display: flex; flex-direction: column;
       transition: background 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== HEADER ===== */
-    .header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--theme);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
+    /* === NAV === */
     .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(242,242,247,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 0.5px solid var(--separator);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    :root.dark .nav { background: rgba(28,28,30,0.72); }
+    .nav-inner {
       max-width: 1200px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 56px;
+      padding: 0 20px; height: 52px;
     }
     .logo {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 17px; font-weight: 700; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.3px;
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.5px;
     }
-    .logo svg { width: 22px; height: 22px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #FF2D55, #FF9500);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .logo-icon svg { width: 16px; height: 16px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
     #menu a {
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       text-decoration: none; padding: 6px 12px; border-radius: 8px;
       transition: all 0.2s ease;
     }
-    #menu a:hover { color: var(--primary); background: var(--tertiary); }
-    .theme-toggle {
-      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-      background: var(--tertiary); cursor: pointer; display: flex;
-      align-items: center; justify-content: center; color: var(--secondary);
-      transition: all 0.2s ease;
+    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
+    .nav-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: transparent; color: var(--secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
-    .theme-toggle svg { width: 18px; height: 18px; }
+    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
+    .nav-btn svg { width: 18px; height: 18px; }
     .lang-wrap { position: relative; }
     .lang-btn {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 500; padding: 6px 12px;
-      border-radius: 8px; border: 1px solid var(--border);
-      background: var(--tertiary); color: var(--secondary);
+      font-size: 12px; font-weight: 600; padding: 6px 12px;
+      border-radius: 8px; border: none;
+      background: transparent; color: var(--secondary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
     .lang-menu {
       display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
-      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
-      overflow: hidden;
+      min-width: 160px; background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
     }
     .lang-menu.show { display: block; }
     .lang-option {
@@ -98,641 +115,264 @@
       padding: 10px 14px; font-size: 13px; cursor: pointer;
       transition: background 0.12s; color: var(--primary);
     }
-    .lang-option:hover { background: var(--tertiary); }
-    .lang-option.active { font-weight: 600; }
-    .lang-option.active::after { content: '\2713'; color: var(--accent); font-size: 12px; }
+    .lang-option:hover { background: rgba(0,0,0,0.04); }
+    .lang-option.active { font-weight: 700; }
+    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
 
-    /* ===== MAIN ===== */
+    /* === MAIN === */
     .main {
       flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 28px 20px 40px;
     }
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       margin-bottom: 16px; padding: 4px 0;
       transition: color 0.2s ease; text-decoration: none;
       cursor: pointer;
     }
-    .back-link:hover { color: var(--primary); }
+    .back-link:hover { color: var(--tint); }
     .back-link svg { width: 16px; height: 16px; }
     .page-header {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; gap: 14px;
       margin-bottom: 20px; flex-wrap: wrap;
     }
     .page-header img {
       width: 48px; height: 48px; object-fit: contain;
-      background: var(--tertiary); border-radius: 12px; padding: 6px;
+      background: var(--elevated); border-radius: var(--radius-sm);
+      padding: 6px; border: 0.5px solid var(--separator);
     }
-    .page-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
     .page-header p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
-    /* ===== NOTICE BANNER ===== */
+    /* === Notice Banner === */
     .notice-banner {
-      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
-      border: 1px solid rgba(245,158,11,0.25);
-      border-radius: var(--radius);
-      padding: 16px 20px;
+      background: rgba(255, 149, 0, 0.06);
+      border: 0.5px solid rgba(255, 149, 0, 0.2);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
       margin-bottom: 24px;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--primary);
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; line-height: 1.6; color: var(--primary);
     }
-    :root.dark .notice-banner {
-      background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
-      border-color: rgba(245,158,11,0.3);
-    }
-    .notice-banner svg {
-      width: 22px; height: 22px;
-      color: #f59e0b;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .notice-banner strong {
-      font-weight: 700;
-      color: #b45309;
-    }
-    :root.dark .notice-banner strong { color: #fbbf24; }
+    .notice-banner svg { width: 20px; height: 20px; color: var(--orange); flex-shrink: 0; margin-top: 1px; }
+    .notice-banner strong { font-weight: 700; color: var(--orange); }
     .notice-banner code {
-      background: rgba(245,158,11,0.15);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12px;
-      font-weight: 600;
+      background: rgba(255,149,0,0.12); padding: 1px 6px;
+      border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; font-weight: 600;
     }
 
-    /* ===== CUSTOM VIDEO PLAYER ===== */
+    /* === VOD Player === */
     .vod-player {
-      position: relative;
-      width: 100%;
+      position: relative; width: 100%;
       background: #000;
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
       margin-bottom: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      user-select: none;
-      outline: none;
+      box-shadow: var(--shadow-lg);
+      user-select: none; outline: none;
+      border: 0.5px solid var(--separator);
     }
-    .vod-player::before {
-      content: '';
-      display: block;
-      padding-top: 56.25%;
-    }
+    .vod-player::before { content: ''; display: block; padding-top: 56.25%; }
     .vod-player video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #000;
-      cursor: pointer;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: contain; background: #000; cursor: pointer;
     }
-
-    /* Loading spinner */
     .vod-loader {
-      position: absolute;
-      top: 50%; left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 48px;
-      height: 48px;
-      z-index: 5;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      width: 44px; height: 44px; z-index: 5;
+      pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
     }
     .vod-loader.show { opacity: 1; }
-    .vod-loader svg {
-      width: 100%; height: 100%;
-      animation: vodSpin 1s linear infinite;
-    }
+    .vod-loader svg { width: 100%; height: 100%; animation: vodSpin 1s linear infinite; }
     @keyframes vodSpin { 100% { transform: rotate(360deg); } }
-
-    /* Big play button overlay */
     .vod-big-play {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: rgba(229,0,26,0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 4;
-      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-      opacity: 0;
-      pointer-events: none;
-      box-shadow: 0 4px 24px rgba(229,0,26,0.4);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(0,122,255,0.9); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 4; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      opacity: 0; pointer-events: none; box-shadow: 0 4px 20px rgba(0,122,255,0.35);
     }
-    .vod-big-play.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .vod-big-play:hover {
-      transform: translate(-50%, -50%) scale(1.08);
-      background: rgba(229,0,26,0.95);
-    }
-    .vod-big-play svg {
-      width: 32px;
-      height: 32px;
-      color: #fff;
-      margin-left: 4px;
-    }
-
-    /* Center play indicator (brief flash) */
+    .vod-big-play.show { opacity: 1; pointer-events: all; }
+    .vod-big-play:hover { transform: translate(-50%, -50%) scale(1.08); background: rgba(0,122,255,1); }
+    .vod-big-play svg { width: 28px; height: 28px; color: #fff; margin-left: 4px; }
     .vod-center-icon {
-      position: absolute;
-      top: 50%; left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%) scale(0.6);
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 4;
-      opacity: 0;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 4; opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
       pointer-events: none;
     }
-    .vod-center-icon.flash {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .vod-center-icon svg {
-      width: 24px; height: 24px;
-      color: #fff;
-    }
-
-    /* Title overlay (top) */
+    .vod-center-icon.flash { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .vod-center-icon svg { width: 22px; height: 22px; color: #fff; }
     .vod-title-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      padding: 16px 20px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
+      position: absolute; top: 0; left: 0; right: 0;
+      padding: 16px 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
+      z-index: 3; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
     }
-    .vod-title-overlay.show {
-      opacity: 1;
-    }
-    .vod-title-overlay h4 {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .vod-title-overlay p {
-      color: rgba(255,255,255,0.6);
-      font-size: 12px;
-      margin-top: 2px;
-    }
+    .vod-title-overlay.show { opacity: 1; }
+    .vod-title-overlay h4 { color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vod-title-overlay p { color: rgba(255,255,255,0.55); font-size: 11px; margin-top: 2px; }
 
-    /* Control bar */
+    /* Controls */
     .vod-controls {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
+      position: absolute; bottom: 0; left: 0; right: 0;
       padding: 20px 16px 12px;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      pointer-events: none;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.45) 60%, transparent 100%);
+      z-index: 3; opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
     }
-    .vod-controls.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    /* Progress bar area */
-    .vod-progress-area {
-      position: relative;
-      width: 100%;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-    .vod-progress-track {
-      width: 100%;
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.2);
-      position: relative;
-      overflow: visible;
-      transition: height 0.15s ease;
-    }
-    .vod-progress-area:hover .vod-progress-track {
-      height: 5px;
-    }
-    .vod-progress-buffered {
-      position: absolute;
-      top: 0; left: 0;
-      height: 100%;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.35);
-      transition: width 0.2s linear;
-    }
-    .vod-progress-played {
-      position: absolute;
-      top: 0; left: 0;
-      height: 100%;
-      border-radius: 2px;
-      background: linear-gradient(90deg, #ff1a33, #e5001a);
-      transition: width 0.1s linear;
-    }
-    .vod-progress-thumb {
-      position: absolute;
-      top: 50%;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.4);
-      transform: translate(-50%, -50%) scale(0);
-      transition: transform 0.15s ease;
-      pointer-events: none;
-    }
-    .vod-progress-area:hover .vod-progress-thumb,
-    .vod-progress-area.seeking .vod-progress-thumb {
-      transform: translate(-50%, -50%) scale(1);
-    }
-    /* Time tooltip on hover */
-    .vod-time-tooltip {
-      position: absolute;
-      bottom: 24px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.85);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 8px;
-      border-radius: 4px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s ease;
-      white-space: nowrap;
-    }
-    .vod-progress-area:hover .vod-time-tooltip.visible {
-      opacity: 1;
-    }
-
-    /* Control buttons row */
-    .vod-controls-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .vod-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-      opacity: 0.85;
-    }
-    .vod-btn:hover {
-      opacity: 1;
-      background: rgba(255,255,255,0.1);
-    }
-    .vod-btn svg {
-      width: 20px;
-      height: 20px;
-    }
-    .vod-btn.play-btn svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    /* Time display */
-    .vod-time {
-      color: rgba(255,255,255,0.85);
-      font-size: 12px;
-      font-variant-numeric: tabular-nums;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      margin: 0 8px;
-      white-space: nowrap;
-      min-width: 100px;
-      letter-spacing: 0.3px;
-    }
-    .vod-time .vod-time-sep {
-      color: rgba(255,255,255,0.4);
-      margin: 0 3px;
-    }
-
-    /* Volume */
-    .vod-volume-wrap {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      position: relative;
-    }
-    .vod-volume-slider {
-      width: 0;
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.15);
-      position: relative;
-      cursor: pointer;
-      overflow: hidden;
-      transition: width 0.2s ease;
-    }
-    .vod-volume-wrap:hover .vod-volume-slider {
-      width: 70px;
-    }
-    .vod-volume-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: #fff;
-      transition: width 0.05s linear;
-    }
-
-    /* Spacer */
+    .vod-controls.show { opacity: 1; pointer-events: all; }
+    .vod-progress-area { position: relative; width: 100%; height: 20px; display: flex; align-items: center; cursor: pointer; margin-bottom: 8px; }
+    .vod-progress-track { width: 100%; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.18); position: relative; overflow: visible; transition: height 0.15s ease; }
+    .vod-progress-area:hover .vod-progress-track { height: 4px; }
+    .vod-progress-buffered { position: absolute; top: 0; left: 0; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.3); transition: width 0.2s linear; }
+    .vod-progress-played { position: absolute; top: 0; left: 0; height: 100%; border-radius: 2px; background: var(--tint); transition: width 0.1s linear; }
+    .vod-progress-thumb { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,0.35); transform: translate(-50%, -50%) scale(0); transition: transform 0.15s ease; pointer-events: none; }
+    .vod-progress-area:hover .vod-progress-thumb, .vod-progress-area.seeking .vod-progress-thumb { transform: translate(-50%, -50%) scale(1); }
+    .vod-time-tooltip { position: absolute; bottom: 22px; transform: translateX(-50%); background: rgba(28,28,30,0.9); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; pointer-events: none; opacity: 0; transition: opacity 0.15s ease; white-space: nowrap; }
+    .vod-progress-area:hover .vod-time-tooltip.visible { opacity: 1; }
+    .vod-controls-row { display: flex; align-items: center; gap: 4px; }
+    .vod-btn { background: none; border: none; color: #fff; cursor: pointer; padding: 5px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; opacity: 0.85; }
+    .vod-btn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+    .vod-btn svg { width: 18px; height: 18px; }
+    .vod-btn.play-btn svg { width: 20px; height: 20px; }
+    .vod-time { color: rgba(255,255,255,0.8); font-size: 11px; font-variant-numeric: tabular-nums; font-family: 'SF Mono', 'Fira Code', monospace; margin: 0 6px; white-space: nowrap; letter-spacing: 0.3px; }
+    .vod-time .vod-time-sep { color: rgba(255,255,255,0.3); margin: 0 2px; }
+    .vod-volume-wrap { display: flex; align-items: center; gap: 3px; position: relative; }
+    .vod-volume-slider { width: 0; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.12); position: relative; cursor: pointer; overflow: hidden; transition: width 0.2s ease; }
+    .vod-volume-wrap:hover .vod-volume-slider { width: 60px; }
+    .vod-volume-fill { height: 100%; border-radius: 2px; background: #fff; transition: width 0.05s linear; }
     .vod-spacer { flex: 1; }
-
-    /* Settings / Speed */
     .vod-settings-menu {
-      position: absolute;
-      bottom: calc(100% + 8px);
-      right: 0;
-      background: rgba(20,20,25,0.96);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 6px;
-      min-width: 140px;
-      display: none;
-      z-index: 10;
+      position: absolute; bottom: calc(100% + 8px); right: 0;
+      background: rgba(28,28,30,0.96); border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 5px; min-width: 130px; display: none; z-index: 10;
       backdrop-filter: blur(12px);
     }
     .vod-settings-menu.show { display: block; }
-    .vod-settings-menu .vod-setting-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 6px 10px 4px;
-    }
-    .vod-speed-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.8);
-      cursor: pointer;
-      transition: background 0.12s;
-    }
-    .vod-speed-option:hover {
-      background: rgba(255,255,255,0.08);
-    }
-    .vod-speed-option.active {
-      color: #fff;
-      font-weight: 600;
-    }
-    .vod-speed-option.active::after {
-      content: '\2713';
-      color: var(--accent);
-      font-size: 11px;
-    }
-    .vod-settings-wrap {
-      position: relative;
-    }
+    .vod-settings-menu .vod-setting-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; padding: 5px 10px 3px; }
+    .vod-speed-option { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: 5px; font-size: 12px; color: rgba(255,255,255,0.75); cursor: pointer; transition: background 0.12s; }
+    .vod-speed-option:hover { background: rgba(255,255,255,0.08); }
+    .vod-speed-option.active { color: #fff; font-weight: 600; }
+    .vod-speed-option.active::after { content: '\2713'; color: var(--tint); font-size: 10px; }
+    .vod-settings-wrap { position: relative; }
+    .vod-skip-overlay { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); border-radius: 10px; padding: 10px; cursor: pointer; z-index: 3; opacity: 0; transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none; }
+    .vod-skip-overlay.show { opacity: 1; pointer-events: all; }
+    .vod-skip-overlay:hover { background: rgba(0,0,0,0.55); }
+    .vod-skip-overlay svg { width: 20px; height: 20px; color: #fff; }
+    .vod-skip-prev { left: 10px; }
+    .vod-skip-next { right: 10px; }
 
-    /* Play next/prev overlay arrows */
-    .vod-skip-overlay {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      border-radius: 12px;
-      padding: 12px;
-      cursor: pointer;
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 0.2s ease, background 0.2s ease;
-      pointer-events: none;
-    }
-    .vod-skip-overlay.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .vod-skip-overlay:hover {
-      background: rgba(0,0,0,0.6);
-    }
-    .vod-skip-overlay svg {
-      width: 24px; height: 24px;
-      color: #fff;
-    }
-    .vod-skip-prev { left: 12px; }
-    .vod-skip-next { right: 12px; }
-
-    /* ===== STATES ===== */
-    .loading {
-      text-align: center; padding: 48px;
-      color: var(--secondary); font-size: 14px;
-    }
-    .loading svg {
-      width: 32px; height: 32px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;
-    }
+    /* States */
+    .loading { text-align: center; padding: 48px; color: var(--secondary); font-size: 14px; }
+    .loading svg { width: 28px; height: 28px; animation: spin 1s linear infinite; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .error {
-      text-align: center; padding: 48px 24px;
-      color: var(--secondary);
-    }
-    .error-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+    .error { text-align: center; padding: 48px 24px; color: var(--secondary); }
+    .error-title { font-size: 15px; font-weight: 700; color: var(--tint); margin-bottom: 8px; }
     .error-msg { font-size: 13px; margin-bottom: 16px; }
     .retry-btn {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 13px; font-weight: 600; padding: 8px 18px;
-      border-radius: 100px; border: 1px solid var(--border);
-      background: var(--theme); color: var(--primary);
+      border-radius: 100px; border: 0.5px solid var(--separator);
+      background: var(--elevated); color: var(--primary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .retry-btn:hover { background: var(--tertiary); border-color: var(--secondary); }
+    .retry-btn:hover { background: var(--bg); border-color: var(--tertiary); }
 
-    /* ===== FOLDER GRID ===== */
-    .folder-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
+    /* Folder Grid */
+    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
     .folder-card {
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      background: var(--elevated); border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md); padding: 18px;
+      cursor: pointer; transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 12px;
     }
-    .folder-card:hover {
-      border-color: var(--secondary);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
-    }
+    .folder-card:hover { border-color: var(--tertiary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .folder-card:active { transform: translateY(0); }
     .folder-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      background: var(--accent-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 11px;
+      background: rgba(0,122,255,0.08); display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .folder-icon svg { width: 24px; height: 24px; color: var(--accent); }
-    .folder-info h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .folder-icon svg { width: 20px; height: 20px; color: var(--tint); }
+    .folder-info h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.2px; }
     .folder-info p { font-size: 12px; color: var(--secondary); }
 
-    /* ===== TIMELINE ===== */
-    .timeline-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .timeline-header h2 { font-size: 16px; font-weight: 600; }
-    .timeline-count {
-      font-size: 12px; color: var(--secondary);
-      background: var(--tertiary); padding: 4px 12px;
-      border-radius: 100px;
-    }
-    .timeline { display: flex; flex-direction: column; gap: 8px; }
+    /* Timeline */
+    .timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .timeline-header h2 { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+    .timeline-count { font-size: 12px; color: var(--secondary); background: var(--bg); padding: 3px 12px; border-radius: 100px; font-weight: 600; }
+    .timeline { display: flex; flex-direction: column; gap: 6px; }
     .timeline-item {
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      background: var(--elevated); border: 0.5px solid var(--separator);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .timeline-item:hover {
-      border-color: var(--accent);
-      box-shadow: 0 2px 12px rgba(229,0,26,0.08);
-    }
-    .timeline-item.playing {
-      border-color: var(--accent);
-      background: var(--accent-light);
-    }
-    .timeline-item.playing .play-icon {
-      background: var(--accent);
-      color: #fff;
-    }
+    .timeline-item:hover { border-color: var(--tint); box-shadow: 0 2px 10px rgba(0,122,255,0.06); }
+    .timeline-item.playing { border-color: var(--tint); background: rgba(0,122,255,0.04); }
+    .timeline-item.playing .play-icon { background: var(--tint); color: #fff; }
     .play-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      background: var(--tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
+      width: 34px; height: 34px; border-radius: 9px;
+      background: var(--bg); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; transition: all 0.2s ease;
     }
-    .play-icon svg { width: 16px; height: 16px; }
+    .play-icon svg { width: 14px; height: 14px; }
     .timeline-meta { flex: 1; min-width: 0; }
-    .timeline-meta h4 {
-      font-size: 13px; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      margin-bottom: 2px;
-    }
-    .timeline-meta p {
-      font-size: 12px; color: var(--secondary);
-      font-family: 'SF Mono', monospace;
-    }
-    .timeline-actions {
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
-    }
+    .timeline-meta h4 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .timeline-meta p { font-size: 11px; color: var(--secondary); font-family: 'SF Mono', monospace; }
+    .timeline-actions { display: flex; gap: 6px; flex-shrink: 0; }
     .timeline-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--tertiary);
-      color: var(--primary);
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; padding: 5px 10px;
+      border-radius: 7px; border: 0.5px solid var(--separator);
+      background: var(--bg); color: var(--primary);
+      cursor: pointer; text-decoration: none; transition: all 0.15s ease;
     }
-    .timeline-btn:hover { background: var(--border); }
+    .timeline-btn:hover { background: var(--separator); }
 
-    /* Player info below video */
-    .player-meta {
-      margin-bottom: 24px;
-      padding: 0 4px;
-    }
-    .player-meta h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .player-meta p {
-      font-size: 13px;
-      color: var(--secondary);
-    }
+    /* Player Meta */
+    .player-meta { margin-bottom: 24px; padding: 0 4px; }
+    .player-meta h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.2px; }
+    .player-meta p { font-size: 13px; color: var(--secondary); }
 
+    /* Footer */
     .footer {
       max-width: 1200px; width: 100%; margin: 0 auto;
       padding: 20px; display: flex; align-items: center;
       justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 1px solid var(--border);
+      color: var(--secondary); border-top: 0.5px solid var(--separator);
     }
     .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--primary); }
+    .footer a:hover { color: var(--tint); }
 
     @media (max-width: 640px) {
       .folder-grid { grid-template-columns: 1fr; }
       .page-header h1 { font-size: 18px; }
       .notice-banner { flex-direction: column; gap: 10px; }
       .timeline-actions { display: none; }
-      .vod-big-play { width: 60px; height: 60px; }
-      .vod-big-play svg { width: 24px; height: 24px; }
+      .vod-big-play { width: 56px; height: 56px; }
+      .vod-big-play svg { width: 22px; height: 22px; }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <nav class="nav">
-      <a href="kctv.html" class="logo">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span data-i18n="brand">Juche TV</span>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span>Juche TV</span>
       </a>
       <ul id="menu">
-        <li><a href="index.html" data-i18n="channels">Channels</a></li>
-        <li><a href="kctv.html" data-i18n="back">Back to KCTV</a></li>
+        <li><a href="index.html">Channels</a></li>
+        <li><a href="kctv.html">Back to KCTV</a></li>
         <li>
           <div class="lang-wrap">
             <button class="lang-btn" id="langBtn">
@@ -746,77 +386,63 @@
           </div>
         </li>
         <li>
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <button class="nav-btn" id="themeToggle" title="Toggle theme">
             <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
             <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
         </li>
       </ul>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
   <main class="main">
     <a class="back-link" id="backLink" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span data-i18n="backToFolders">Back to Folders</span>
+      Back to Folders
     </a>
 
     <div class="page-header">
       <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV">
       <div>
-        <h1 data-i18n="archivesTitle">KCTV Archives</h1>
-        <p data-i18n="archivesDesc">Browse and watch recorded broadcasts from Korean Central Television.</p>
+        <h1>KCTV Archives</h1>
+        <p>Browse and watch recorded broadcasts from Korean Central Television.</p>
       </div>
     </div>
 
     <div class="notice-banner" id="noticeBanner">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
       </svg>
       <div>
-        <strong data-i18n="noticeTitle">Video Quality Notice</strong>
-        <p data-i18n="noticeText">Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC's &quot;Yadif&quot; or <code>ffmpeg -vf yadif</code>) for proper viewing.</p>
+        <strong>Video Quality Notice</strong>
+        <p>Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC's "Yadif" or <code>ffmpeg -vf yadif</code>) for proper viewing.</p>
       </div>
     </div>
 
-    <!-- ===== CUSTOM VOD PLAYER ===== -->
+    <!-- Custom VOD Player -->
     <div class="vod-player" id="vodPlayer" style="display:none" tabindex="0">
       <video id="videoEl" preload="metadata" playsinline></video>
-
-      <!-- Loader -->
       <div class="vod-loader" id="vodLoader">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
       </div>
-
-      <!-- Big Play Button -->
       <div class="vod-big-play" id="vodBigPlay">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </div>
-
-      <!-- Center Play/Pause Indicator -->
       <div class="vod-center-icon" id="vodCenterIcon">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </div>
-
-      <!-- Title Overlay (top) -->
       <div class="vod-title-overlay" id="vodTitleOverlay">
         <h4 id="vodOverlayTitle">-</h4>
         <p id="vodOverlayDate">-</p>
       </div>
-
-      <!-- Skip Buttons -->
       <div class="vod-skip-overlay vod-skip-prev" id="vodSkipPrev" title="Previous">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
       </div>
       <div class="vod-skip-overlay vod-skip-next" id="vodSkipNext" title="Next">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
       </div>
-
-      <!-- Controls -->
       <div class="vod-controls" id="vodControls">
-        <!-- Progress Bar -->
         <div class="vod-progress-area" id="vodProgressArea">
           <div class="vod-progress-track" id="vodProgressTrack">
             <div class="vod-progress-buffered" id="vodProgressBuffered"></div>
@@ -825,34 +451,25 @@
           </div>
           <div class="vod-time-tooltip" id="vodTimeTooltip">0:00</div>
         </div>
-
-        <!-- Buttons Row -->
         <div class="vod-controls-row">
           <button class="vod-btn play-btn" id="vodPlayBtn" title="Play/Pause (Space)">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </button>
-
           <button class="vod-btn" id="vodNextBtn" title="Next">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
           </button>
-
           <div class="vod-volume-wrap">
             <button class="vod-btn" id="vodMuteBtn" title="Mute (M)">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
             </button>
             <div class="vod-volume-slider" id="vodVolumeSlider">
               <div class="vod-volume-fill" id="vodVolumeFill" style="width:100%"></div>
             </div>
           </div>
-
           <div class="vod-time" id="vodTimeDisplay">
-            <span id="vodCurrentTime">0:00</span>
-            <span class="vod-time-sep">/</span>
-            <span id="vodDuration">0:00</span>
+            <span id="vodCurrentTime">0:00</span><span class="vod-time-sep">/</span><span id="vodDuration">0:00</span>
           </div>
-
           <div class="vod-spacer"></div>
-
           <div class="vod-settings-wrap">
             <button class="vod-btn" id="vodSpeedBtn" title="Playback speed">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 8v8l6-4-6-4zm2-6C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
@@ -866,7 +483,6 @@
               <div class="vod-speed-option" data-speed="2">2x</div>
             </div>
           </div>
-
           <button class="vod-btn" id="vodFullscreenBtn" title="Fullscreen (F)">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
           </button>
@@ -874,7 +490,7 @@
       </div>
     </div>
 
-    <!-- Player Meta Info -->
+    <!-- Player Meta -->
     <div class="player-meta" id="playerMeta" style="display:none">
       <h3 id="playerMetaTitle">-</h3>
       <p id="playerMetaDate">-</p>
@@ -884,86 +500,27 @@
     <div id="contentArea">
       <div class="loading">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
-        <span data-i18n="fetchingArchives">Fetching archives...</span>
+        <span>Fetching archives...</span>
       </div>
     </div>
   </main>
 
   <footer class="footer">
-    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
-    <a href="kctv.html" data-i18n="back">Back to KCTV</a>
+    <span>Juche TV. Not affiliated with any broadcasting entity.</span>
+    <a href="kctv.html">Back to KCTV</a>
   </footer>
 
   <script>
-    // ===================== I18N =====================
-    let translations = {};
-    let currentLang = localStorage.getItem('lang') || 'en';
-
-    const DEFAULT_TRANSLATIONS = {
-      en: {
-        brand: 'Juche TV', channels: 'Channels', back: 'Back to KCTV',
-        archivesTitle: 'KCTV Archives',
-        archivesDesc: 'Browse and watch recorded broadcasts from Korean Central Television.',
-        fetchingArchives: 'Fetching archives...', error: 'Error',
-        fetchError: 'Failed to load archives. Please try again.', retry: 'Retry',
-        noArchives: 'No archives found.', noticeTitle: 'Video Quality Notice',
-        noticeText: 'Recordings before 14 June 2026 are interlaced and may appear combed or blurry during motion. Use a deinterlacing filter (e.g. VLC\'s "Yadif" or ffmpeg -vf yadif) for proper viewing.',
-        recording: 'recordings', backToFolders: 'Back to Folders',
-        recordingsIn: 'Recordings in', unknownDate: 'Unknown Date',
-        footer: 'Juche TV. Not affiliated with any broadcasting entity.'
-      },
-      zh: {
-        brand: 'Juche TV', channels: '\u9891\u9053', back: '\u8fd4\u56de KCTV',
-        archivesTitle: 'KCTV \u6863\u6848',
-        archivesDesc: '\u6d4f\u89c8\u548c\u89c2\u770b\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\u7684\u5f55\u64ad\u8282\u76ee\u3002',
-        fetchingArchives: '\u6b63\u5728\u83b7\u53d6\u6863\u6848...', error: '\u9519\u8bef',
-        fetchError: '\u52a0\u8f7d\u6863\u6848\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5\u3002', retry: '\u91cd\u8bd5',
-        noArchives: '\u672a\u627e\u5230\u6863\u6848\u3002', noticeTitle: '\u89c6\u9891\u8d28\u91cf\u63d0\u793a',
-        noticeText: '2026\u5e746\u670814\u65e5\u4e4b\u524d\u7684\u5f55\u5236\u4e3a\u9694\u884c\u626b\u63cf\uff0c\u8fd0\u52a8\u65f6\u53ef\u80fd\u51fa\u73b0\u68b3\u72b6\u6216\u6a21\u7cca\u3002\u8bf7\u4f7f\u7528\u53bb\u9694\u884c\u6ee4\u955c\uff08\u5982 VLC \u7684"Yadif"\u6216 ffmpeg -vf yadif\uff09\u4ee5\u83b7\u5f97\u6700\u4f73\u89c2\u770b\u6548\u679c\u3002',
-        recording: '\u4e2a\u5f55\u50cf', backToFolders: '\u8fd4\u56de\u6587\u4ef6\u5939',
-        recordingsIn: '\u5f55\u50cf\u5217\u8868', unknownDate: '\u672a\u77e5\u65e5\u671f',
-        footer: 'Juche TV\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u673a\u6784\u65e0\u5173\u3002'
-      }
-    };
-
-    async function loadTranslations() {
-      try {
-        const res = await fetch('language.json');
-        translations = await res.json();
-      } catch(e) { translations = DEFAULT_TRANSLATIONS; }
-      applyLanguage(currentLang);
-    }
-    function t(key) {
-      const lang = translations[currentLang] || translations['en'] || DEFAULT_TRANSLATIONS['en'];
-      return lang[key] || DEFAULT_TRANSLATIONS['en'][key] || key;
-    }
-    function applyLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('lang', lang);
-      const tx = translations[lang] || translations['en'] || DEFAULT_TRANSLATIONS['en'];
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (tx[key]) el.textContent = tx[key];
-      });
-      document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\u6587' : 'English';
-      document.querySelectorAll('.lang-option').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
-    }
-    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
-    function selectLang(el) {
-      applyLanguage(el.dataset.lang);
-      document.getElementById('langMenu').classList.remove('show');
-      if (currentFolder) renderTimeline(currentFolder, currentFiles);
-      else renderFolders(folders);
-    }
-    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(o => o.addEventListener('click', () => selectLang(o)));
-    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
-
+  (function() {
     // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
     const sun = document.getElementById('sun');
-    if (localStorage.getItem('theme') === 'dark') {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none'; sun.style.display = '';
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !savedTheme) {
       document.documentElement.classList.add('dark');
       moon.style.display = 'none'; sun.style.display = '';
     }
@@ -974,6 +531,19 @@
       sun.style.display = d ? '' : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
+
+    // ===================== LANG =====================
+    document.getElementById('langBtn').addEventListener('click', () => {
+      document.getElementById('langMenu').classList.toggle('show');
+    });
+    document.querySelectorAll('.lang-option').forEach(o => {
+      o.addEventListener('click', () => {
+        document.getElementById('langLabel').textContent = o.dataset.lang === 'zh' ? '\u4e2d\u6587' : 'English';
+        document.querySelectorAll('.lang-option').forEach(l => l.classList.toggle('active', l === o));
+        document.getElementById('langMenu').classList.remove('show');
+      });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
 
     // ===================== CUSTOM VOD PLAYER =====================
     const playerWrap = document.getElementById('vodPlayer');
@@ -1006,7 +576,6 @@
     let isSeeking = false;
     let hasPlayedOnce = false;
 
-    // ---- Icons (SVG strings) ----
     const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
     const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
     const ICON_MUTE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
@@ -1015,294 +584,79 @@
     const ICON_FULLSCREEN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
     const ICON_FULLSCREEN_EXIT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>';
 
-    // ---- Format time ----
-    function fmtTime(s) {
-      if (isNaN(s)) return '0:00';
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = Math.floor(s % 60);
-      if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
-      return m + ':' + String(sec).padStart(2, '0');
-    }
+    function fmtTime(s) { if (isNaN(s)) return '0:00'; const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const sec = Math.floor(s%60); if (h>0) return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); return m+':'+String(sec).padStart(2,'0'); }
 
-    // ---- Show/hide controls ----
-    function showControls() {
-      controls.classList.add('show');
-      titleOverlay.classList.add('show');
-      skipPrev.classList.add('show');
-      skipNext.classList.add('show');
-      clearTimeout(controlsTimeout);
-      if (!video.paused) {
-        controlsTimeout = setTimeout(hideControls, 3000);
-      }
-    }
-    function hideControls() {
-      if (isSeeking) return;
-      controls.classList.remove('show');
-      titleOverlay.classList.remove('show');
-      skipPrev.classList.remove('show');
-      skipNext.classList.remove('show');
-      speedMenu.classList.remove('show');
-    }
-    function resetControlsTimeout() {
-      showControls();
-    }
+    function showControls() { controls.classList.add('show'); titleOverlay.classList.add('show'); skipPrev.classList.add('show'); skipNext.classList.add('show'); clearTimeout(controlsTimeout); if (!video.paused) controlsTimeout = setTimeout(hideControls, 3000); }
+    function hideControls() { if (isSeeking) return; controls.classList.remove('show'); titleOverlay.classList.remove('show'); skipPrev.classList.remove('show'); skipNext.classList.remove('show'); speedMenu.classList.remove('show'); }
+    function resetControlsTimeout() { showControls(); }
 
     playerWrap.addEventListener('mousemove', resetControlsTimeout);
-    playerWrap.addEventListener('mouseleave', () => {
-      if (!video.paused) hideControls();
-    });
+    playerWrap.addEventListener('mouseleave', () => { if (!video.paused) hideControls(); });
 
-    // ---- Big play button ----
-    bigPlay.addEventListener('click', () => {
-      video.play().catch(() => {});
-    });
-
-    // ---- Play/Pause ----
-    function togglePlay() {
-      if (video.paused || video.ended) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
-    }
-
-    function updatePlayButton() {
-      if (video.paused) {
-        playBtn.innerHTML = ICON_PLAY;
-        bigPlay.classList.add('show');
-      } else {
-        playBtn.innerHTML = ICON_PAUSE;
-        bigPlay.classList.remove('show');
-      }
-    }
-
+    bigPlay.addEventListener('click', () => { video.play().catch(()=>{}); });
+    function togglePlay() { if (video.paused || video.ended) { video.play().catch(()=>{}); } else { video.pause(); } }
+    function updatePlayButton() { if (video.paused) { playBtn.innerHTML = ICON_PLAY; bigPlay.classList.add('show'); } else { playBtn.innerHTML = ICON_PAUSE; bigPlay.classList.remove('show'); } }
     playBtn.addEventListener('click', togglePlay);
     video.addEventListener('play', () => { updatePlayButton(); hasPlayedOnce = true; showControls(); });
     video.addEventListener('pause', () => { updatePlayButton(); showControls(); });
     video.addEventListener('ended', () => { updatePlayButton(); showControls(); });
 
-    // Center icon flash
-    function flashCenterIcon(playing) {
-      centerIcon.innerHTML = playing ? ICON_PLAY : ICON_PAUSE;
-      centerIcon.classList.add('flash');
-      setTimeout(() => centerIcon.classList.remove('flash'), 500);
-    }
+    function flashCenterIcon(playing) { centerIcon.innerHTML = playing ? ICON_PLAY : ICON_PAUSE; centerIcon.classList.add('flash'); setTimeout(() => centerIcon.classList.remove('flash'), 500); }
     video.addEventListener('play', () => { if (hasPlayedOnce) flashCenterIcon(false); });
     video.addEventListener('pause', () => { if (hasPlayedOnce) flashCenterIcon(true); });
 
-    // Double-click fullscreen
     video.addEventListener('dblclick', () => toggleFullscreen());
 
-    // ---- Progress bar ----
-    function updateProgress() {
-      if (!video.duration) return;
-      const pct = (video.currentTime / video.duration) * 100;
-      progressPlayed.style.width = pct + '%';
-      progressThumb.style.left = pct + '%';
-      currentTimeEl.textContent = fmtTime(video.currentTime);
-
-      // Buffered
-      if (video.buffered.length > 0) {
-        const end = video.buffered.end(video.buffered.length - 1);
-        const bufPct = (end / video.duration) * 100;
-        progressBuffered.style.width = bufPct + '%';
-      }
-    }
+    function updateProgress() { if (!video.duration) return; const pct = (video.currentTime/video.duration)*100; progressPlayed.style.width = pct+'%'; progressThumb.style.left = pct+'%'; currentTimeEl.textContent = fmtTime(video.currentTime); if (video.buffered.length > 0) { const end = video.buffered.end(video.buffered.length-1); progressBuffered.style.width = (end/video.duration)*100+'%'; }}
     video.addEventListener('timeupdate', updateProgress);
     video.addEventListener('progress', updateProgress);
 
-    function seekToRatio(ratio) {
-      if (!video.duration) return;
-      ratio = Math.max(0, Math.min(1, ratio));
-      video.currentTime = ratio * video.duration;
-    }
-
-    progressArea.addEventListener('click', (e) => {
-      const rect = progressTrack.getBoundingClientRect();
-      const ratio = (e.clientX - rect.left) / rect.width;
-      seekToRatio(ratio);
-    });
-
-    progressArea.addEventListener('mousedown', (e) => {
-      isSeeking = true;
-      progressArea.classList.add('seeking');
-      seekToRatio((e.clientX - progressTrack.getBoundingClientRect().left) / progressTrack.getBoundingClientRect().width);
-    });
-    document.addEventListener('mousemove', (e) => {
-      if (!isSeeking) return;
-      const rect = progressTrack.getBoundingClientRect();
-      seekToRatio((e.clientX - rect.left) / rect.width);
-    });
-    document.addEventListener('mouseup', () => {
-      if (isSeeking) { isSeeking = false; progressArea.classList.remove('seeking'); }
-    });
-
-    // Time tooltip on hover
-    progressArea.addEventListener('mousemove', (e) => {
-      if (!video.duration) return;
-      const rect = progressTrack.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      timeTooltip.textContent = fmtTime(ratio * video.duration);
-      timeTooltip.style.left = (ratio * 100) + '%';
-      timeTooltip.classList.add('visible');
-    });
-    progressArea.addEventListener('mouseleave', () => {
-      timeTooltip.classList.remove('visible');
-    });
-
-    // ---- Duration ----
-    video.addEventListener('loadedmetadata', () => {
-      durationEl.textContent = fmtTime(video.duration);
-    });
-    video.addEventListener('durationchange', () => {
-      durationEl.textContent = fmtTime(video.duration);
-    });
-
-    // ---- Loading ----
+    function seekToRatio(ratio) { if (!video.duration) return; ratio = Math.max(0, Math.min(1, ratio)); video.currentTime = ratio*video.duration; }
+    progressArea.addEventListener('click', (e) => { const rect = progressTrack.getBoundingClientRect(); seekToRatio((e.clientX-rect.left)/rect.width); });
+    progressArea.addEventListener('mousedown', (e) => { isSeeking = true; progressArea.classList.add('seeking'); seekToRatio((e.clientX-progressTrack.getBoundingClientRect().left)/progressTrack.getBoundingClientRect().width); });
+    document.addEventListener('mousemove', (e) => { if (!isSeeking) return; const rect = progressTrack.getBoundingClientRect(); seekToRatio((e.clientX-rect.left)/rect.width); });
+    document.addEventListener('mouseup', () => { if (isSeeking) { isSeeking = false; progressArea.classList.remove('seeking'); }});
+    progressArea.addEventListener('mousemove', (e) => { if (!video.duration) return; const rect = progressTrack.getBoundingClientRect(); const ratio = Math.max(0, Math.min(1, (e.clientX-rect.left)/rect.width)); timeTooltip.textContent = fmtTime(ratio*video.duration); timeTooltip.style.left = (ratio*100)+'%'; timeTooltip.classList.add('visible'); });
+    progressArea.addEventListener('mouseleave', () => { timeTooltip.classList.remove('visible'); });
+    video.addEventListener('loadedmetadata', () => { durationEl.textContent = fmtTime(video.duration); });
+    video.addEventListener('durationchange', () => { durationEl.textContent = fmtTime(video.duration); });
     video.addEventListener('waiting', () => loader.classList.add('show'));
     video.addEventListener('canplay', () => loader.classList.remove('show'));
     video.addEventListener('playing', () => loader.classList.remove('show'));
 
-    // ---- Volume ----
-    function setVolume(v) {
-      v = Math.max(0, Math.min(1, v));
-      video.volume = v;
-      volumeFill.style.width = (v * 100) + '%';
-      updateMuteIcon();
-    }
-    function updateMuteIcon() {
-      if (video.muted || video.volume === 0) {
-        muteBtn.innerHTML = ICON_MUTE;
-      } else if (video.volume < 0.5) {
-        muteBtn.innerHTML = ICON_VOLUME_LOW;
-      } else {
-        muteBtn.innerHTML = ICON_VOLUME;
-      }
-    }
+    function setVolume(v) { v = Math.max(0, Math.min(1, v)); video.volume = v; volumeFill.style.width = (v*100)+'%'; updateMuteIcon(); }
+    function updateMuteIcon() { if (video.muted || video.volume === 0) muteBtn.innerHTML = ICON_MUTE; else if (video.volume < 0.5) muteBtn.innerHTML = ICON_VOLUME_LOW; else muteBtn.innerHTML = ICON_VOLUME; }
     muteBtn.addEventListener('click', () => { video.muted = !video.muted; updateMuteIcon(); });
     video.addEventListener('volumechange', updateMuteIcon);
-
-    volumeSlider.addEventListener('click', (e) => {
-      const rect = volumeSlider.getBoundingClientRect();
-      setVolume((e.clientX - rect.left) / rect.width);
-    });
-    // Drag volume
+    volumeSlider.addEventListener('click', (e) => { const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
     let volDragging = false;
-    volumeSlider.addEventListener('mousedown', (e) => {
-      volDragging = true;
-      const rect = volumeSlider.getBoundingClientRect();
-      setVolume((e.clientX - rect.left) / rect.width);
-    });
-    document.addEventListener('mousemove', (e) => {
-      if (!volDragging) return;
-      const rect = volumeSlider.getBoundingClientRect();
-      setVolume((e.clientX - rect.left) / rect.width);
-    });
+    volumeSlider.addEventListener('mousedown', (e) => { volDragging = true; const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
+    document.addEventListener('mousemove', (e) => { if (!volDragging) return; const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
     document.addEventListener('mouseup', () => { volDragging = false; });
 
-    // ---- Speed ----
-    speedBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      speedMenu.classList.toggle('show');
-    });
+    speedBtn.addEventListener('click', (e) => { e.stopPropagation(); speedMenu.classList.toggle('show'); });
     document.querySelectorAll('.vod-speed-option').forEach(opt => {
-      opt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const speed = parseFloat(opt.dataset.speed);
-        video.playbackRate = speed;
-        document.querySelectorAll('.vod-speed-option').forEach(o => o.classList.remove('active'));
-        opt.classList.add('active');
-        speedMenu.classList.remove('show');
-      });
+      opt.addEventListener('click', (e) => { e.stopPropagation(); const speed = parseFloat(opt.dataset.speed); video.playbackRate = speed; document.querySelectorAll('.vod-speed-option').forEach(o => o.classList.remove('active')); opt.classList.add('active'); speedMenu.classList.remove('show'); });
     });
     document.addEventListener('click', () => speedMenu.classList.remove('show'));
 
-    // ---- Fullscreen ----
-    function toggleFullscreen() {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        playerWrap.requestFullscreen();
-      }
-    }
+    function toggleFullscreen() { if (document.fullscreenElement) { document.exitFullscreen(); } else { playerWrap.requestFullscreen(); } }
     fullscreenBtn.addEventListener('click', toggleFullscreen);
     document.addEventListener('fullscreenchange', () => {
       fullscreenBtn.innerHTML = document.fullscreenElement ? ICON_FULLSCREEN_EXIT : ICON_FULLSCREEN;
-      if (document.fullscreenElement) {
-        playerWrap.style.borderRadius = '0';
-      } else {
-        playerWrap.style.borderRadius = '16px';
-      }
+      playerWrap.style.borderRadius = document.fullscreenElement ? '0' : 'var(--radius-lg)';
     });
 
-    // ---- Keyboard ----
     playerWrap.addEventListener('keydown', (e) => {
-      switch(e.key) {
-        case ' ':
-        case 'k':
-          e.preventDefault();
-          togglePlay();
-          break;
-        case 'ArrowLeft':
-          e.preventDefault();
-          video.currentTime = Math.max(0, video.currentTime - 5);
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          setVolume(video.volume + 0.1);
-          break;
-        case 'ArrowDown':
-          e.preventDefault();
-          setVolume(video.volume - 0.1);
-          break;
-        case 'f':
-          e.preventDefault();
-          toggleFullscreen();
-          break;
-        case 'm':
-          e.preventDefault();
-          video.muted = !video.muted;
-          updateMuteIcon();
-          break;
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-          e.preventDefault();
-          const pct = parseInt(e.key) * 10;
-          if (video.duration) video.currentTime = (pct / 100) * video.duration;
-          break;
-        case 'n':
-          e.preventDefault();
-          playNext();
-          break;
-      }
+      switch(e.key) { case ' ': case 'k': e.preventDefault(); togglePlay(); break; case 'ArrowLeft': e.preventDefault(); video.currentTime = Math.max(0, video.currentTime-5); break; case 'ArrowRight': e.preventDefault(); video.currentTime = Math.min(video.duration||0, video.currentTime+5); break; case 'ArrowUp': e.preventDefault(); setVolume(video.volume+0.1); break; case 'ArrowDown': e.preventDefault(); setVolume(video.volume-0.1); break; case 'f': e.preventDefault(); toggleFullscreen(); break; case 'm': e.preventDefault(); video.muted = !video.muted; updateMuteIcon(); break; case 'n': e.preventDefault(); playNext(); break; }
     });
 
-    // ---- Skip prev/next ----
     skipPrev.addEventListener('click', (e) => { e.stopPropagation(); playPrev(); });
     skipNext.addEventListener('click', (e) => { e.stopPropagation(); playNext(); });
     nextBtn.addEventListener('click', playNext);
 
-    function playNext() {
-      if (!currentFolder || !currentFiles.length) return;
-      const idx = currentFiles.findIndex(f => f.path === currentPlayingPath);
-      if (idx >= 0 && idx < currentFiles.length - 1) {
-        const next = currentFiles[idx + 1]; // next = older (list is newest first)
-        window.playVideo(next.path, cleanFilename(next.name), parseDateFromFilename(next.name));
-      }
-    }
-    function playPrev() {
-      if (!currentFolder || !currentFiles.length) return;
-      const idx = currentFiles.findIndex(f => f.path === currentPlayingPath);
-      if (idx > 0) {
-        const prev = currentFiles[idx - 1]; // prev = newer (list is newest first)
-        window.playVideo(prev.path, cleanFilename(prev.name), parseDateFromFilename(prev.name));
-      }
-    }
+    function playNext() { if (!currentFolder || !currentFiles.length) return; const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx >= 0 && idx < currentFiles.length-1) { const next = currentFiles[idx+1]; window.playVideo(next.path, cleanFilename(next.name), parseDateFromFilename(next.name)); }}
+    function playPrev() { if (!currentFolder || !currentFiles.length) return; const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx > 0) { const prev = currentFiles[idx-1]; window.playVideo(prev.path, cleanFilename(prev.name), parseDateFromFilename(prev.name)); }}
 
     // ===================== ARCHIVES BROWSER =====================
     const API_BASE = 'https://kctv.koryofront.org';
@@ -1319,59 +673,16 @@
     let currentFiles = [];
     let currentPlayingPath = null;
 
-    function parseDateFromFilename(name) {
-      const match = name.match(/(\d{4}-\d{2}-\d{2})/);
-      return match ? match[1] : '';
-    }
-    function parseTimeFromFilename(name) {
-      const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/);
-      if (match) {
-        const h = parseInt(match[2], 10);
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const h12 = h % 12 || 12;
-        return h12 + ':' + match[3] + ' ' + ampm;
-      }
-      return '';
-    }
-    function formatDate(dateStr) {
-      if (!dateStr) return t('unknownDate');
-      const d = new Date(dateStr + 'T00:00:00');
-      return d.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    }
-    function formatFolderName(name) {
-      const match = name.match(/@\s*(.+)$/);
-      return match ? match[1] : name;
-    }
-    function cleanFilename(name) {
-      return name.replace('.mp4', '').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/, '');
-    }
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
+    function parseDateFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2})/); return match ? match[1] : ''; }
+    function parseTimeFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/); if (match) { const h = parseInt(match[2],10); const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 || 12; return h12+':'+match[3]+' '+ampm; } return ''; }
+    function formatDate(dateStr) { if (!dateStr) return 'Unknown Date'; const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); }
+    function formatFolderName(name) { const match = name.match(/@\s*(.+)$/); return match ? match[1] : name; }
+    function cleanFilename(name) { return name.replace('.mp4','').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/,''); }
+    function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
-    function showLoading() {
-      contentArea.innerHTML = `
-        <div class="loading">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
-          <span>${t('fetchingArchives')}</span>
-        </div>`;
-    }
-    function showError() {
-      contentArea.innerHTML = `
-        <div class="error">
-          <div class="error-title">${t('error')}</div>
-          <div class="error-msg">${t('fetchError')}</div>
-          <button class="retry-btn" onclick="fetchFolders()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
-            ${t('retry')}
-          </button>
-        </div>`;
-    }
-    function showEmpty() {
-      contentArea.innerHTML = `<div class="loading"><span>${t('noArchives')}</span></div>`;
-    }
+    function showLoading() { contentArea.innerHTML = `<div class="loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg><span>Fetching archives...</span></div>`; }
+    function showError() { contentArea.innerHTML = `<div class="error"><div class="error-title">Error</div><div class="error-msg">Failed to load archives. Please try again.</div><button class="retry-btn" onclick="fetchFolders()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>Retry</button></div>`; }
+    function showEmpty() { contentArea.innerHTML = `<div class="loading"><span>No archives found.</span></div>`; }
 
     async function fetchFolders() {
       showLoading();
@@ -1381,20 +692,10 @@
         const data = await res.json();
         folders = (data || []).filter(item => item.type === 'dir');
         const slotOrder = ['9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM'];
-        folders.sort((a, b) => {
-          const slotA = formatFolderName(a.name);
-          const slotB = formatFolderName(b.name);
-          const idxA = slotOrder.indexOf(slotA);
-          const idxB = slotOrder.indexOf(slotB);
-          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-          return a.name.localeCompare(b.name);
-        });
+        folders.sort((a,b) => { const slotA = formatFolderName(a.name); const slotB = formatFolderName(b.name); const idxA = slotOrder.indexOf(slotA); const idxB = slotOrder.indexOf(slotB); if (idxA !== -1 && idxB !== -1) return idxA - idxB; return a.name.localeCompare(b.name); });
         if (!folders.length) { showEmpty(); return; }
         renderFolders(folders);
-      } catch (e) {
-        console.error('Failed to fetch folders:', e);
-        showError();
-      }
+      } catch (e) { console.error('Failed to fetch folders:', e); showError(); }
     }
 
     async function loadFolder(folder) {
@@ -1404,37 +705,18 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         const files = (data || []).filter(f => f.type === 'file' && f.name.endsWith('.mp4'));
-        files.sort((a, b) => {
-          const dateA = parseDateFromFilename(a.name);
-          const dateB = parseDateFromFilename(b.name);
-          return dateB.localeCompare(dateA);
-        });
-        currentFolder = folder;
-        currentFiles = files;
+        files.sort((a,b) => { const dateA = parseDateFromFilename(a.name); const dateB = parseDateFromFilename(b.name); return dateB.localeCompare(dateA); });
+        currentFolder = folder; currentFiles = files;
         renderTimeline(folder, files);
-      } catch (e) {
-        console.error('Failed to load folder:', e);
-        showError();
-      }
+      } catch (e) { console.error('Failed to load folder:', e); showError(); }
     }
 
     function renderFolders(folderList) {
-      currentFolder = null;
-      currentFiles = [];
-      backLink.style.display = 'none';
+      currentFolder = null; currentFiles = []; backLink.style.display = 'none';
       let html = '<div class="folder-grid">';
       folderList.forEach(folder => {
         const slot = formatFolderName(folder.name);
-        html += `
-          <div class="folder-card" onclick="openFolder('${folder.path}')">
-            <div class="folder-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div class="folder-info">
-              <h3>${slot}</h3>
-              <p>${folder.name}</p>
-            </div>
-          </div>`;
+        html += `<div class="folder-card" onclick="openFolder('${folder.path}')"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><div class="folder-info"><h3>${slot}</h3><p>${folder.name}</p></div></div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
@@ -1443,34 +725,14 @@
     function renderTimeline(folder, files) {
       const slot = formatFolderName(folder.name);
       backLink.style.display = '';
-      let html = `
-        <div class="timeline-header">
-          <h2>${t('recordingsIn')} ${slot}</h2>
-          <span class="timeline-count">${files.length} ${t('recording')}</span>
-        </div>
-        <div class="timeline">`;
+      let html = `<div class="timeline-header"><h2>Recordings in ${slot}</h2><span class="timeline-count">${files.length} recordings</span></div><div class="timeline">`;
       files.forEach(file => {
         const date = parseDateFromFilename(file.name);
         const time = parseTimeFromFilename(file.name);
         const title = cleanFilename(file.name);
         const videoUrl = API_BASE + file.path;
         const isActive = currentPlayingPath === file.path;
-        html += `
-          <div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')">
-            <div class="play-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="timeline-meta">
-              <h4>${escapeHtml(title)}</h4>
-              <p>${formatDate(date)}${time ? ' \u00b7 ' + time : ''}</p>
-            </div>
-            <div class="timeline-actions" onclick="event.stopPropagation()">
-              <a href="${videoUrl}" download class="timeline-btn">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download
-              </a>
-            </div>
-          </div>`;
+        html += `<div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')"><div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="timeline-meta"><h4>${escapeHtml(title)}</h4><p>${formatDate(date)}${time ? ' \u00b7 ' + time : ''}</p></div><div class="timeline-actions" onclick="event.stopPropagation()"><a href="${videoUrl}" download class="timeline-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a></div></div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
@@ -1482,53 +744,34 @@
     };
 
     backLink.addEventListener('click', () => {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      playerWrap.style.display = 'none';
-      playerMeta.style.display = 'none';
-      currentPlayingPath = null;
-      hasPlayedOnce = false;
+      video.pause(); video.removeAttribute('src'); video.load();
+      playerWrap.style.display = 'none'; playerMeta.style.display = 'none';
+      currentPlayingPath = null; hasPlayedOnce = false;
       renderFolders(folders);
     });
 
     window.playVideo = function(filePath, title, dateStr) {
       const videoUrl = API_BASE + filePath;
       currentPlayingPath = filePath;
-
-      // Update meta
       playerMetaTitle.textContent = title;
       playerMetaDate.textContent = formatDate(dateStr);
       vodOverlayTitle.textContent = title;
       vodOverlayDate.textContent = formatDate(dateStr);
-
-      // Show player
       playerWrap.style.display = '';
       playerMeta.style.display = '';
-
-      // Scroll to player
       playerWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-      // Set source
-      const wasPlaying = !video.paused && video.currentTime > 0;
       video.src = videoUrl;
       video.load();
       video.play().catch(() => {});
-
-      // Update timeline highlight
       document.querySelectorAll('.timeline-item').forEach(item => {
         const onclick = item.getAttribute('onclick') || '';
         item.classList.toggle('playing', onclick.includes(filePath));
       });
-
-      // Show big play if first time
-      if (!hasPlayedOnce) {
-        bigPlay.classList.add('show');
-      }
+      if (!hasPlayedOnce) bigPlay.classList.add('show');
     };
 
-    // ===================== INIT =====================
-    loadTranslations().then(() => fetchFolders());
+    fetchFolders();
+  })();
   </script>
 </body>
 </html>

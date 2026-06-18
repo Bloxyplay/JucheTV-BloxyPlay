@@ -3,90 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
   <title>CCTV-1 HD - Juche TV</title>
   <link href="https://unpkg.com/video.js@8/dist/video-js.min.css" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f6f7f9;
-      --theme: #ffffff;
-      --entry: #ffffff;
-      --primary: #1a1a1a;
-      --secondary: #6b7280;
-      --border: #e5e7eb;
-      --tertiary: #f3f4f6;
-      --radius: 14px;
-      --accent: #e5001a;
-      --accent-light: rgba(229,0,26,0.08);
+      --bg: #F2F2F7;
+      --elevated: #FFFFFF;
+      --primary: #1C1C1E;
+      --secondary: #8E8E93;
+      --tertiary: #C7C7CC;
+      --separator: rgba(60, 60, 67, 0.1);
+      --tint: #007AFF;
+      --tint-secondary: #5856D6;
+      --red: #FF3B30;
+      --green: #34C759;
+      --orange: #FF9500;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     }
     :root.dark {
-      --bg: #0a0a0f;
-      --theme: #14141a;
-      --entry: #1a1a22;
-      --primary: #f0f0f5;
-      --secondary: #8888a0;
-      --border: #2a2a3a;
-      --tertiary: #22222e;
+      --bg: #000000;
+      --elevated: #1C1C1E;
+      --primary: #F2F2F7;
+      --secondary: #8E8E93;
+      --tertiary: #48484A;
+      --separator: rgba(140, 140, 147, 0.24);
+      --tint: #0A84FF;
+      --tint-secondary: #5E5CE6;
+      --green: #30D158;
+      --red: #FF453A;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg); color: var(--primary);
+      min-height: 100vh; display: flex; flex-direction: column;
       transition: background 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
     }
-    /* Header */
-    .header {
+    html { scroll-behavior: smooth; }
+
+    /* === NAV === */
+    .nav {
       position: sticky; top: 0; z-index: 100;
-      background: var(--theme);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      background: rgba(242,242,247,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 0.5px solid var(--separator);
       transition: background 0.3s, border-color 0.3s;
     }
-    .nav {
+    :root.dark .nav { background: rgba(28,28,30,0.72); }
+    .nav-inner {
       max-width: 1100px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 56px;
+      padding: 0 20px; height: 52px;
     }
     .logo {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 17px; font-weight: 700; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.3px;
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.5px;
     }
-    .logo svg { width: 22px; height: 22px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #FF2D55, #FF9500);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .logo-icon svg { width: 16px; height: 16px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
     #menu a {
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       text-decoration: none; padding: 6px 12px; border-radius: 8px;
       transition: all 0.2s ease;
     }
-    #menu a:hover { color: var(--primary); background: var(--tertiary); }
-    .theme-toggle {
-      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-      background: var(--tertiary); cursor: pointer; display: flex;
-      align-items: center; justify-content: center; color: var(--secondary);
-      transition: all 0.2s ease;
+    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
+    .nav-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: transparent; color: var(--secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
-    .theme-toggle svg { width: 18px; height: 18px; }
-    /* Language selector */
+    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
+    .nav-btn svg { width: 18px; height: 18px; }
     .lang-wrap { position: relative; }
     .lang-btn {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 500; padding: 6px 12px;
-      border-radius: 8px; border: 1px solid var(--border);
-      background: var(--tertiary); color: var(--secondary);
+      font-size: 12px; font-weight: 600; padding: 6px 12px;
+      border-radius: 8px; border: none;
+      background: transparent; color: var(--secondary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
     .lang-menu {
       display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
-      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
-      overflow: hidden;
+      min-width: 160px; background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
     }
     .lang-menu.show { display: block; }
     .lang-option {
@@ -94,77 +115,80 @@
       padding: 10px 14px; font-size: 13px; cursor: pointer;
       transition: background 0.12s; color: var(--primary);
     }
-    .lang-option:hover { background: var(--tertiary); }
-    .lang-option.active { font-weight: 600; }
-    .lang-option.active::after { content: '✓'; color: var(--accent); font-size: 12px; }
-    /* Main */
+    .lang-option:hover { background: rgba(0,0,0,0.04); }
+    .lang-option.active { font-weight: 700; }
+    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
+
+    /* === MAIN === */
     .main {
       flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 28px 20px 40px;
     }
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       margin-bottom: 16px; padding: 4px 0;
       transition: color 0.2s ease; text-decoration: none;
     }
-    .back-link:hover { color: var(--primary); }
+    .back-link:hover { color: var(--tint); }
     .back-link svg { width: 16px; height: 16px; }
-    /* Channel meta */
+
     .channel-meta {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; gap: 14px;
       margin-bottom: 20px; flex-wrap: wrap;
     }
-    .channel-meta img {
-      width: 56px; height: 56px; object-fit: contain;
-      background: var(--tertiary); border-radius: 12px; padding: 6px;
+    .channel-meta .meta-icon {
+      width: 52px; height: 52px; object-fit: contain;
+      background: var(--elevated);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+      border: 0.5px solid var(--separator);
     }
-    .channel-meta h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+    .channel-meta h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
     .channel-meta p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
     .live-badge {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; color: var(--accent);
-      background: var(--accent-light); padding: 4px 10px;
+      font-size: 11px; font-weight: 700; color: var(--red);
+      background: rgba(255,59,48,0.1); padding: 4px 10px;
       border-radius: 100px; margin-left: auto;
     }
-    .live-badge .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent); animation: pulse 2s ease infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    /* Player */
+    :root.dark .live-badge { background: rgba(255,69,58,0.15); }
+    .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* === Player === */
     .player-container {
-      border-radius: 16px; overflow: hidden; position: relative;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      border-radius: var(--radius-lg); overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      border: 0.5px solid var(--separator);
     }
     .video-js {
       width: 100%; aspect-ratio: 16/9; max-height: 70vh;
       background: #000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     }
     .video-js .vjs-big-play-button {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: rgba(48,48,48,.88); border: none;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(0,122,255,0.9); border: none;
       top: 50%; left: 50%; transform: translate(-50%,-50%);
-      margin: 0; box-shadow: 0 4px 24px rgba(0,0,0,.35);
-      transition: background .2s ease, transform .2s ease;
+      margin: 0;
+      transition: all 0.2s ease;
     }
-    .video-js:hover .vjs-big-play-button,
-    .video-js .vjs-big-play-button:focus {
-      background: rgba(60,60,60,.95); transform: translate(-50%,-50%) scale(1.05);
+    .video-js .vjs-big-play-button:hover {
+      background: rgba(0,122,255,1); transform: translate(-50%,-50%) scale(1.08);
     }
     .video-js.vjs-has-started .vjs-big-play-button { display: none; }
-    .video-js .vjs-big-play-button .vjs-icon-placeholder:before {
-      font-size: 28px; line-height: 72px; color: #fff;
-    }
+    .video-js .vjs-big-play-button .vjs-icon-placeholder:before { font-size: 26px; line-height: 64px; color: #fff; }
     .video-js .vjs-control-bar {
-      background: rgba(0,0,0,.82); height: 44px; padding: 0 10px; align-items: center;
+      background: rgba(0,0,0,0.55); height: 44px; padding: 0 10px; align-items: center;
+      backdrop-filter: blur(8px);
     }
     .video-js .vjs-progress-control { flex: 1; align-items: center; height: 100%; }
     .video-js .vjs-progress-holder { height: 3px; margin: 0; border-radius: 2px; }
-    .video-js .vjs-play-progress { background: var(--accent); border-radius: 2px; }
-    .video-js .vjs-play-progress:before { color: var(--accent); font-size: 13px; top: -5px; }
-    .video-js .vjs-slider { background: rgba(255,255,255,.15); border-radius: 2px; }
+    .video-js .vjs-play-progress { background: var(--tint); border-radius: 2px; }
+    .video-js .vjs-play-progress:before { color: var(--tint); font-size: 13px; top: -5px; }
+    .video-js .vjs-slider { background: rgba(255,255,255,0.15); border-radius: 2px; }
     .video-js .vjs-volume-bar.vjs-slider-horizontal { height: 3px; border-radius: 2px; }
     .video-js .vjs-volume-level { background: #fff; border-radius: 2px; }
     .video-js .vjs-button > .vjs-icon-placeholder:before { font-size: 20px; line-height: 44px; }
@@ -173,91 +197,80 @@
       position: absolute; top: 12px; left: 12px;
       display: flex; align-items: center; gap: 6px;
       font-size: 11px; font-weight: 700; color: #fff;
-      background: rgba(229,0,26,.85); padding: 4px 10px;
-      border-radius: 100px; z-index: 6; letter-spacing: .5px;
+      background: rgba(255,59,48,0.85); padding: 4px 10px;
+      border-radius: 100px; z-index: 6; letter-spacing: 0.5px;
       backdrop-filter: blur(4px);
     }
-    .live-corner .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #fff; animation: pulse 1.8s ease infinite;
-    }
-    /* Info section */
+    .live-corner .dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 1.8s ease infinite; }
+
+    /* === Info Section === */
     .info-section {
       margin-top: 24px; padding: 24px;
-      background: var(--entry); border: 1px solid var(--border);
-      border-radius: var(--radius); transition: background 0.3s, border-color 0.3s;
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-lg);
+      transition: background 0.3s, border-color 0.3s;
     }
-    .info-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .info-section h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.2px; }
     .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
-    /* EPG */
+
+    /* === EPG === */
     .epg-section {
       margin-top: 24px;
-      background: var(--entry); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
       transition: background 0.3s, border-color 0.3s;
     }
     .epg-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      padding: 16px 20px; border-bottom: 0.5px solid var(--separator);
       flex-wrap: wrap; gap: 8px;
     }
-    .epg-header h3 {
-      font-size: 15px; font-weight: 600;
-      display: flex; align-items: center; gap: 8px;
-    }
+    .epg-header h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; }
     .epg-header h3 svg { width: 16px; height: 16px; }
-    .epg-date { font-size: 12px; color: var(--secondary); font-family: 'SF Mono', monospace; }
+    .epg-date { font-size: 12px; color: var(--secondary); font-family: 'SF Mono', 'Fira Code', monospace; }
     .epg-list { max-height: 360px; overflow-y: auto; }
     .epg-item {
       display: flex; align-items: center; gap: 16px;
-      padding: 10px 20px; border-bottom: 1px solid var(--border);
-      transition: background .15s ease; font-size: 13px; position: relative;
+      padding: 10px 20px; border-bottom: 0.5px solid var(--separator);
+      transition: background 0.15s ease; font-size: 13px; position: relative;
     }
     .epg-item:last-child { border-bottom: none; }
-    .epg-item:hover { background: var(--tertiary); }
-    .epg-item.current {
-      background: rgba(229,0,26,.04); border-left: 3px solid var(--accent);
-      padding-left: 17px;
-    }
-    .epg-time {
-      font-family: 'SF Mono', monospace; font-size: 12px;
-      color: var(--secondary); white-space: nowrap; min-width: 72px;
-    }
-    .epg-item.current .epg-time { color: var(--accent); font-weight: 600; }
+    .epg-item:hover { background: rgba(0,0,0,0.02); }
+    .epg-item.current { background: rgba(0,122,255,0.05); border-left: 3px solid var(--tint); padding-left: 17px; }
+    .epg-time { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--secondary); white-space: nowrap; min-width: 72px; }
+    .epg-item.current .epg-time { color: var(--tint); font-weight: 700; }
     .epg-name { flex: 1; font-weight: 500; }
-    .epg-status {
-      font-size: 11px; font-weight: 600; padding: 2px 8px;
-      border-radius: 100px; white-space: nowrap;
-    }
-    .epg-status.now { background: var(--accent-light); color: var(--accent); }
-    .epg-status.next { background: var(--tertiary); color: var(--secondary); }
-    .epg-progress {
-      position: absolute; bottom: 0; left: 0; height: 2px;
-      background: rgba(229,0,26,.35); border-radius: 0 2px 2px 0;
-      pointer-events: none;
-    }
+    .epg-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+    .epg-status.now { background: rgba(0,122,255,0.1); color: var(--tint); }
+    .epg-status.next { background: rgba(0,0,0,0.04); color: var(--secondary); }
+    :root.dark .epg-status.next { background: rgba(255,255,255,0.06); }
+    .epg-progress { position: absolute; bottom: 0; left: 0; height: 2px; background: rgba(0,122,255,0.3); border-radius: 0 2px 2px 0; pointer-events: none; }
     .epg-loading { padding: 32px; text-align: center; color: var(--secondary); font-size: 13px; }
     .epg-error { padding: 32px 24px; text-align: center; }
-    .epg-error-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .epg-error-title { font-size: 15px; font-weight: 700; color: var(--tint); margin-bottom: 4px; }
     .epg-error-msg { font-size: 13px; color: var(--secondary); margin-bottom: 16px; }
     .epg-retry-btn {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 12px; font-weight: 600; padding: 7px 16px;
-      border-radius: 100px; border: 1px solid var(--border);
-      background: var(--theme); color: var(--primary);
-      cursor: pointer; transition: all .15s;
+      border-radius: 100px; border: 0.5px solid var(--separator);
+      background: var(--elevated); color: var(--primary);
+      cursor: pointer; transition: all 0.15s ease;
     }
-    .epg-retry-btn:hover { background: var(--entry); border-color: var(--secondary); }
-    /* Footer */
+    .epg-retry-btn:hover { background: var(--bg); border-color: var(--tertiary); }
+
+    /* === Footer === */
     .footer {
       max-width: 1100px; width: 100%; margin: 0 auto;
       padding: 20px; display: flex; align-items: center;
       justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 1px solid var(--border);
+      color: var(--secondary); border-top: 0.5px solid var(--separator);
     }
     .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--primary); }
-    /* Responsive */
+    .footer a:hover { color: var(--tint); }
+
     @media (max-width: 640px) {
       .channel-meta h1 { font-size: 18px; }
       .live-badge { margin-left: 0; width: 100%; justify-content: center; }
@@ -266,14 +279,16 @@
   </style>
 </head>
 <body>
-  <header class="header">
-    <nav class="nav">
+  <nav class="nav">
+    <div class="nav-inner">
       <a href="index.html" class="logo">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span data-i18n="brand">Juche TV</span>
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span>Juche TV</span>
       </a>
       <ul id="menu">
-        <li><a href="index.html" data-i18n="channels">Channels</a></li>
+        <li><a href="index.html">Channels</a></li>
         <li>
           <div class="lang-wrap">
             <button class="lang-btn" id="langBtn">
@@ -282,37 +297,37 @@
             </button>
             <div class="lang-menu" id="langMenu">
               <div class="lang-option active" data-lang="en">English</div>
-              <div class="lang-option" data-lang="zh">中文 (Chinese)</div>
+              <div class="lang-option" data-lang="zh">\u4e2d\u6587 (Chinese)</div>
             </div>
           </div>
         </li>
         <li>
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <button class="nav-btn" id="themeToggle" title="Toggle theme">
             <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
             <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
         </li>
       </ul>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
   <main class="main">
     <a href="index.html" class="back-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span data-i18n="backToChannels">Back to Channels</span>
+      <span>Back to Channels</span>
     </a>
 
     <div class="channel-meta">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/CCTV-1_Logo.svg" alt="CCTV">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/CCTV-1_Logo.svg" alt="CCTV" class="meta-icon">
       <div>
-        <h1 data-i18n="cctvTitle">CCTV-1 HD</h1>
-        <p data-i18n="liveFrom">Live from Pyongyang, DPRK</p>
+        <h1>CCTV-1 HD</h1>
+        <p>Live from China Central Television</p>
       </div>
-      <span class="live-badge"><span class="dot"></span><span data-i18n="live">LIVE</span></span>
+      <span class="live-badge"><span class="dot"></span>LIVE</span>
     </div>
 
     <div class="player-container">
-      <div class="live-corner"><span class="dot"></span><span data-i18n="live">LIVE</span></div>
+      <div class="live-corner"><span class="dot"></span>LIVE</div>
       <video id="vid" class="video-js vjs-big-play-centered" playsinline preload="auto">
         <source src="https://play.kankanlive.com/live/1720408280309109.m3u8?provider_id=juche_tv012" type="application/x-mpegURL">
         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
@@ -323,78 +338,39 @@
       <div class="epg-header">
         <h3>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span data-i18n="programGuide">Program Guide</span> (CCTV-1 HD)
+          Program Guide (CCTV-1 HD)
         </h3>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <span class="epg-date" id="epgDate"></span>
         </div>
       </div>
       <div class="epg-list" id="epgList">
-        <div class="epg-loading" data-i18n="loading">Loading...</div>
+        <div class="epg-loading">Loading...</div>
       </div>
     </div>
 
     <div class="info-section">
-      <h3 data-i18n="about">About CCTV-1 HD</h3>
-      <p data-i18n="cctvDesc">China Central Television (CCTV) is the national television broadcaster of China. CCTV-1 is the flagship channel broadcasting news, documentaries, and entertainment.</p>
+      <h3>About CCTV-1 HD</h3>
+      <p>China Central Television (CCTV) is the national television broadcaster of China. CCTV-1 is the flagship channel broadcasting news, documentaries, and entertainment.</p>
     </div>
   </main>
 
   <footer class="footer">
-    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
-    <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
+    <span>Juche TV. Not affiliated with any broadcasting entity.</span>
+    <a href="index.html">Back to Channels</a>
   </footer>
 
   <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
   <script>
-    // ===================== I18N =====================
-    let translations = {};
-    let currentLang = localStorage.getItem('lang') || 'en';
-
-    async function loadTranslations() {
-      try {
-        const res = await fetch('language.json');
-        translations = await res.json();
-        applyLanguage(currentLang);
-      } catch(e) { console.error('Failed to load translations', e); }
-    }
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('lang', lang);
-      const t = translations[lang] || translations['en'];
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.textContent = t[key];
-      });
-      document.getElementById('langLabel').textContent = lang === 'zh' ? '中文' : 'English';
-      document.querySelectorAll('.lang-option').forEach(o => {
-        o.classList.toggle('active', o.dataset.lang === lang);
-      });
-    }
-
-    function toggleLangMenu() {
-      document.getElementById('langMenu').classList.toggle('show');
-    }
-
-    function selectLang(el) {
-      applyLanguage(el.dataset.lang);
-      document.getElementById('langMenu').classList.remove('show');
-    }
-
-    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(o => {
-      o.addEventListener('click', () => selectLang(o));
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
-    });
-
     // ===================== THEME =====================
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
     const sun = document.getElementById('sun');
-    if (localStorage.getItem('theme') === 'dark') {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none'; sun.style.display = '';
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !savedTheme) {
       document.documentElement.classList.add('dark');
       moon.style.display = 'none'; sun.style.display = '';
     }
@@ -406,6 +382,18 @@
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
+    // ===================== LANG =====================
+    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
+    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
+    document.querySelectorAll('.lang-option').forEach(o => {
+      o.addEventListener('click', () => {
+        document.getElementById('langLabel').textContent = o.dataset.lang === 'zh' ? '\u4e2d\u6587' : 'English';
+        document.querySelectorAll('.lang-option').forEach(l => l.classList.toggle('active', l === o));
+        document.getElementById('langMenu').classList.remove('show');
+      });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
+
     // ===================== VIDEO.JS =====================
     const player = videojs('vid', {
       controls: true, autoplay: true, muted: true,
@@ -416,7 +404,6 @@
 
     // ===================== EPG =====================
     const EPG_NAME = 'CCTV-1HD';
-
     function getChinaNow() {
       const now = new Date();
       const utcMs = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
@@ -426,7 +413,6 @@
       const d = getChinaNow();
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
-
     function normalizeEPGData(data) {
       if (!data) return null;
       if (Array.isArray(data.list) && data.list.length) return data.list.map(item => ({
@@ -462,7 +448,7 @@
       const epgDate = document.getElementById('epgDate');
       const date = getTodayDate();
       epgDate.textContent = date;
-      epgList.innerHTML = '<div class="epg-loading">' + (translations[currentLang]?.loading || 'Loading...') + '</div>';
+      epgList.innerHTML = '<div class="epg-loading">Loading...</div>';
 
       try {
         const url = 'https://bloxyplaytvapi.duckdns.org/api/epg?ch=' + encodeURIComponent(chName) + '&date=' + date;
@@ -476,29 +462,25 @@
         const items = normalizeEPGData(data);
         if (items && items.length) {
           _retryCount = 0;
-          await renderEPG(items);
+          renderEPG(items);
         } else { throw new Error('empty'); }
       } catch (e) { showSkeletonError(); }
     }
 
     function showSkeletonError() {
-      const epgList = document.getElementById('epgList');
-      const t = translations[currentLang] || translations['en'];
-      epgList.innerHTML = `
+      document.getElementById('epgList').innerHTML = `
         <div class="epg-error">
-          <div class="epg-error-title" data-i18n="error">${t.error}</div>
-          <div class="epg-error-msg" data-i18n="fetchError">${t.fetchError}</div>
-          <button class="epg-retry-btn" onclick="retryEPG()">&#x21bb; ${t.retry}</button>
+          <div class="epg-error-title">Error</div>
+          <div class="epg-error-msg">Failed to load program guide. Please try again.</div>
+          <button class="epg-retry-btn" onclick="retryEPG()">&#x21bb; Retry</button>
         </div>`;
     }
-
     function retryEPG() {
       _retryCount++;
       if (_retryCount >= 5) { showSkeletonError(); return; }
       fetchEPG(EPG_NAME);
     }
-
-    async function renderEPG(items) {
+    function renderEPG(items) {
       const epgList = document.getElementById('epgList');
       if (!items || !items.length) { showSkeletonError(); return; }
       _lastItems = items;
@@ -525,7 +507,7 @@
             const nextMinutes = (np[0] || 0) * 60 + (np[1] || 0);
             if (nowMinutes < nextMinutes) {
               cls += ' current';
-              status = '<span class="epg-status now" data-i18n="onNow">ON NOW</span>';
+              status = '<span class="epg-status now">ON NOW</span>';
               foundCurrent = true;
               const dur = (nextMinutes - itemMinutes) * 60;
               const elapsed = nowSeconds - itemMinutes * 60;
@@ -534,32 +516,23 @@
             }
           } else {
             cls += ' current';
-            status = '<span class="epg-status now" data-i18n="onNow">ON NOW</span>';
+            status = '<span class="epg-status now">ON NOW</span>';
             foundCurrent = true;
           }
         }
-
         if (!status && !foundCurrent) {
-          status = '<span class="epg-status next" data-i18n="upNext">UP NEXT</span>';
+          status = '<span class="epg-status next">UP NEXT</span>';
         } else if (!status) {
-          status = '<span class="epg-status next" data-i18n="later">LATER</span>';
+          status = '<span class="epg-status next">LATER</span>';
         }
-
         html += `<div class="${cls}"><span class="epg-time">${time}</span><span class="epg-name">${name}</span>${status}${progressHtml}</div>`;
       });
-
       epgList.innerHTML = html;
       const currentEl = epgList.querySelector('.current');
       if (currentEl) setTimeout(() => currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150);
-
-      // Refresh status text after render
-      applyLanguage(currentLang);
     }
 
-    // ===================== INIT =====================
-    loadTranslations().then(() => {
-      fetchEPG(EPG_NAME);
-    });
+    fetchEPG(EPG_NAME);
   </script>
 </body>
 </html>

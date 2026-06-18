@@ -3,84 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
   <title>KCTV - Juche TV</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.css">
   <style>
     :root {
-      --bg: #f6f7f9;
-      --theme: #ffffff;
-      --entry: #ffffff;
-      --primary: #1a1a1a;
-      --secondary: #6b7280;
-      --border: #e5e7eb;
-      --tertiary: #f3f4f6;
-      --radius: 14px;
-      --accent: #e5001a;
-      --accent-light: rgba(229,0,26,0.08);
+      --bg: #F2F2F7;
+      --elevated: #FFFFFF;
+      --primary: #1C1C1E;
+      --secondary: #8E8E93;
+      --tertiary: #C7C7CC;
+      --separator: rgba(60, 60, 67, 0.1);
+      --separator-dark: rgba(140, 140, 147, 0.24);
+      --tint: #007AFF;
+      --tint-secondary: #5856D6;
+      --red: #FF3B30;
+      --green: #34C759;
+      --orange: #FF9500;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     }
     :root.dark {
-      --bg: #0a0a0f;
-      --theme: #14141a;
-      --entry: #1a1a22;
-      --primary: #f0f0f5;
-      --secondary: #8888a0;
-      --border: #2a2a3a;
-      --tertiary: #22222e;
+      --bg: #000000;
+      --elevated: #1C1C1E;
+      --primary: #F2F2F7;
+      --secondary: #8E8E93;
+      --tertiary: #48484A;
+      --separator: rgba(140, 140, 147, 0.24);
+      --tint: #0A84FF;
+      --tint-secondary: #5E5CE6;
+      --green: #30D158;
+      --red: #FF453A;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
       background: var(--bg);
       color: var(--primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       transition: background 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
     }
-    .header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--theme);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
+
+    /* === NAV === */
     .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(242,242,247,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 0.5px solid var(--separator);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    :root.dark .nav { background: rgba(28,28,30,0.72); }
+    .nav-inner {
       max-width: 1100px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 56px;
+      padding: 0 20px; height: 52px;
     }
     .logo {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 17px; font-weight: 700; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.3px;
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.5px;
     }
-    .logo svg { width: 22px; height: 22px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #FF2D55, #FF9500);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .logo-icon svg { width: 16px; height: 16px; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
     #menu a {
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       text-decoration: none; padding: 6px 12px; border-radius: 8px;
       transition: all 0.2s ease;
     }
-    #menu a:hover { color: var(--primary); background: var(--tertiary); }
-    .theme-toggle {
-      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-      background: var(--tertiary); cursor: pointer; display: flex;
-      align-items: center; justify-content: center; color: var(--secondary);
-      transition: all 0.2s ease;
+    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
+    .nav-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: transparent; color: var(--secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .theme-toggle:hover { border-color: var(--secondary); color: var(--primary); }
-    .theme-toggle svg { width: 18px; height: 18px; }
+    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
+    .nav-btn svg { width: 18px; height: 18px; }
     .lang-wrap { position: relative; }
     .lang-btn {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 500; padding: 6px 12px;
-      border-radius: 8px; border: 1px solid var(--border);
-      background: var(--tertiary); color: var(--secondary);
+      font-size: 12px; font-weight: 600; padding: 6px 12px;
+      border-radius: 8px; border: none;
+      background: transparent; color: var(--secondary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .lang-btn:hover { border-color: var(--secondary); color: var(--primary); }
+    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
     .lang-menu {
       display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--entry); border: 1px solid var(--border);
-      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 20;
+      min-width: 160px; background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); z-index: 20;
       overflow: hidden;
     }
     .lang-menu.show { display: block; }
@@ -89,204 +119,429 @@
       padding: 10px 14px; font-size: 13px; cursor: pointer;
       transition: background 0.12s; color: var(--primary);
     }
-    .lang-option:hover { background: var(--tertiary); }
-    .lang-option.active { font-weight: 600; }
-    .lang-option.active::after { content: '\2713'; color: var(--accent); font-size: 12px; }
+    .lang-option:hover { background: rgba(0,0,0,0.04); }
+    .lang-option.active { font-weight: 700; }
+    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
 
+    /* === MAIN === */
     .main {
       flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 28px 20px 40px;
     }
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 500; color: var(--secondary);
+      font-size: 13px; font-weight: 600; color: var(--secondary);
       margin-bottom: 16px; padding: 4px 0;
       transition: color 0.2s ease; text-decoration: none;
     }
-    .back-link:hover { color: var(--primary); }
+    .back-link:hover { color: var(--tint); }
     .back-link svg { width: 16px; height: 16px; }
 
     .channel-meta {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; gap: 14px;
       margin-bottom: 20px; flex-wrap: wrap;
     }
-    .channel-meta img {
-      width: 56px; height: 56px; object-fit: contain;
-      background: var(--tertiary); border-radius: 12px; padding: 6px;
+    .channel-meta .meta-icon {
+      width: 52px; height: 52px; object-fit: contain;
+      background: var(--elevated);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+      border: 0.5px solid var(--separator);
     }
-    .channel-meta h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+    .channel-meta h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
     .channel-meta p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
     .live-badge {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; color: var(--accent);
-      background: var(--accent-light); padding: 4px 10px;
+      font-size: 11px; font-weight: 700; color: var(--red);
+      background: rgba(255,59,48,0.1); padding: 4px 10px;
       border-radius: 100px; margin-left: auto;
     }
+    :root.dark .live-badge { background: rgba(255,69,58,0.15); }
     .live-badge .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent); animation: pulse 2s ease infinite;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--red); animation: pulse 2s ease infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-    /* Playerjs container */
+    /* ===== Player ===== */
     .player-wrap {
       background: #000;
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-lg);
       position: relative;
+      border: 0.5px solid var(--separator);
+    }
+    #dplayer {
+      width: 100% !important;
       aspect-ratio: 16 / 9;
     }
-    #kctv-player {
-      width: 100%;
-      height: 100%;
+    #dplayer .dplayer-video-wrap {
+      border-radius: 0;
+    }
+    #dplayer .dplayer-controller .dplayer-icons .dplayer-icon {
+      color: #fff;
+    }
+    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar {
+      background: rgba(255,255,255,0.18);
+    }
+    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar .dplayer-played {
+      background: var(--tint);
+    }
+    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar .dplayer-loaded {
+      background: rgba(255,255,255,0.28);
+    }
+    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-thumb {
+      background: var(--tint);
+      box-shadow: 0 0 8px rgba(0,122,255,0.5);
+    }
+    #dplayer .dplayer-setting-box {
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    #dplayer .dplayer-menu {
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    #dplayer.dplayer-pause .dplayer-video-wrap {
+      filter: brightness(0.65);
+      transition: filter 0.3s ease;
+    }
+    #dplayer .dplayer-video-wrap {
+      transition: filter 0.3s ease;
+    }
+    #dplayer .dplayer-mask {
+      border-radius: 0;
+    }
+    #dplayer .dplayer-info-panel {
+      border-radius: var(--radius-sm);
+    }
+    #dplayer .dplayer-controller-mask {
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
     }
 
-    /* Action row below player */
+    /* Server race banner */
+    .server-race-banner {
+      position: absolute; inset: 0; z-index: 20;
+      background: rgba(0,0,0,0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 18px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .server-race-banner.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .race-title { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+    .race-servers { display: flex; flex-direction: column; gap: 8px; width: 260px; }
+    .race-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .race-item.winner { background: rgba(52,199,89,0.2); border-color: rgba(52,199,89,0.35); }
+    .race-item.loser { opacity: 0.35; }
+    .race-item .race-flag { font-size: 18px; }
+    .race-item .race-info { flex: 1; }
+    .race-item .race-name { color: #fff; font-size: 12px; font-weight: 700; }
+    .race-item .race-status { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 1px; }
+    .race-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: var(--green);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .race-check { color: var(--green); font-size: 14px; font-weight: 700; }
+    .race-x { color: var(--red); font-size: 14px; font-weight: 700; }
+
+    /* ===== Action Row ===== */
     .action-row {
-      display: flex; flex-direction: column; align-items: flex-start;
+      display: flex; flex-wrap: wrap;
+      align-items: center;
       gap: 10px; margin-top: 16px;
     }
-    .action-row .archives-link { margin-top: 0; }
-    .embed-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 18px;
-      background: var(--entry); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--primary);
-      font-size: 13px; font-weight: 500;
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 16px;
+      background: var(--elevated); border: 0.5px solid var(--separator);
+      border-radius: var(--radius-sm); color: var(--primary);
+      font-size: 13px; font-weight: 600;
       cursor: pointer; transition: all 0.2s ease;
+      text-decoration: none;
     }
-    .embed-btn svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
-    @media (hover: hover) {
-      .embed-btn:hover {
-        background: var(--tertiary); border-color: var(--secondary);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      }
-    }
-    .embed-btn:active { transform: translateY(0); }
-
-    /* Embed code modal */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000; padding: 20px;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal-card {
-      background: var(--entry);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      max-width: 540px; width: 100%;
-      padding: 26px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-      transform: scale(0.85) translateY(30px);
-      opacity: 0;
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, box-shadow 0.25s ease;
-    }
-    .modal-overlay.show .modal-card {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-    @media (hover: hover) {
-      .modal-overlay.show .modal-card:hover {
-        transform: scale(1) translateY(-4px);
-        box-shadow: 0 26px 70px rgba(0,0,0,0.45);
-      }
-    }
-    .modal-head {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 12px;
-    }
-    .modal-card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
-    .modal-close {
-      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-      border: 1px solid var(--border); background: var(--tertiary);
-      color: var(--secondary); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s ease;
-    }
-    @media (hover: hover) {
-      .modal-close:hover { color: var(--primary); border-color: var(--secondary); transform: rotate(90deg); }
-    }
-    .modal-close svg { width: 14px; height: 14px; }
-    .modal-card .modal-desc {
-      font-size: 13px; color: var(--secondary); line-height: 1.7;
-      margin: 10px 0 18px;
-    }
-    .embed-code-box textarea {
-      display: block; width: 100%; resize: vertical; min-height: 130px;
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 12px; line-height: 1.6; white-space: pre; overflow: auto;
-      background: var(--tertiary); color: var(--primary);
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px;
-      transition: border-color 0.2s ease;
-    }
-    .embed-code-box textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-    @media (hover: hover) {
-      .embed-code-box textarea:hover { border-color: var(--secondary); }
-    }
-    .copy-code-btn {
-      margin-top: 14px; width: 100%;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 12px; border-radius: 10px; border: none;
-      background: var(--accent); color: #fff;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    @media (hover: hover) {
-      .copy-code-btn:hover:not(.copied) { background: #c4001a; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(229,0,26,0.35); }
-    }
-    .copy-code-btn:active { transform: translateY(0) scale(0.98); }
-    .copy-code-btn svg { width: 15px; height: 15px; }
-    .copy-code-btn.copied { background: #16a34a; }
-
-    /* Archives link */
-    .archives-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 16px; padding: 10px 18px;
-      background: var(--entry); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--primary);
-      font-size: 13px; font-weight: 500; text-decoration: none;
-      transition: all 0.2s ease; cursor: pointer;
-    }
-    .archives-link:hover {
-      background: var(--tertiary); border-color: var(--secondary);
+    .action-btn svg { width: 15px; height: 15px; color: var(--tint); flex-shrink: 0; }
+    .action-btn:hover {
+      background: var(--bg);
+      border-color: var(--tertiary);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow-md);
     }
-    .archives-link svg { width: 16px; height: 16px; color: var(--accent); }
+    .action-btn:active { transform: translateY(0); }
+    .action-btn.tint {
+      background: var(--tint); color: #fff; border-color: transparent;
+    }
+    .action-btn.tint svg { color: #fff; }
+    .action-btn.tint:hover { background: #0066D4; }
 
+    .server-wrap { position: relative; }
+    .server-menu {
+      display: none; position: absolute; left: 0; top: calc(100% + 6px);
+      min-width: 340px; background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
+    }
+    .server-menu.show { display: block; }
+    .server-option {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px; font-size: 13px; cursor: pointer;
+      transition: background 0.12s; color: var(--primary);
+      border-bottom: 0.5px solid var(--separator);
+    }
+    .server-option:last-child { border-bottom: none; }
+    .server-option:hover { background: rgba(0,0,0,0.03); }
+    .server-option.active { font-weight: 700; }
+    .server-option .flag { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .server-option .server-info { flex: 1; min-width: 0; }
+    .server-option .server-name { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .server-option .server-desc { font-size: 12px; color: var(--secondary); line-height: 1.6; font-weight: 400; }
+    .server-option .server-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .server-tag {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 8px; border-radius: 100px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .server-tag.primary { background: rgba(52,199,89,0.12); color: #1a9c45; }
+    :root.dark .server-tag.primary { background: rgba(48,209,88,0.18); color: #30D158; }
+    .server-tag.mirror { background: rgba(255,149,0,0.12); color: #c77200; }
+    :root.dark .server-tag.mirror { background: rgba(255,159,10,0.18); color: #FF9F0A; }
+    .server-tag.global { background: rgba(0,122,255,0.12); color: #0055b3; }
+    :root.dark .server-tag.global { background: rgba(10,132,255,0.18); color: #0A84FF; }
+    .server-tag.regional { background: rgba(175,82,222,0.12); color: #8a3ab9; }
+    :root.dark .server-tag.regional { background: rgba(191,90,242,0.18); color: #BF5AF2; }
+    .server-option .check { margin-left: auto; color: var(--tint); font-size: 13px; opacity: 0; flex-shrink: 0; margin-top: 4px; font-weight: 700; }
+    .server-option.active .check { opacity: 1; }
+
+    /* ===== Screenshot Result ===== */
+    .screenshot-result {
+      margin-top: 16px;
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: none;
+    }
+    .screenshot-result.show { display: block; animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .screenshot-result img { width: 100%; display: block; }
+    .screenshot-actions {
+      display: flex; gap: 8px;
+      padding: 12px;
+      border-top: 0.5px solid var(--separator);
+    }
+    .screenshot-actions .action-btn { flex: 1; justify-content: center; }
+
+    /* ===== Info Section ===== */
     .info-section {
       margin-top: 24px; padding: 24px;
-      background: var(--entry); border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-lg);
     }
-    .info-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .info-section h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.2px; }
     .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
+
+    /* ===== Footer ===== */
     .footer {
       max-width: 1100px; width: 100%; margin: 0 auto;
       padding: 20px; display: flex; align-items: center;
       justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 1px solid var(--border);
+      color: var(--secondary); border-top: 0.5px solid var(--separator);
     }
     .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--primary); }
+    .footer a:hover { color: var(--tint); }
+
+    /* ===== Screenshot Flash ===== */
+    .screenshot-flash {
+      position: absolute; inset: 0; z-index: 50;
+      background: #fff; opacity: 0; pointer-events: none;
+      transition: none;
+    }
+    .screenshot-flash.active { animation: flashAnim 0.35s ease-out; }
+    @keyframes flashAnim {
+      0% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== EPG Coming Soon Banner ===== */
+    .epg-banner {
+      margin-top: 16px;
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 22px;
+      background: linear-gradient(135deg, rgba(88,86,214,0.08) 0%, rgba(0,122,255,0.07) 100%);
+      border: 1px solid rgba(88,86,214,0.2);
+      border-radius: var(--radius-lg);
+      position: relative; overflow: hidden;
+    }
+    :root.dark .epg-banner {
+      background: linear-gradient(135deg, rgba(94,92,230,0.14) 0%, rgba(10,132,255,0.1) 100%);
+      border-color: rgba(94,92,230,0.3);
+    }
+    .epg-banner::before {
+      content: '';
+      position: absolute; top: -40px; right: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(88,86,214,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .epg-banner-icon {
+      flex-shrink: 0;
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(88,86,214,0.35);
+    }
+    .epg-banner-body { flex: 1; min-width: 0; }
+    .epg-banner-title {
+      font-size: 15px; font-weight: 800; letter-spacing: -0.3px;
+      color: var(--primary);
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 5px;
+    }
+    .epg-pill {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.6px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
+      color: #fff;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .epg-banner-desc {
+      font-size: 13px; color: var(--secondary); line-height: 1.6;
+    }
+    .epg-banner-badge {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700;
+      color: var(--tint-secondary);
+      background: rgba(88,86,214,0.1);
+      border: 1px solid rgba(88,86,214,0.2);
+      padding: 6px 14px; border-radius: 100px;
+      white-space: nowrap;
+    }
+    :root.dark .epg-banner-badge {
+      color: #7B79F5;
+      background: rgba(94,92,230,0.15);
+      border-color: rgba(94,92,230,0.3);
+    }
+    .epg-soon-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--tint-secondary);
+      animation: pulse 2s ease infinite;
+    }
+
+    /* ===== Stream Info Bar ===== */
+    .stream-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      margin-top: -1px;
+      position: relative;
+      z-index: 5;
+    }
+    .stream-info-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stream-info-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .info-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg);
+      color: var(--secondary);
+      border: 0.5px solid var(--separator);
+      transition: all 0.2s ease;
+    }
+    .info-chip .chip-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .info-chip .chip-dot.good { background: var(--green); }
+    .info-chip .chip-dot.medium { background: var(--orange); }
+    .info-chip .chip-dot.bad { background: var(--red); }
+    .info-chip .chip-dot.testing { background: var(--tint); animation: pulse 1.2s ease infinite; }
+    .info-chip .chip-label { opacity: 0.7; font-weight: 500; }
+    .info-chip .chip-value { font-weight: 700; color: var(--primary); }
+
+    .features-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--secondary);
+      background: rgba(0,122,255,0.06);
+      border: 0.5px solid rgba(0,122,255,0.15);
+      letter-spacing: 0.2px;
+    }
+    :root.dark .features-hint {
+      background: rgba(10,132,255,0.1);
+      border-color: rgba(10,132,255,0.2);
+    }
+
     @media (max-width: 640px) {
+      .epg-banner { flex-wrap: wrap; gap: 12px; }
+      .epg-banner-badge { width: 100%; justify-content: center; }
       .channel-meta h1 { font-size: 18px; }
       .live-badge { margin-left: 0; width: 100%; justify-content: center; }
+      .server-menu { min-width: calc(100vw - 40px); left: 0; }
+      .action-row { flex-direction: column; align-items: stretch; }
+      .action-btn { justify-content: center; }
+      .stream-info-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .stream-info-right { width: 100%; }
+      .features-hint { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <nav class="nav">
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
       <a href="index.html" class="logo">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
         <span data-i18n="brand">Juche TV</span>
       </a>
       <ul id="menu">
@@ -299,20 +554,21 @@
             </button>
             <div class="lang-menu" id="langMenu">
               <div class="lang-option active" data-lang="en">English</div>
-              <div class="lang-option" data-lang="zh">\4e2d\6587 (Chinese)</div>
+              <div class="lang-option" data-lang="zh">&#x4E2D;&#x6587; (Chinese)</div>
             </div>
           </div>
         </li>
         <li>
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <button class="nav-btn" id="themeToggle" title="Toggle theme">
             <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
             <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
         </li>
       </ul>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
+  <!-- Main -->
   <main class="main">
     <a href="index.html" class="back-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -320,7 +576,7 @@
     </a>
 
     <div class="channel-meta">
-      <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV">
+      <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV" class="meta-icon">
       <div>
         <h1 data-i18n="kctvTitle">Korean Central Television</h1>
         <p data-i18n="liveFrom">Live from Pyongyang, DPRK</p>
@@ -328,278 +584,560 @@
       <span class="live-badge"><span class="dot"></span><span data-i18n="live">LIVE</span></span>
     </div>
 
-    <div class="player-wrap">
-      <div id="kctv-player"></div>
+    <!-- Player -->
+    <div class="player-wrap" id="playerWrap">
+      <div class="screenshot-flash" id="screenshotFlash"></div>
+
+      <!-- Server Race Banner -->
+      <div class="server-race-banner" id="raceBanner">
+        <div class="race-title" id="raceTitle">Finding the best server...</div>
+        <div class="race-servers">
+          <div class="race-item" id="raceZA">
+            <span class="race-flag">&#127487;&#127462;</span>
+            <div class="race-info"><div class="race-name">South Africa Server</div><div class="race-status" id="statusZA">Testing connection...</div></div>
+            <div class="race-spinner" id="spinnerZA"></div>
+          </div>
+          <div class="race-item" id="raceJP">
+            <span class="race-flag">&#127471;&#127477;</span>
+            <div class="race-info"><div class="race-name">Japan Server</div><div class="race-status" id="statusJP">Testing connection...</div></div>
+            <div class="race-spinner" id="spinnerJP"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DPlayer Container -->
+      <div id="dplayer"></div>
     </div>
 
+    <!-- Stream Info Bar -->
+    <div class="stream-info-bar" id="streamInfoBar" style="opacity:0;transition:opacity 0.4s ease;">
+      <div class="stream-info-left">
+        <div class="info-chip" id="infoChipServer">
+          <span class="chip-dot testing" id="infoChipDot"></span>
+          <span class="chip-label" id="infoChipLabel">Server</span>
+          <span class="chip-value" id="infoChipValue">Testing...</span>
+        </div>
+        <div class="info-chip" id="infoChipLatency" style="display:none;">
+          <span class="chip-label">Latency</span>
+          <span class="chip-value" id="infoChipLatencyValue">-- ms</span>
+        </div>
+      </div>
+      <div class="stream-info-right">
+        <div class="features-hint">-Watch Korean TV-</div>
+      </div>
+    </div>
+
+    <!-- Action Row -->
     <div class="action-row">
-      <a href="archives-beta.html" class="archives-link">
+      <div class="server-wrap">
+        <button class="action-btn" id="serverBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          <span id="serverLabel">Server</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="server-menu" id="serverMenu">
+          <div class="server-option" data-server="za" id="optZA">
+            <span class="flag">&#127487;&#127462;</span>
+            <div class="server-info">
+              <div class="server-name"><span>South Africa Server</span><span class="server-tag primary">Primary</span></div>
+              <div class="server-desc">Official KCTV source powered by Koryo Front. Hosted on high-bandwidth infrastructure with global CDN coverage.</div>
+              <div class="server-meta"><span class="server-tag global">Global</span><span class="server-tag primary">Low Latency</span></div>
+            </div>
+            <span class="check">&#10003;</span>
+          </div>
+          <div class="server-option" data-server="jp" id="optJP">
+            <span class="flag">&#127471;&#127477;</span>
+            <div class="server-info">
+              <div class="server-name"><span>Japan Server</span><span class="server-tag mirror">Mirror</span></div>
+              <div class="server-desc">Unofficial relay mirror sourced from Intchoson, based in Japan. Optimized for East Asian viewers.</div>
+              <div class="server-meta"><span class="server-tag regional">East Asia</span><span class="server-tag mirror">Best-Effort</span></div>
+            </div>
+            <span class="check">&#10003;</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="archives-beta.html" class="action-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <span data-i18n="archives">Archives Recording</span>
       </a>
-      <button class="embed-btn" id="embedBtn" type="button" title="Copy Embed Code">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span data-i18n="copyEmbed">Copy Embed Code</span>
+
+      <button class="action-btn tint" id="screenshotBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Take a Screenshot!</span>
       </button>
     </div>
 
+    <!-- Screenshot Result -->
+    <div class="screenshot-result" id="screenshotResult">
+      <img id="screenshotImg" alt="Screenshot">
+      <div class="screenshot-actions">
+        <a class="action-btn" id="screenshotDownload" download="kctv-screenshot.png">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
+      </div>
+    </div>
+
+    <!-- Info Section -->
     <div class="info-section">
       <h3 data-i18n="about">About KCTV</h3>
       <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
     </div>
+
+    <!-- EPG Coming Soon Banner -->
+    <div class="epg-banner">
+      <div class="epg-banner-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <div class="epg-banner-body">
+        <div class="epg-banner-title">
+          Programme Guide Coming Soon
+          <span class="epg-pill">EPG</span>
+        </div>
+        <div class="epg-banner-desc">We're building a full Electronic Programme Guide for Juche TV &#x2014; see exactly what's on, what's coming up, and never miss a broadcast. Stay tuned.</div>
+      </div>
+      <div class="epg-banner-badge">
+        <span class="epg-soon-dot"></span>
+        Soon
+      </div>
+    </div>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
     <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
   </footer>
 
-  <div class="modal-overlay" id="embedOverlay">
-    <div class="modal-card" id="embedCard">
-      <div class="modal-head">
-        <h3 data-i18n="embedTitle">Embed Code of This Stream</h3>
-        <button class="modal-close" id="embedClose" type="button" title="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <p class="modal-desc" data-i18n="embedDesc">Use the code below to embed this live stream on your own website, blog, or platform. The player is fully responsive and will automatically resize to fit its container, making it easy to integrate seamlessly into your existing layout.</p>
-      <div class="embed-code-box">
-        <textarea id="embedCodeText" readonly spellcheck="false" rows="8"><div style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-  <iframe 
-    src="https://bloxyplay.github.io/Juche-TV-/" 
-    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;" 
-    allow="fullscreen; autoplay; encrypted-media" 
-    allowfullscreen 
-    loading="lazy"
-    title="Korean Central Television LIVE STREAM">
-  </iframe>
-</div></textarea>
-      </div>
-      <button class="copy-code-btn" id="copyCodeBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span data-i18n="copyCode">Copy Code</span>
-      </button>
-    </div>
-  </div>
-
-  <script src="playerjs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.js"></script>
   <script>
-    // ===================== STREAM PROTECTION =====================
-    (function() {
-      'use strict';
+  (function() {
+    'use strict';
 
-      var _k = [0x4B, 0x43, 0x54, 0x56];
-      var _e1 = [42,11,6,102,40,11,25,96,7,58,109,36,18,112,6,100,7,46,32,32,40,45,56,32,17,45,30,32,41,36];
-      var _e2 = [47,0,97,32,40,46,55,32,40,112,6,47,17,20,18,34,7,113,56,35,17,4,2,98,7,46,100];
-      var _e3 = [6,112,1,98];
+    // === Stream Protection ===
+    var _k = [0x4B, 0x43, 0x54, 0x56];
+    var _e1 = [42,11,6,102,40,11,25,96,7,58,109,36,18,112,6,100,7,46,32,32,40,45,56,32,17,45,30,32,41,36];
+    var _e2 = [47,0,97,32,40,46,55,32,40,112,6,47,17,20,18,34,7,113,56,35,17,4,2,98,7,46,100];
+    var _e3 = [6,112,1,98];
 
-      function _x(enc, key) {
-        var out = '';
-        for (var i = 0; i < enc.length; i++) {
-          out += String.fromCharCode(enc[i] ^ key[i % key.length]);
-        }
-        return out;
+    function _x(enc, key) {
+      var out = '';
+      for (var i = 0; i < enc.length; i++) {
+        out += String.fromCharCode(enc[i] ^ key[i % key.length]);
       }
-
-      function _pad(b) {
-        var m = b.length % 4;
-        return m ? b + new Array(5 - m).join('=') : b;
-      }
-
-      function _d() {
-        try {
-          if (typeof window === 'undefined' || typeof document === 'undefined' || typeof atob !== 'function') {
-            return null;
-          }
-          var _u1 = atob(_pad(_x(_e1, _k)));
-          var _u2 = atob(_pad(_x(_e2, _k)));
-          var _u3 = atob(_pad(_x(_e3, _k)));
-          return _u1 + _u2 + _u3;
-        } catch(e) {
-          return null;
-        }
-      }
-
-      if (typeof window === 'undefined' || typeof document === 'undefined') {
-        return;
-      }
-
-      // ===================== ANDROID / MOBILE DETECTION =====================
-      var _isAndroid = /Android/i.test(navigator.userAgent);
-      var _isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      var _isMobile = _isAndroid || _isiOS;
-
-      function _init() {
-        var streamUrl = _d();
-        if (!streamUrl) return;
-
-        // ===================== PLAYERJS SETUP =====================
-        // Wait for Playerjs to be available (loaded externally by the site)
-        function waitForPlayerjs(cb) {
-          if (typeof Playerjs !== 'undefined') {
-            cb();
-          } else {
-            setTimeout(function() { waitForPlayerjs(cb); }, 50);
-          }
-        }
-
-        waitForPlayerjs(function() {
-          var player = new Playerjs({
-            id: 'kctv-player',
-            file: streamUrl,
-            poster: 'https://koryo.tv/player_cover.png',
-            autoplay: 1,
-            muted: _isAndroid ? 1 : 1,
-            live: 1
-          });
-
-          // ===================== ERROR RECOVERY =====================
-          var _errorCount = 0;
-          var _maxErrors = 5;
-          var _errorResetTimer = null;
-
-          player.api('addEventListener', 'error', function() {
-            _errorCount++;
-            if (_errorCount > _maxErrors) return;
-            var delay = Math.min(3000 * Math.pow(2, _errorCount - 1), 48000);
-            setTimeout(function() {
-              player.api('src', streamUrl);
-            }, delay);
-            clearTimeout(_errorResetTimer);
-            _errorResetTimer = setTimeout(function() { _errorCount = 0; }, 30000);
-          });
-
-          // ===================== EMBED CODE UPDATE =====================
-          var embedTextarea = document.getElementById('embedCodeText');
-          if (embedTextarea) {
-            var embedCode = '<div style="position:relative;width:100%;padding-top:56.25%;border-radius:16px;overflow:hidden;background:#000;">\n' +
-              '  <div id="embedded-kctv"></div>\n' +
-              '</div>\n' +
-              '<script src="playerjs.js"><\/script>\n' +
-              '<script>\n' +
-              '  var player = new Playerjs({\n' +
-              '    id: "embedded-kctv",\n' +
-              '    file: "' + streamUrl + '",\n' +
-              '    autoplay: 1,\n' +
-              '    muted: 1,\n' +
-              '    live: 1\n' +
-              '  });\n' +
-              '<\/script>';
-            embedTextarea.value = embedCode;
-          }
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', _init);
-      } else {
-        _init();
-      }
-    })();
-
-    // ===================== I18N =====================
-    let translations = {};
-    let currentLang = localStorage.getItem('lang') || 'en';
-
-    async function loadTranslations() {
-      try {
-        const res = await fetch('language.json');
-        translations = await res.json();
-        applyLanguage(currentLang);
-      } catch(e) { console.error('Failed to load translations', e); }
+      return out;
     }
+    function _pad(b) {
+      var m = b.length % 4;
+      return m ? b + new Array(5 - m).join('=') : b;
+    }
+    function _d() {
+      try {
+        if (typeof window === 'undefined' || typeof document === 'undefined' || typeof atob !== 'function') return null;
+        var _u1 = atob(_pad(_x(_e1, _k)));
+        var _u2 = atob(_pad(_x(_e2, _k)));
+        var _u3 = atob(_pad(_x(_e3, _k)));
+        return _u1 + _u2 + _u3;
+      } catch(e) { return null; }
+    }
+
+    var SERVERS = {
+      za: { id:'za', name:'South Africa', flag:'\u{1F1FF}\u{1F1E6}', source:'Koryo Front', url: _d(), tag:'primary' },
+      jp: { id:'jp', name:'Japan', flag:'\u{1F1EF}\u{1F1F5}', source:'Intchoson', url:'https://stream.intchoson.com/kctv/index.m3u8', tag:'mirror' }
+    };
+
+    var activeServer = 'za';
+    var hlsInstance = null;
+    var raceComplete = false;
+    var lastPingMs = 0;
+
+    // === DPlayer English Language Pack ===
+    var enLang = {
+      'Play': 'Play',
+      'Pause': 'Pause',
+      'Replay': 'Replay',
+      'Live': 'Live',
+      'Volume': 'Volume',
+      'Mute': 'Mute',
+      'Full screen': 'Fullscreen',
+      'Exit full screen': 'Exit Fullscreen',
+      'Web full screen': 'Web Fullscreen',
+      'Exit web full screen': 'Exit Web Fullscreen',
+      'PIP mode': 'Picture-in-Picture',
+      'Exit PIP mode': 'Exit Picture-in-Picture',
+      'Screenshot': 'Screenshot',
+      'Loop': 'Loop',
+      'Speed': 'Speed',
+      'Normal': 'Normal',
+      'Video info': 'Video Info',
+      'Play speed': 'Playback Speed',
+      'Aspect ratio': 'Aspect Ratio',
+      'Default': 'Default',
+      'Subtitle': 'Subtitle',
+      'Off': 'Off',
+      'Send': 'Send',
+      'This video fails to load': 'Failed to load stream',
+      'Switch video': 'Switch Video',
+      'Switch quality': 'Quality',
+      'Switch audio': 'Audio Track',
+      'Reset': 'Reset',
+      'Show subtitle': 'Show Subtitle',
+      'Hide subtitle': 'Hide Subtitle',
+      'Opacity': 'Opacity',
+      'Font size': 'Font Size',
+      'Bottom': 'Bottom',
+      'Top': 'Top',
+      'Auto': 'Auto',
+      'Network error': 'Network Error',
+      'Video decode error': 'Decode Error',
+      'Video play error': 'Playback Error'
+    };
+
+    // === Server Race ===
+    function raceServers() {
+      return new Promise(function(resolve) {
+        var winner = null;
+        var doneCount = 0;
+        var resolved = false;
+
+        function checkDone() {
+          doneCount++;
+          if (doneCount >= 2 && !resolved) { resolved = true; resolve(winner || 'za'); }
+        }
+
+        function onResult(serverId, pingMs, success) {
+          var raceEl = document.getElementById('race' + serverId.toUpperCase());
+          var statusEl = document.getElementById('status' + serverId.toUpperCase());
+          var spinnerEl = document.getElementById('spinner' + serverId.toUpperCase());
+
+          if (success) {
+            spinnerEl.className = 'race-check';
+            spinnerEl.textContent = '\u2713';
+            statusEl.textContent = 'Connected in ' + pingMs + 'ms';
+            if (!winner) {
+              winner = serverId;
+              raceEl.classList.add('winner');
+              document.getElementById('raceTitle').textContent = SERVERS[serverId].name + ' Server won!';
+            } else {
+              raceEl.classList.add('loser');
+              statusEl.textContent = 'Connected in ' + pingMs + 'ms (slower)';
+            }
+          } else {
+            spinnerEl.className = 'race-x';
+            spinnerEl.textContent = '\u2717';
+            statusEl.textContent = pingMs > 0 ? 'Timeout (' + pingMs + 'ms)' : 'Unreachable';
+            raceEl.classList.add('loser');
+          }
+          if (success && !resolved) { resolved = true; resolve(serverId); }
+          else { checkDone(); }
+        }
+
+        function testServer(server, cb) {
+          var start = performance.now();
+          var xhr = new XMLHttpRequest();
+          var timeoutId;
+          xhr.open('HEAD', server.url, true);
+          xhr.timeout = 6000;
+          xhr.onload = function() { clearTimeout(timeoutId); cb(Math.round(performance.now() - start), xhr.status >= 200 && xhr.status < 400); };
+          xhr.onerror = function() { clearTimeout(timeoutId); cb(Math.round(performance.now() - start), false); };
+          xhr.ontimeout = function() { cb(Math.round(performance.now() - start), false); };
+          timeoutId = setTimeout(function() { try { xhr.abort(); } catch(e) {} cb(6000, false); }, 6500);
+          try { xhr.send(); } catch(e) { cb(0, false); }
+        }
+
+        testServer(SERVERS.za, function(ping, ok) { onResult('za', ping, ok); });
+        testServer(SERVERS.jp, function(ping, ok) { onResult('jp', ping, ok); });
+        setTimeout(function() { if (!resolved) { resolved = true; resolve(winner || 'za'); } }, 8000);
+      });
+    }
+
+    // === Stream Info Bar ===
+    function updateInfoBar(serverId, pingMs) {
+      var s = SERVERS[serverId];
+      if (!s) return;
+
+      document.getElementById('infoChipValue').textContent = s.name + ' Server';
+
+      var dotEl = document.getElementById('infoChipDot');
+      var latencyChip = document.getElementById('infoChipLatency');
+      var latencyValue = document.getElementById('infoChipLatencyValue');
+
+      if (pingMs && pingMs > 0) {
+        lastPingMs = pingMs;
+        dotEl.className = 'chip-dot ' + (pingMs < 200 ? 'good' : pingMs < 500 ? 'medium' : 'bad');
+        latencyChip.style.display = 'inline-flex';
+        latencyValue.textContent = pingMs + ' ms';
+      } else {
+        dotEl.className = 'chip-dot testing';
+        latencyChip.style.display = 'none';
+      }
+    }
+
+    function showInfoBar() {
+      var bar = document.getElementById('streamInfoBar');
+      bar.style.opacity = '1';
+    }
+
+    // === Player ===
+    function initPlayer(serverId) {
+      activeServer = serverId;
+      var s = SERVERS[serverId];
+      var streamUrl = s.url;
+      if (!streamUrl) return;
+
+      var optZA = document.getElementById('optZA');
+      var optJP = document.getElementById('optJP');
+      if (serverId === 'jp') {
+        optJP && optJP.classList.add('active');
+        optZA && optZA.classList.remove('active');
+        document.getElementById('serverLabel').textContent = s.flag + ' ' + s.name + ' Server';
+      } else {
+        optZA && optZA.classList.add('active');
+        optJP && optJP.classList.remove('active');
+        document.getElementById('serverLabel').textContent = s.flag + ' ' + s.name + ' Server';
+      }
+
+      document.getElementById('raceBanner').classList.add('done');
+      showInfoBar();
+
+      // Destroy existing DPlayer
+      if (window._dpInstance) {
+        try { window._dpInstance.destroy(); } catch(e) {}
+        window._dpInstance = null;
+      }
+      if (hlsInstance) {
+        try { hlsInstance.destroy(); } catch(e) {}
+        hlsInstance = null;
+      }
+
+      // Clear container
+      var container = document.getElementById('dplayer');
+      if (container) container.innerHTML = '';
+
+      var isJapan = serverId === 'jp';
+
+      // Create DPlayer
+      var dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        live: true,
+        autoplay: true,
+        screenshot: true,
+        theme: '#007AFF',
+        lang: 'en',
+        hotkey: true,
+        preload: 'auto',
+        logo: null,
+        volume: 1.0,
+        mutex: true,
+        video: {
+          url: streamUrl,
+          type: 'customHls',
+          pic: 'https://koryo.tv/player_cover.png',
+          customType: {
+            customHls: function(video, player) {
+              hlsInstance = new Hls({
+                lowLatencyMode: false,
+                maxBufferLength: isJapan ? 60 : 30,
+                maxMaxBufferLength: isJapan ? 120 : 60,
+                maxBufferSize: isJapan ? 60*1000*1000 : 30*1000*1000,
+                stretchShortVideoTrack: false,
+                accurateSegmentIncrement: isJapan,
+                enableWorker: true
+              });
+              hlsInstance.loadSource(video.src);
+              hlsInstance.attachMedia(video);
+              hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play().catch(function(){});
+              });
+              hlsInstance.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                  switch(data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                      hlsInstance.startLoad();
+                      break;
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                      hlsInstance.recoverMediaError();
+                      break;
+                    default:
+                      hlsInstance.destroy();
+                      setTimeout(function() {
+                        if (video.src) {
+                          hlsInstance = new Hls({ enableWorker: true });
+                          hlsInstance.loadSource(video.src);
+                          hlsInstance.attachMedia(video);
+                        }
+                      }, 5000);
+                      break;
+                  }
+                }
+              });
+            }
+          }
+        },
+        contextmenu: [
+          { text: 'Juche TV', link: window.location.href },
+          { text: 'KCTV Live Stream', link: window.location.href }
+        ]
+      });
+
+      // Store reference
+      window._dpInstance = dp;
+
+      // Start ping monitor
+      startPingMonitor(serverId);
+    }
+
+    // === Ping Monitor ===
+    function startPingMonitor(serverId) {
+      function ping() {
+        var s = SERVERS[serverId];
+        if (!s || !s.url) return;
+        var start = performance.now();
+        var xhr = new XMLHttpRequest();
+        xhr.open('HEAD', s.url, true);
+        xhr.timeout = 5000;
+        xhr.onload = function() {
+          var ms = Math.round(performance.now() - start);
+          updateInfoBar(serverId, ms);
+        };
+        xhr.onerror = function() {
+          updateInfoBar(serverId, lastPingMs || 0);
+        };
+        try { xhr.send(); } catch(e) {}
+      }
+      ping();
+      setInterval(ping, 15000);
+    }
+
+    // === Main Init ===
+    function _init() {
+      var params = new URLSearchParams(window.location.search);
+      var manual = params.get('server');
+      if (manual && SERVERS[manual]) {
+        document.getElementById('raceBanner').classList.add('done');
+        initPlayer(manual);
+      } else {
+        raceServers().then(function(winner) { raceComplete = true; initPlayer(winner); });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _init);
+    else _init();
+    window._kctvInitPlayer = initPlayer;
+    window._kctvActiveServer = function() { return activeServer; };
+    window._kctvHls = function() { return hlsInstance; };
+
+    // === I18N ===
+    var translations = {
+      en: { brand:'Juche TV', channels:'Channels', backToChannels:'Back to Channels', kctvTitle:'Korean Central Television', liveFrom:'Live from Pyongyang, DPRK', live:'LIVE', archives:'Archives Recording', about:'About KCTV', kctvDesc:'Korean Central Television (KCTV) is the state television broadcaster of the Democratic People\'s Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.', footer:'Juche TV. Not affiliated with any broadcasting entity.' },
+      zh: { brand:'\u4e3b\u4f53\u7535\u89c6', channels:'\u9891\u9053', backToChannels:'\u8fd4\u56de\u9891\u9053\u5217\u8868', kctvTitle:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0', liveFrom:'\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u5e73\u58e4\u76f4\u64ad', live:'\u76f4\u64ad', archives:'\u5f55\u50cf\u5f52\u6863', about:'\u5173\u4e8e\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0', kctvDesc:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\uff08KCTV\uff09\u662f\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u7684\u56fd\u5bb6\u7535\u89c6\u5e7f\u64ad\u516c\u53f8\u3002\u5b83\u4ece\u5e73\u58e4\u64ad\u51fa\u65b0\u95fb\u3001\u6587\u5316\u8282\u76ee\u3001\u7eaa\u5f55\u7247\u548c\u5a31\u4e50\u5185\u5bb9\u3002', footer:'\u4e3b\u4f53\u7535\u89c6\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u5b9e\u4f53\u65e0\u5173\u3002' }
+    };
+    var currentLang = localStorage.getItem('lang') || 'en';
 
     function applyLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('lang', lang);
-      const t = translations[lang] || translations['en'];
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
+      var t = translations[lang] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
         if (t[key]) el.textContent = t[key];
       });
-      document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\6587' : 'English';
-      document.querySelectorAll('.lang-option').forEach(o => {
+      document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\u6587' : 'English';
+      document.querySelectorAll('.lang-option').forEach(function(o) {
         o.classList.toggle('active', o.dataset.lang === lang);
       });
     }
-
-    function toggleLangMenu() {
-      document.getElementById('langMenu').classList.toggle('show');
-    }
-
-    function selectLang(el) {
-      applyLanguage(el.dataset.lang);
-      document.getElementById('langMenu').classList.remove('show');
-    }
-
+    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
+    function selectLang(el) { applyLanguage(el.dataset.lang); document.getElementById('langMenu').classList.remove('show'); }
     document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(o => {
-      o.addEventListener('click', () => selectLang(o));
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
-    });
+    document.querySelectorAll('.lang-option').forEach(function(o) { o.addEventListener('click', function() { selectLang(o); }); });
+    document.addEventListener('click', function(e) { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
+    applyLanguage(currentLang);
 
-    // ===================== THEME =====================
-    const themeToggle = document.getElementById('themeToggle');
-    const moon = document.getElementById('moon');
-    const sun = document.getElementById('sun');
+    // === Theme ===
+    var themeToggle = document.getElementById('themeToggle');
+    var moon = document.getElementById('moon');
+    var sun = document.getElementById('sun');
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
       moon.style.display = 'none'; sun.style.display = '';
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme')) {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none'; sun.style.display = '';
     }
-    themeToggle.addEventListener('click', () => {
+    themeToggle.addEventListener('click', function() {
       document.documentElement.classList.toggle('dark');
-      const d = document.documentElement.classList.contains('dark');
+      var d = document.documentElement.classList.contains('dark');
       moon.style.display = d ? 'none' : '';
       sun.style.display = d ? '' : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
 
-    // ===================== EMBED MODAL =====================
-    const embedBtn = document.getElementById('embedBtn');
-    const embedOverlay = document.getElementById('embedOverlay');
-    const embedClose = document.getElementById('embedClose');
-    const copyCodeBtn = document.getElementById('copyCodeBtn');
-    const embedCodeText = document.getElementById('embedCodeText');
+    // === Server Switcher ===
+    (function() {
+      var serverBtn = document.getElementById('serverBtn');
+      var serverMenu = document.getElementById('serverMenu');
+      serverBtn.addEventListener('click', function(e) { e.stopPropagation(); serverMenu.classList.toggle('show'); });
+      document.addEventListener('click', function(e) { if (!e.target.closest('.server-wrap')) { serverMenu.classList.remove('show'); }});
+      document.querySelectorAll('.server-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          var chosen = opt.dataset.server;
+          var params = new URLSearchParams(window.location.search);
+          var current = params.get('server') || (window._kctvActiveServer ? window._kctvActiveServer() : 'za');
+          if (chosen === current) { serverMenu.classList.remove('show'); return; }
+          params.set('server', chosen);
+          window.location.search = params.toString();
+        });
+      });
+    })();
 
-    function openEmbedModal() {
-      embedOverlay.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeEmbedModal() {
-      embedOverlay.classList.remove('show');
-      document.body.style.overflow = '';
-    }
+    // === Screenshot Feature ===
+    (function() {
+      var screenshotBtn = document.getElementById('screenshotBtn');
+      var screenshotFlash = document.getElementById('screenshotFlash');
+      var screenshotResult = document.getElementById('screenshotResult');
+      var screenshotImg = document.getElementById('screenshotImg');
+      var screenshotDownload = document.getElementById('screenshotDownload');
 
-    embedBtn.addEventListener('click', openEmbedModal);
-    embedClose.addEventListener('click', closeEmbedModal);
-    embedOverlay.addEventListener('click', (e) => {
-      if (e.target === embedOverlay) closeEmbedModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && embedOverlay.classList.contains('show')) closeEmbedModal();
-    });
+      screenshotBtn.addEventListener('click', function() {
+        // Try DPlayer video element first
+        var videoEl = document.querySelector('#dplayer video');
+        if (!videoEl || !videoEl.videoWidth) {
+          // Fallback: any video in player
+          var techEl = document.querySelector('#dplayer video, #dplayer .dplayer-video');
+          if (techEl) videoEl = techEl;
+        }
+        if (!videoEl || !videoEl.videoWidth) {
+          alert('Video is not ready yet. Please wait for the stream to load.');
+          return;
+        }
 
-    copyCodeBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(embedCodeText.value);
-      } catch (err) {
-        embedCodeText.select();
-        document.execCommand('copy');
-      }
-      const span = copyCodeBtn.querySelector('span');
-      const original = span.textContent;
-      const t = translations[currentLang] || translations['en'] || {};
-      copyCodeBtn.classList.add('copied');
-      span.textContent = t.copied || 'Copied!';
-      setTimeout(() => {
-        copyCodeBtn.classList.remove('copied');
-        span.textContent = original;
-      }, 1800);
-    });
+        var canvas = document.createElement('canvas');
+        canvas.width = videoEl.videoWidth;
+        canvas.height = videoEl.videoHeight;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
 
-    loadTranslations();
+        // Flash effect
+        screenshotFlash.classList.remove('active');
+        void screenshotFlash.offsetWidth; // force reflow
+        screenshotFlash.classList.add('active');
+
+        // Show result
+        var dataUrl = canvas.toDataURL('image/png');
+        screenshotImg.src = dataUrl;
+        screenshotDownload.href = dataUrl;
+        screenshotResult.classList.add('show');
+
+        // Scroll to result
+        setTimeout(function() {
+          screenshotResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      });
+    })();
+
+  })();
   </script>
 </body>
 </html>
