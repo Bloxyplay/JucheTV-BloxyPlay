@@ -39,13 +39,16 @@ jobs:
               break
             fi
             
-            CURRENT_TIME=$(date +"%H:%M")
+            # Extract hours and minutes as pure numbers to avoid text sorting bugs
+            CURRENT_HOUR=$(date +"%-H")
+            CURRENT_MIN=$(date +"%-M")
+            TOTAL_MINUTES=$((CURRENT_HOUR * 60 + CURRENT_MIN))
             
-            # Off-Air Window: 8:30 PM (20:30) to 5:30 AM (05:30) Myanmar Time
-            if [[ "$CURRENT_TIME" > "20:30" || "$CURRENT_TIME" < "05:30" ]]; then
-              echo "KCTV is Off-Air ($CURRENT_TIME). Broadcasting your Juche TV Test Card..."
+            # 5:30 AM = 330 minutes | 8:30 PM (20:30) = 1230 minutes
+            # Off-Air condition: Before 5:30 AM OR After 8:30 PM
+            if [ $TOTAL_MINUTES -lt 330 ] || [ $TOTAL_MINUTES -ge 1230 ]; then
+              echo "KCTV is Off-Air (Current Minutes: $TOTAL_MINUTES). Broadcasting your Juche TV Test Card..."
               
-              # Reads the exact filename you uploaded to your repository main root
               timeout 1800 ffmpeg -hide_banner \
                 -loop 1 -r 30 -i "Screenshot_2026-06-18-06-01-15-077_com.lemon.lvoverseas-edit.jpg" \
                 -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 \
@@ -54,7 +57,7 @@ jobs:
                 -shortest \
                 -f flv "rtmps://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY" || true
             else
-              echo "KCTV is On-Air! Streaming live feed at $CURRENT_TIME..."
+              echo "KCTV is On-Air! Streaming live feed..."
               
               timeout 1800 ffmpeg -hide_banner \
                 -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
