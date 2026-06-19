@@ -1,0 +1,182 @@
+{
+  "channel": "조선중앙텔레비죤 (Korean Central Television)",
+  "date": "2026-06-20",
+  "timezone": "Asia/Pyongyang",
+  "programs": [
+    {
+      "start_time": "09:16",
+      "end_time": "09:41",
+      "title": "Motherland's Song of Praise to the People",
+      "category": "Special Feature",
+      "type": "특집 (Special)"
+    },
+    {
+      "start_time": "09:41",
+      "end_time": "09:49",
+      "title": "The Noble Reappearance of the Great Man - Visiting the International Friendship Exhibition (195)",
+      "category": "Documentary Series",
+      "type": "연속참관기 (Continuous Observation)"
+    },
+    {
+      "start_time": "09:49",
+      "end_time": "10:27",
+      "title": "Revolutionary Fighters of Our Party Who Will Live Forever - Shin In-ha, Former 1st Vice Chairman of the Party Central Committee",
+      "category": "Documentary Series",
+      "type": "연속소개편집물 (Continuous Introduction Compilation)"
+    },
+    {
+      "start_time": "10:27",
+      "end_time": "10:50",
+      "title": "Animal World of Africa - Animals Living in the Congo River Basin (1)",
+      "category": "Nature Documentary",
+      "type": "세계 여러 나라 동물들 (Animals of Various Countries)"
+    },
+    {
+      "start_time": "10:50",
+      "end_time": "11:00",
+      "title": "Law and the People - Observance of Law and Morality",
+      "category": "Legal Education",
+      "type": "문답 (Q&A)"
+    },
+    {
+      "start_time": "11:00",
+      "end_time": "11:27",
+      "title": "Chollima Era Peak Learning Wind",
+      "category": "Introduction Compilation",
+      "type": "소개편집물 (Introduction Compilation)"
+    },
+    {
+      "start_time": "11:27",
+      "end_time": "11:54",
+      "title": "The Touch of Love in Dental Hygiene Products - Ri Yong-suk, Meritorious Person of Pyongyang Dental Hygiene Products Factory",
+      "category": "Documentary",
+      "type": "수기 (Written Account)"
+    },
+    {
+      "start_time": "11:54",
+      "end_time": "13:27",
+      "title": "The Man We Wait For - Korean Art Film",
+      "category": "Movie",
+      "type": "조선예술영화 (Korean Art Film)"
+    },
+    {
+      "start_time": "13:27",
+      "end_time": "14:00",
+      "title": "The Peak of Revolution",
+      "category": "Special Feature",
+      "type": "특집 (Special)"
+    },
+    {
+      "start_time": "14:00",
+      "end_time": "14:04",
+      "title": "Iron-Rich Foods That Overcome Anemia",
+      "category": "Health & Lifestyle",
+      "type": "건강과 생활상식 (Health and Life Knowledge)"
+    },
+    {
+      "start_time": "14:04",
+      "end_time": "14:37",
+      "title": "Raised to Be a Young Commander of the Chollima Spirit - Ri Song-guk, Former Commander of the Korean People's Army",
+      "category": "Introduction Compilation",
+      "type": "소개편집물 (Introduction Compilation)"
+    },
+    {
+      "start_time": "14:37",
+      "end_time": "15:12",
+      "title": "Visiting the Revolutionary Battle Sites in Hamgyong Province - With a Small Unit, Through Small-Unit Activities",
+      "category": "Travel Documentary",
+      "type": "연속기행 (Continuous Travel)"
+    },
+    {
+      "start_time": "15:12",
+      "end_time": "15:22",
+      "title": "The Echo of Victory That Resounds Through the Valley - Ri Jong-hun, 24th People's Battalion, Pukchong District, Pukchong Area",
+      "category": "Talk",
+      "type": "실담 (Real Talk)"
+    },
+    {
+      "start_time": "15:22",
+      "end_time": "16:07",
+      "title": "2026 Professional Tennis Association Madrid Open Singles Final - Italy vs. Switzerland",
+      "category": "Sports",
+      "type": "록화실황 (Recorded Live Broadcast)"
+    },
+    {
+      "start_time": "16:07",
+      "end_time": "16:19",
+      "title": "Healthy Bee Products - Honey",
+      "category": "Introduction Compilation",
+      "type": "소개편집물 (Introduction Compilation)"
+    },
+    {
+      "start_time": "16:19",
+      "end_time": "17:00",
+      "title": "Ko Jumong - Part 15 (Russian Animated Film)",
+      "category": "Children's Program",
+      "type": "아동방송시간 러시아만화영화 (Children's Broadcast Time - Russian Animated Film)"
+    },
+    {
+      "start_time": "17:00",
+      "end_time": "17:18",
+      "title": "News Report",
+      "category": "News",
+      "type": "복도 (Report)"
+    },
+    {
+      "start_time": "17:18",
+      "end_time": "18:00",
+      "title": "Today's Central News Agency News",
+      "category": "News",
+      "type": "오늘호 중앙신문개관 (Today's Central Newspaper Overview)"
+    },
+    {
+      "start_time": "18:00",
+      "end_time": "18:55",
+      "title": "The Great Patriot of the Era Kim Jong Il - Part 6: Our Party as the Invincible Revolutionary Party",
+      "category": "Documentary Film",
+      "type": "조선기록영화 (Korean Documentary Film)"
+    },
+    {
+      "start_time": "18:55",
+      "end_time": "19:05",
+      "title": "Women of the Patriotic War Veterans",
+      "category": "Introduction Compilation",
+      "type": "소개편집물 (Introduction Compilation)"
+    },
+    {
+      "start_time": "19:05",
+      "end_time": "19:29",
+      "title": "Song of Spring Blossoms (2) - More Courageously and Dynamically Forward, Forward",
+      "category": "TV Essay",
+      "type": "TV정론 (TV Essay)"
+    },
+    {
+      "start_time": "19:29",
+      "end_time": "20:00",
+      "title": "Visiting the Newly Built Modern Greenhouse Vegetable Farm (1)",
+      "category": "Travel Documentary",
+      "type": "연속기행 (Continuous Travel)"
+    },
+    {
+      "start_time": "20:00",
+      "end_time": "20:36",
+      "title": "News Report",
+      "category": "News",
+      "type": "복도 (Report)"
+    },
+    {
+      "start_time": "20:36",
+      "end_time": "21:51",
+      "title": "Korean Documentary Film: The Great Event to Be Recorded in the History of Land Management - Respected Comrade Kim Jong Un's On-Site Guidance to the Land of Pyongyang Where the Russian Presidential Visit Took Place",
+      "category": "Documentary Film",
+      "type": "조선기록영화 (Korean Documentary Film)"
+    },
+    {
+      "start_time": "21:51",
+      "end_time": "21:51",
+      "title": "Today's Report Summary",
+      "category": "News Summary",
+      "type": "오늘의 복도중에서 (From Today's Reports)"
+    }
+  ]
+}

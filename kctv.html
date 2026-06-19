@@ -381,73 +381,341 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== EPG Coming Soon Banner ===== */
-    .epg-banner {
+    /* ===== EPG System ===== */
+    .epg-section {
       margin-top: 16px;
-      display: flex; align-items: center; gap: 16px;
-      padding: 20px 22px;
-      background: linear-gradient(135deg, rgba(88,86,214,0.08) 0%, rgba(0,122,255,0.07) 100%);
-      border: 1px solid rgba(88,86,214,0.2);
-      border-radius: var(--radius-lg);
-      position: relative; overflow: hidden;
     }
-    :root.dark .epg-banner {
-      background: linear-gradient(135deg, rgba(94,92,230,0.14) 0%, rgba(10,132,255,0.1) 100%);
-      border-color: rgba(94,92,230,0.3);
+    .epg-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; gap: 12px;
     }
-    .epg-banner::before {
-      content: '';
-      position: absolute; top: -40px; right: -30px;
-      width: 120px; height: 120px;
-      background: radial-gradient(circle, rgba(88,86,214,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .epg-banner-icon {
-      flex-shrink: 0;
-      width: 52px; height: 52px;
-      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
-      border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(88,86,214,0.35);
-    }
-    .epg-banner-body { flex: 1; min-width: 0; }
-    .epg-banner-title {
-      font-size: 15px; font-weight: 800; letter-spacing: -0.3px;
-      color: var(--primary);
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      margin-bottom: 5px;
+    .epg-header-left {
+      display: flex; align-items: center; gap: 10px;
     }
     .epg-pill {
-      font-size: 10px; font-weight: 800; letter-spacing: 0.6px;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
       text-transform: uppercase;
       background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
       color: #fff;
-      padding: 2px 8px; border-radius: 100px;
+      padding: 3px 9px; border-radius: 100px;
     }
-    .epg-banner-desc {
-      font-size: 13px; color: var(--secondary); line-height: 1.6;
+    .epg-title-text {
+      font-size: 15px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px;
     }
-    .epg-banner-badge {
-      flex-shrink: 0;
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700;
-      color: var(--tint-secondary);
-      background: rgba(88,86,214,0.1);
-      border: 1px solid rgba(88,86,214,0.2);
-      padding: 6px 14px; border-radius: 100px;
+    .epg-pyongyang-time {
+      font-size: 12px; font-weight: 600; color: var(--secondary);
+      display: flex; align-items: center; gap: 5px;
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      padding: 4px 10px; border-radius: 100px;
       white-space: nowrap;
     }
-    :root.dark .epg-banner-badge {
-      color: #7B79F5;
-      background: rgba(94,92,230,0.15);
-      border-color: rgba(94,92,230,0.3);
+    .epg-pyongyang-time svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .epg-time-val { font-variant-numeric: tabular-nums; }
+
+    /* EPG Card (SpotlightCard) */
+    .epg-card {
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      --mouse-x: 50%; --mouse-y: 50%;
     }
-    .epg-soon-dot {
-      width: 6px; height: 6px; border-radius: 50%;
+    .epg-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle 220px at var(--mouse-x) var(--mouse-y), rgba(94,92,230,0.13), transparent 70%);
+      opacity: 0; transition: opacity 0.25s ease;
+      pointer-events: none; z-index: 0;
+    }
+    .epg-card:hover::after { opacity: 1; }
+
+    /* Now Playing bar */
+    .epg-now-bar {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px 14px;
+      border-bottom: 0.5px solid var(--separator);
+      position: relative; z-index: 1;
+    }
+    .epg-now-icon {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; box-shadow: 0 3px 12px rgba(88,86,214,0.3);
+    }
+    .epg-now-icon svg { width: 20px; height: 20px; }
+    .epg-now-body { flex: 1; min-width: 0; }
+    .epg-now-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--tint-secondary);
+      margin-bottom: 3px;
+    }
+    .epg-now-title {
+      font-size: 14px; font-weight: 700; color: var(--primary);
+      line-height: 1.35; margin-bottom: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .epg-now-meta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .epg-cat-badge {
+      font-size: 11px; font-weight: 600;
+      color: var(--tint); background: rgba(0,122,255,0.1);
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .epg-time-badge {
+      font-size: 11px; color: var(--secondary); font-variant-numeric: tabular-nums;
+    }
+    /* Progress bar */
+    .epg-progress-wrap {
+      height: 3px; background: var(--separator);
+      border-radius: 2px; overflow: hidden; margin-top: 8px;
+    }
+    .epg-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--tint-secondary), var(--tint));
+      border-radius: 2px;
+      transition: width 30s linear;
+    }
+    .epg-now-right { flex-shrink: 0; text-align: right; }
+    .epg-remaining {
+      font-size: 11px; color: var(--secondary); font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Schedule list */
+    .epg-schedule {
+      max-height: 260px; overflow-y: auto;
+      position: relative; z-index: 1;
+    }
+    .epg-schedule::-webkit-scrollbar { width: 4px; }
+    .epg-schedule::-webkit-scrollbar-track { background: transparent; }
+    .epg-schedule::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
+    .epg-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 11px 18px;
+      border-bottom: 0.5px solid var(--separator);
+      transition: background 0.15s ease;
+    }
+    .epg-row:last-child { border-bottom: none; }
+    .epg-row.epg-past { opacity: 0.4; }
+    .epg-row.epg-current {
+      background: linear-gradient(90deg, rgba(88,86,214,0.07) 0%, transparent 100%);
+    }
+    .epg-row:hover { background: rgba(0,0,0,0.03); }
+    :root.dark .epg-row:hover { background: rgba(255,255,255,0.04); }
+    .epg-row-time {
+      flex-shrink: 0; width: 46px;
+      font-size: 11px; font-weight: 700; color: var(--secondary);
+      font-variant-numeric: tabular-nums; padding-top: 1px;
+    }
+    .epg-row.epg-current .epg-row-time { color: var(--tint-secondary); }
+    .epg-row-dot {
+      flex-shrink: 0; margin-top: 5px;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--separator);
+    }
+    .epg-row.epg-current .epg-row-dot {
       background: var(--tint-secondary);
+      box-shadow: 0 0 6px rgba(88,86,214,0.6);
       animation: pulse 2s ease infinite;
     }
+    .epg-row-body { flex: 1; min-width: 0; }
+    .epg-row-title {
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      line-height: 1.35; margin-bottom: 2px;
+    }
+    .epg-row.epg-past .epg-row-title { color: var(--secondary); }
+    .epg-row-type {
+      font-size: 11px; color: var(--secondary);
+    }
+    .epg-row-end {
+      flex-shrink: 0;
+      font-size: 11px; color: var(--secondary);
+      font-variant-numeric: tabular-nums; padding-top: 1px;
+    }
+
+    /* Error / Loading states */
+    .epg-state {
+      padding: 32px 18px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .epg-state-icon { font-size: 28px; }
+    .epg-state-msg { font-size: 13px; color: var(--secondary); }
+    .epg-retry-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700;
+      color: var(--tint); background: rgba(0,122,255,0.1);
+      border: 1px solid rgba(0,122,255,0.2);
+      padding: 7px 16px; border-radius: 100px;
+      cursor: pointer; border: none;
+      transition: background 0.2s ease;
+    }
+    .epg-retry-btn:hover { background: rgba(0,122,255,0.18); }
+    .epg-date-chip {
+      font-size: 11px; color: var(--secondary); font-weight: 600;
+    }
+
+    /* ===== EPG Fullscreen Overlay ===== */
+    .epg-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9999;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .epg-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .epg-overlay-inner {
+      display: flex; flex-direction: column;
+      width: 100%; max-width: 760px;
+      max-height: 92vh;
+      background: var(--bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .epg-overlay.show .epg-overlay-inner {
+      transform: translateY(0) scale(1);
+    }
+    .epg-overlay-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 16px;
+      border-bottom: 0.5px solid var(--separator);
+      flex-shrink: 0;
+    }
+    .epg-overlay-title {
+      font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: -0.4px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .epg-overlay-meta {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .epg-overlay-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(120,120,128,0.16);
+      border: none; cursor: pointer; color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .epg-overlay-close:hover { background: rgba(120,120,128,0.28); }
+    .epg-overlay-close svg { width: 14px; height: 14px; }
+    .epg-overlay-body { overflow-y: auto; flex: 1; }
+    .epg-overlay-body::-webkit-scrollbar { width: 5px; }
+    .epg-overlay-body::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
+
+    /* Full EPG rows in overlay */
+    .epg-full-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 13px 22px;
+      border-bottom: 0.5px solid var(--separator);
+      transition: background 0.15s;
+    }
+    .epg-full-row:last-child { border-bottom: none; }
+    .epg-full-row.epg-past { opacity: 0.38; }
+    .epg-full-row.epg-current {
+      background: linear-gradient(90deg, rgba(88,86,214,0.1) 0%, transparent 100%);
+    }
+    .epg-full-row:hover { background: rgba(0,0,0,0.04); }
+    :root.dark .epg-full-row:hover { background: rgba(255,255,255,0.04); }
+    .epg-full-time {
+      flex-shrink: 0; width: 52px;
+      font-size: 12px; font-weight: 700; color: var(--secondary);
+      font-variant-numeric: tabular-nums; padding-top: 2px;
+    }
+    .epg-full-row.epg-current .epg-full-time { color: var(--tint-secondary); }
+    .epg-full-dot {
+      flex-shrink: 0; margin-top: 7px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--separator);
+    }
+    .epg-full-row.epg-current .epg-full-dot {
+      background: var(--tint-secondary);
+      box-shadow: 0 0 8px rgba(88,86,214,0.7);
+      animation: pulse 2s ease infinite;
+    }
+    .epg-full-body { flex: 1; min-width: 0; }
+    .epg-full-title {
+      font-size: 14px; font-weight: 700; color: var(--primary);
+      line-height: 1.4; margin-bottom: 3px;
+    }
+    .epg-full-row.epg-past .epg-full-title { color: var(--secondary); }
+    .epg-full-tags {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .epg-full-cat {
+      font-size: 11px; font-weight: 600;
+      color: var(--tint); background: rgba(0,122,255,0.1);
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .epg-full-type {
+      font-size: 11px; color: var(--secondary);
+    }
+    .epg-full-end {
+      flex-shrink: 0;
+      font-size: 12px; color: var(--secondary); font-variant-numeric: tabular-nums;
+      padding-top: 2px; text-align: right;
+    }
+    .epg-full-dur {
+      font-size: 10px; color: var(--secondary); margin-top: 2px;
+    }
+
+    /* ===== EPG Overlay Inside DPlayer Fullscreen ===== */
+    /* When the overlay is moved inside DPlayer fullscreen container */
+    .dplayer:fullscreen .epg-overlay,
+    .dplayer:-webkit-full-screen .epg-overlay,
+    .dplayer:-moz-full-screen .epg-overlay,
+    .dplayer:-ms-fullscreen .epg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: rgba(0,0,0,0.92);
+      padding: 24px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      align-items: center;
+      justify-content: center;
+    }
+    .dplayer:fullscreen .epg-overlay.show,
+    .dplayer:-webkit-full-screen .epg-overlay.show,
+    .dplayer:-moz-full-screen .epg-overlay.show,
+    .dplayer:-ms-fullscreen .epg-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .dplayer:fullscreen .epg-overlay-inner,
+    .dplayer:-webkit-full-screen .epg-overlay-inner {
+      max-height: 88vh;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* DPlayer EPG button */
+    .dp-epg-btn {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #fff;
+      opacity: 0.8; transition: opacity 0.2s;
+    }
+    .dp-epg-btn:hover { opacity: 1; }
+    .dp-epg-btn svg { width: 22px; height: 22px; }
 
     /* ===== Stream Info Bar ===== */
     .stream-info-bar {
@@ -520,9 +788,31 @@
       border-color: rgba(10,132,255,0.2);
     }
 
+    /* Keyboard hint */
+    .epg-keyboard-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--secondary);
+      opacity: 0.7;
+    }
+    .kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--secondary);
+      background: var(--bg);
+      border: 0.5px solid var(--separator);
+      border-radius: 4px;
+      box-shadow: 0 1px 0 var(--separator);
+    }
+
     @media (max-width: 640px) {
-      .epg-banner { flex-wrap: wrap; gap: 12px; }
-      .epg-banner-badge { width: 100%; justify-content: center; }
+      .epg-section { margin-top: 12px; }
+      .epg-schedule { max-height: 200px; }
       .channel-meta h1 { font-size: 18px; }
       .live-badge { margin-left: 0; width: 100%; justify-content: center; }
       .server-menu { min-width: calc(100vw - 40px); left: 0; }
@@ -531,6 +821,9 @@
       .stream-info-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
       .stream-info-right { width: 100%; }
       .features-hint { width: 100%; justify-content: center; }
+      .epg-overlay { padding: 8px; }
+      .epg-overlay-inner { max-height: 96vh; border-radius: 14px; }
+      .epg-full-row { padding: 11px 16px; }
     }
   </style>
 </head>
@@ -685,21 +978,89 @@
       <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
     </div>
 
-    <!-- EPG Coming Soon Banner -->
-    <div class="epg-banner">
-      <div class="epg-banner-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      </div>
-      <div class="epg-banner-body">
-        <div class="epg-banner-title">
-          Programme Guide Coming Soon
+    <!-- EPG System -->
+    <div class="epg-section">
+      <div class="epg-header">
+        <div class="epg-header-left">
           <span class="epg-pill">EPG</span>
+          <span class="epg-title-text">Programme Guide</span>
         </div>
-        <div class="epg-banner-desc">We're building a full Electronic Programme Guide for Juche TV &#x2014; see exactly what's on, what's coming up, and never miss a broadcast. Stay tuned.</div>
+        <div class="epg-pyongyang-time" id="epgTimeChip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="epg-time-val" id="epgClockVal">--:--:--</span>
+          <span style="color:var(--secondary);font-weight:500;">KST</span>
+        </div>
       </div>
-      <div class="epg-banner-badge">
-        <span class="epg-soon-dot"></span>
-        Soon
+
+      <!-- EPG Card -->
+      <div class="epg-card" id="epgCard">
+        <!-- Loading state -->
+        <div class="epg-state" id="epgLoading">
+          <div class="epg-state-icon">&#x1F4FA;</div>
+          <div class="epg-state-msg">Loading programme guide&#x2026;</div>
+        </div>
+        <!-- Error state -->
+        <div class="epg-state" id="epgError" style="display:none;">
+          <div class="epg-state-icon">&#x26A0;&#xFE0F;</div>
+          <div class="epg-state-msg" id="epgErrorMsg">Failed to load programme guide.</div>
+          <button class="epg-retry-btn" id="epgRetryBtn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Retry
+          </button>
+        </div>
+        <!-- Live content -->
+        <div id="epgContent" style="display:none;">
+          <!-- Now Playing -->
+          <div class="epg-now-bar" id="epgNowBar">
+            <div class="epg-now-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="epg-now-body">
+              <div class="epg-now-label">Now Playing</div>
+              <div class="epg-now-title" id="epgNowTitle">&mdash;</div>
+              <div class="epg-now-meta">
+                <span class="epg-cat-badge" id="epgNowCat"></span>
+                <span class="epg-time-badge" id="epgNowTime"></span>
+              </div>
+              <div class="epg-progress-wrap">
+                <div class="epg-progress-fill" id="epgProgressFill" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="epg-now-right">
+              <div class="epg-remaining" id="epgRemaining"></div>
+            </div>
+          </div>
+          <!-- Schedule -->
+          <div class="epg-schedule" id="epgSchedule"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EPG Fullscreen Overlay -->
+    <div class="epg-overlay" id="epgOverlay">
+      <div class="epg-overlay-inner">
+        <div class="epg-overlay-header">
+          <div class="epg-overlay-title">
+            <span class="epg-pill">EPG</span>
+            &#xC870;&#xC120;&#xC911;&#xC559;&#xD154;&#xB808;&#xBE44;&#xC998;
+          </div>
+          <div class="epg-overlay-meta">
+            <div class="epg-pyongyang-time">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="epg-time-val" id="epgOverlayClock">--:--:--</span>
+              <span style="color:var(--secondary);font-weight:500;">KST</span>
+            </div>
+            <button class="epg-overlay-close" id="epgOverlayClose" title="Close (Esc)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="epg-overlay-body" id="epgOverlayBody">
+          <div class="epg-state"><div class="epg-state-msg">Loading&#x2026;</div></div>
+        </div>
+        <div style="padding: 10px 22px; border-top: 0.5px solid var(--separator); flex-shrink: 0; text-align: center;">
+          <span class="epg-keyboard-hint"><span class="kbd">Esc</span> to close</span>
+        </div>
       </div>
     </div>
   </main>
@@ -987,6 +1348,9 @@
 
       // Start ping monitor
       startPingMonitor(serverId);
+
+      // Dispatch event so EPG module knows player was reinit'd
+      document.dispatchEvent(new CustomEvent('dplayer:reinit'));
     }
 
     // === Ping Monitor ===
@@ -1137,6 +1501,360 @@
       });
     })();
 
+  })();
+  </script>
+
+  <script>
+  // ===== EPG SYSTEM =====
+  (function() {
+    var EPG_URL = 'kctv_epg.json';
+    var epgData = null;
+
+    // --- Pyongyang time (UTC+9) ---
+    function getPyongyangTime() {
+      var now = new Date();
+      var utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      return new Date(utc + 9 * 3600000);
+    }
+    function fmt2(n) { return String(n).padStart(2, '0'); }
+    function fmtTime(d) {
+      return fmt2(d.getHours()) + ':' + fmt2(d.getMinutes()) + ':' + fmt2(d.getSeconds());
+    }
+    function fmtHHMM(d) {
+      return fmt2(d.getHours()) + ':' + fmt2(d.getMinutes());
+    }
+
+    // Tick clock
+    function tickClock() {
+      var t = fmtTime(getPyongyangTime());
+      var el = document.getElementById('epgClockVal');
+      var el2 = document.getElementById('epgOverlayClock');
+      if (el) el.textContent = t;
+      if (el2) el2.textContent = t;
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    // --- Parse HH:MM string into today's Date in KST ---
+    function parseKST(hhmm) {
+      var parts = hhmm.split(':');
+      var now = getPyongyangTime();
+      var d = new Date(now);
+      d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+      return d;
+    }
+
+    function getDuration(start, end) {
+      var diff = (parseKST(end) - parseKST(start)) / 60000;
+      if (diff < 0) diff += 24 * 60;
+      return diff;
+    }
+
+    function getMinutesRemaining(endHHMM) {
+      var now = getPyongyangTime();
+      var end = parseKST(endHHMM);
+      var diff = (end - now) / 60000;
+      if (diff < 0) diff += 24 * 60;
+      return Math.round(diff);
+    }
+
+    function getProgress(startHHMM, endHHMM) {
+      var now = getPyongyangTime();
+      var start = parseKST(startHHMM);
+      var end = parseKST(endHHMM);
+      var total = end - start;
+      var elapsed = now - start;
+      if (total <= 0) return 0;
+      return Math.min(Math.max((elapsed / total) * 100, 0), 100);
+    }
+
+    function isPast(endHHMM) {
+      return getPyongyangTime() > parseKST(endHHMM);
+    }
+    function isCurrent(startHHMM, endHHMM) {
+      var now = getPyongyangTime();
+      return now >= parseKST(startHHMM) && now < parseKST(endHHMM);
+    }
+
+    // --- Render mini EPG ---
+    function renderEPG(data) {
+      epgData = data;
+      var programs = data.programs;
+      var now = getPyongyangTime();
+
+      // Find current
+      var currentIdx = -1;
+      programs.forEach(function(p, i) {
+        if (isCurrent(p.start_time, p.end_time)) currentIdx = i;
+      });
+
+      // Now bar
+      var cur = currentIdx >= 0 ? programs[currentIdx] : null;
+      if (cur) {
+        document.getElementById('epgNowTitle').textContent = cur.title;
+        document.getElementById('epgNowCat').textContent = cur.category;
+        document.getElementById('epgNowTime').textContent = cur.start_time + ' \u2013 ' + cur.end_time;
+        document.getElementById('epgProgressFill').style.width = getProgress(cur.start_time, cur.end_time).toFixed(1) + '%';
+        var rem = getMinutesRemaining(cur.end_time);
+        document.getElementById('epgRemaining').textContent = rem + ' min left';
+      } else {
+        document.getElementById('epgNowTitle').textContent = 'Off Air';
+        document.getElementById('epgNowCat').textContent = '';
+        document.getElementById('epgNowTime').textContent = '';
+        document.getElementById('epgProgressFill').style.width = '0%';
+        document.getElementById('epgRemaining').textContent = '';
+      }
+
+      // Schedule rows (show from current onwards + a few past)
+      var scheduleEl = document.getElementById('epgSchedule');
+      scheduleEl.innerHTML = '';
+      var startFrom = Math.max(0, currentIdx - 2);
+      programs.slice(startFrom).forEach(function(p, i) {
+        var absIdx = startFrom + i;
+        var past = isPast(p.end_time);
+        var curr = isCurrent(p.start_time, p.end_time);
+        var row = document.createElement('div');
+        row.className = 'epg-row' + (past ? ' epg-past' : '') + (curr ? ' epg-current' : '');
+        row.innerHTML =
+          '<div class="epg-row-time">' + p.start_time + '</div>' +
+          '<div class="epg-row-dot"></div>' +
+          '<div class="epg-row-body">' +
+            '<div class="epg-row-title">' + p.title + '</div>' +
+            '<div class="epg-row-type">' + p.type + '</div>' +
+          '</div>' +
+          '<div class="epg-row-end">' + p.end_time + '</div>';
+        scheduleEl.appendChild(row);
+        // Auto scroll to current
+        if (curr) {
+          setTimeout(function() { row.scrollIntoView({ block: 'nearest' }); }, 100);
+        }
+      });
+
+      document.getElementById('epgLoading').style.display = 'none';
+      document.getElementById('epgError').style.display = 'none';
+      document.getElementById('epgContent').style.display = '';
+
+      // Update progress every minute
+      setTimeout(function() { if (epgData) renderEPG(epgData); }, 60000);
+    }
+
+    // --- Render full overlay EPG ---
+    function renderOverlay(data) {
+      var programs = data.programs;
+      var body = document.getElementById('epgOverlayBody');
+      body.innerHTML = '';
+      programs.forEach(function(p) {
+        var past = isPast(p.end_time);
+        var curr = isCurrent(p.start_time, p.end_time);
+        var dur = getDuration(p.start_time, p.end_time);
+        var row = document.createElement('div');
+        row.className = 'epg-full-row' + (past ? ' epg-past' : '') + (curr ? ' epg-current' : '');
+        row.innerHTML =
+          '<div class="epg-full-time">' + p.start_time + '</div>' +
+          '<div class="epg-full-dot"></div>' +
+          '<div class="epg-full-body">' +
+            '<div class="epg-full-title">' + p.title + '</div>' +
+            '<div class="epg-full-tags">' +
+              '<span class="epg-full-cat">' + p.category + '</span>' +
+              '<span class="epg-full-type">' + p.type + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="epg-full-end">' +
+            p.end_time +
+            '<div class="epg-full-dur">' + dur + ' min</div>' +
+          '</div>';
+        body.appendChild(row);
+        if (curr) setTimeout(function() { row.scrollIntoView({ block: 'center' }); }, 80);
+      });
+    }
+
+    // --- Load JSON ---
+    function loadEPG() {
+      document.getElementById('epgLoading').style.display = '';
+      document.getElementById('epgError').style.display = 'none';
+      document.getElementById('epgContent').style.display = 'none';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', EPG_URL, true);
+      xhr.timeout = 8000;
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            renderEPG(data);
+          } catch(e) {
+            showError('Invalid EPG data format.');
+          }
+        } else {
+          showError('Server returned ' + xhr.status + '.');
+        }
+      };
+      xhr.onerror = function() { showError('Network error. Check connection.'); };
+      xhr.ontimeout = function() { showError('Request timed out.'); };
+      xhr.send();
+    }
+
+    function showError(msg) {
+      document.getElementById('epgLoading').style.display = 'none';
+      document.getElementById('epgErrorMsg').textContent = msg;
+      document.getElementById('epgError').style.display = '';
+      document.getElementById('epgContent').style.display = 'none';
+    }
+
+    document.getElementById('epgRetryBtn').addEventListener('click', loadEPG);
+
+    // --- SpotlightCard on EPG card ---
+    var card = document.getElementById('epgCard');
+    if (card) {
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+      });
+    }
+
+    // --- Overlay open/close ---
+    var overlay = document.getElementById('epgOverlay');
+    var overlayInner = overlay.querySelector('.epg-overlay-inner');
+    var originalParent = overlay.parentNode;
+    var isOverlayOpen = false;
+
+    function openOverlay() {
+      isOverlayOpen = true;
+      // Check if DPlayer is in fullscreen mode
+      var dplayerEl = document.querySelector('.dplayer');
+      var isInFullscreen = dplayerEl && (
+        document.fullscreenElement === dplayerEl ||
+        document.webkitFullscreenElement === dplayerEl ||
+        document.mozFullScreenElement === dplayerEl ||
+        document.msFullscreenElement === dplayerEl
+      );
+
+      if (isInFullscreen && dplayerEl) {
+        // Move overlay inside DPlayer so it shows in fullscreen
+        dplayerEl.appendChild(overlay);
+      } else {
+        // Keep overlay in normal DOM position
+        if (overlay.parentNode !== originalParent) {
+          originalParent.appendChild(overlay);
+        }
+      }
+
+      overlay.classList.add('show');
+      if (epgData) renderOverlay(epgData);
+    }
+
+    function closeOverlay() {
+      isOverlayOpen = false;
+      overlay.classList.remove('show');
+      // Restore to original parent after transition
+      setTimeout(function() {
+        if (overlay.parentNode !== originalParent) {
+          originalParent.appendChild(overlay);
+        }
+      }, 350);
+    }
+
+    document.getElementById('epgOverlayClose').addEventListener('click', closeOverlay);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) closeOverlay();
+    });
+
+    // ESC key to close overlay
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isOverlayOpen) {
+        closeOverlay();
+      }
+    });
+
+    // Listen for fullscreen changes to reposition overlay
+    function onFullscreenChange() {
+      if (!isOverlayOpen) return;
+
+      var dplayerEl = document.querySelector('.dplayer');
+      var isInFullscreen = dplayerEl && (
+        document.fullscreenElement === dplayerEl ||
+        document.webkitFullscreenElement === dplayerEl ||
+        document.mozFullScreenElement === dplayerEl ||
+        document.msFullscreenElement === dplayerEl
+      );
+
+      if (isInFullscreen && dplayerEl) {
+        if (overlay.parentNode !== dplayerEl) {
+          dplayerEl.appendChild(overlay);
+        }
+      } else {
+        if (overlay.parentNode !== originalParent) {
+          originalParent.appendChild(overlay);
+        }
+      }
+    }
+
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+    document.addEventListener('mozfullscreenchange', onFullscreenChange);
+    document.addEventListener('MSFullscreenChange', onFullscreenChange);
+
+    window._epgOpenOverlay = openOverlay;
+
+    // --- Inject EPG button into DPlayer fullscreen controls ---
+    function createEpgButton() {
+      var btn = document.createElement('div');
+      btn.className = 'dplayer-icon dp-epg-btn';
+      btn.title = 'Programme Guide (E)';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>';
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openOverlay();
+      });
+      return btn;
+    }
+
+    var dpBtnInjected = false;
+    var dpBtnInterval = null;
+
+    function tryInjectEpgButton() {
+      var icons = document.querySelector('#dplayer .dplayer-icons-right');
+      if (icons && !dpBtnInjected) {
+        dpBtnInjected = true;
+        if (dpBtnInterval) { clearInterval(dpBtnInterval); dpBtnInterval = null; }
+        // Remove any existing EPG button first
+        var existing = icons.querySelector('.dp-epg-btn');
+        if (existing) existing.remove();
+        icons.insertBefore(createEpgButton(), icons.firstChild);
+      }
+    }
+
+    // Poll until DPlayer controls are rendered
+    dpBtnInterval = setInterval(tryInjectEpgButton, 500);
+
+    // Listen for DPlayer reinit events to re-inject button
+    document.addEventListener('dplayer:reinit', function() {
+      dpBtnInjected = false;
+      // Small delay for DPlayer to render new controls
+      setTimeout(function() {
+        dpBtnInterval = setInterval(tryInjectEpgButton, 500);
+      }, 1000);
+    });
+
+    // Also handle server switch clicks
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.server-option') || e.target.closest('#serverBtn')) {
+        dpBtnInjected = false;
+      }
+    });
+
+    // Keyboard shortcut: E to open EPG
+    document.addEventListener('keydown', function(e) {
+      // Don't trigger if user is typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'e' || e.key === 'E') {
+        openOverlay();
+      }
+    });
+
+    // Start loading
+    loadEPG();
   })();
   </script>
 </body>
