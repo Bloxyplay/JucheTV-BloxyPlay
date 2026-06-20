@@ -325,21 +325,89 @@
     .server-option .check { margin-left: auto; color: var(--tint); font-size: 13px; opacity: 0; flex-shrink: 0; margin-top: 4px; font-weight: 700; }
     .server-option.active .check { opacity: 1; }
 
-    /* ===== Screenshot Result ===== */
-    .screenshot-result {
-      margin-top: 16px;
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-md);
-      overflow: hidden;
+    /* ===== Screenshot Popup ===== */
+    .screenshot-overlay {
       display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9999;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
-    .screenshot-result.show { display: block; animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .screenshot-overlay.show { display: flex; opacity: 1; }
+    .screenshot-overlay-inner {
+      display: flex; flex-direction: column;
+      width: 100%; max-width: 560px;
+      max-height: 92vh;
+      background: var(--bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .screenshot-overlay.show .screenshot-overlay-inner { transform: translateY(0) scale(1); }
+    .screenshot-overlay-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 16px;
+      border-bottom: 0.5px solid var(--separator);
+      flex-shrink: 0;
+    }
+    .screenshot-overlay-title {
+      font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: -0.4px;
+    }
+    .screenshot-overlay-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(120,120,128,0.16);
+      border: none; cursor: pointer; color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+    .screenshot-overlay-close:hover { background: rgba(120,120,128,0.28); }
+    .screenshot-overlay-close svg { width: 14px; height: 14px; }
+    .screenshot-overlay-body { overflow-y: auto; flex: 1; }
+    .screenshot-overlay-body::-webkit-scrollbar { width: 5px; }
+    .screenshot-overlay-body::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
     .screenshot-result img { width: 100%; display: block; }
+
+    .screenshot-toggle-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 22px;
+      border-bottom: 0.5px solid var(--separator);
+    }
+    .screenshot-toggle-text { flex: 1; min-width: 0; }
+    .screenshot-toggle-label { font-size: 13.5px; font-weight: 700; color: var(--primary); }
+    .screenshot-toggle-desc { font-size: 12px; color: var(--secondary); margin-top: 2px; line-height: 1.4; }
+
+    /* iOS-style switch */
+    .ios-switch { position: relative; display: inline-block; width: 46px; height: 28px; flex-shrink: 0; }
+    .ios-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .ios-switch-track {
+      position: absolute; inset: 0; cursor: pointer;
+      background: var(--tertiary); border-radius: 100px;
+      transition: background 0.2s ease;
+    }
+    .ios-switch-track::before {
+      content: ''; position: absolute; left: 2px; top: 2px;
+      width: 24px; height: 24px; border-radius: 50%; background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .ios-switch input:checked + .ios-switch-track { background: var(--green); }
+    .ios-switch input:checked + .ios-switch-track::before { transform: translateX(18px); }
+    .ios-switch input:focus-visible + .ios-switch-track { box-shadow: 0 0 0 3px rgba(0,122,255,0.35); }
+
     .screenshot-actions {
       display: flex; gap: 8px;
-      padding: 12px;
-      border-top: 0.5px solid var(--separator);
+      padding: 16px 22px;
     }
     .screenshot-actions .action-btn { flex: 1; justify-content: center; }
 
@@ -963,14 +1031,36 @@
       </button>
     </div>
 
-    <!-- Screenshot Result -->
-    <div class="screenshot-result" id="screenshotResult">
-      <img id="screenshotImg" alt="Screenshot">
-      <div class="screenshot-actions">
-        <a class="action-btn" id="screenshotDownload" download="kctv-screenshot.png">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download
-        </a>
+    <!-- Screenshot Popup -->
+    <div class="screenshot-overlay" id="screenshotOverlay">
+      <div class="screenshot-overlay-inner">
+        <div class="screenshot-overlay-header">
+          <div class="screenshot-overlay-title">Screenshot Captured</div>
+          <button class="screenshot-overlay-close" id="screenshotOverlayClose" type="button" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="screenshot-overlay-body">
+          <div class="screenshot-result">
+            <img id="screenshotImg" alt="Screenshot">
+          </div>
+          <div class="screenshot-toggle-row">
+            <div class="screenshot-toggle-text">
+              <div class="screenshot-toggle-label">Show what's airing now</div>
+              <div class="screenshot-toggle-desc">Replace the date with the current programme name, pulled live from the EPG</div>
+            </div>
+            <label class="ios-switch">
+              <input type="checkbox" id="screenshotProgramToggle">
+              <span class="ios-switch-track"></span>
+            </label>
+          </div>
+          <div class="screenshot-actions">
+            <a class="action-btn tint" id="screenshotDownload" download="kctv-screenshot.png">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1642,11 +1732,19 @@
     (function() {
       var screenshotBtn = document.getElementById('screenshotBtn');
       var screenshotFlash = document.getElementById('screenshotFlash');
-      var screenshotResult = document.getElementById('screenshotResult');
+      var screenshotOverlay = document.getElementById('screenshotOverlay');
+      var screenshotOverlayClose = document.getElementById('screenshotOverlayClose');
       var screenshotImg = document.getElementById('screenshotImg');
       var screenshotDownload = document.getElementById('screenshotDownload');
+      var programToggle = document.getElementById('screenshotProgramToggle');
 
       var WATERMARK_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      var TOGGLE_STORAGE_KEY = 'kctv_screenshot_program_mode';
+
+      // Restore the user's last preference for the watermark mode
+      try {
+        programToggle.checked = localStorage.getItem(TOGGLE_STORAGE_KEY) === '1';
+      } catch (e) {}
 
       // Pyongyang-time date string, e.g. "20 Jun 2026"
       function watermarkDate() {
@@ -1655,6 +1753,16 @@
         var kst = new Date(utc + 9 * 3600000);
         var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         return kst.getDate() + ' ' + MON[kst.getMonth()] + ' ' + kst.getFullYear();
+      }
+
+      // Pulls the title of whatever's currently airing from the EPG system,
+      // falling back gracefully if the EPG hasn't loaded or nothing is on.
+      function currentProgramName() {
+        if (typeof window._kctvGetCurrentProgram === 'function') {
+          var name = window._kctvGetCurrentProgram();
+          if (name) return name;
+        }
+        return 'Korean Central Television';
       }
 
       function roundedRectPath(ctx, x, y, w, h, r) {
@@ -1688,10 +1796,13 @@
       }
 
       // Rounded dark badge, bottom-left, with a warm accent bar on the left
-      // edge and a single line of bold white text — e.g.
-      // "Shared via https://juche-tv.vercel.app  –  20 Jun 2026  –  Korean Central Television"
-      function drawWatermark(ctx, w, h) {
-        var text = 'Shared via https://juche-tv.vercel.app  \u2013  ' + watermarkDate() + '  \u2013  Korean Central Television';
+      // edge and a single line of bold white text. Two modes:
+      //  - default:    "Shared via https://juche-tv.vercel.app  –  20 Jun 2026  –  Korean Central Television"
+      //  - programMode: "{Current Programme}  –  Shared via https://juche-tv.vercel.app/"
+      function drawWatermark(ctx, w, h, programMode) {
+        var text = programMode
+          ? currentProgramName() + '  \u2013  Shared via https://juche-tv.vercel.app/'
+          : 'Shared via https://juche-tv.vercel.app  \u2013  ' + watermarkDate() + '  \u2013  Korean Central Television';
 
         var margin = Math.max(16, Math.round(w * 0.018));
         var maxPillWidth = w - margin * 2;
@@ -1748,6 +1859,47 @@
         ctx.restore();
       }
 
+      // Holds the raw captured video frame (no watermark baked in yet) so
+      // toggling the watermark mode can redraw instantly without re-grabbing
+      // the video.
+      var lastFrame = null;
+
+      // Composites the cached frame + the current watermark mode onto a
+      // fresh canvas and pushes it into the popup's image/download targets.
+      function renderScreenshot() {
+        if (!lastFrame) return;
+        var canvas = document.createElement('canvas');
+        canvas.width = lastFrame.width;
+        canvas.height = lastFrame.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(lastFrame, 0, 0);
+        drawWatermark(ctx, canvas.width, canvas.height, programToggle.checked);
+
+        var dataUrl = canvas.toDataURL('image/png');
+        screenshotImg.src = dataUrl;
+        screenshotDownload.href = dataUrl;
+      }
+
+      function openScreenshotPopup() {
+        screenshotOverlay.classList.add('show');
+      }
+      function closeScreenshotPopup() {
+        screenshotOverlay.classList.remove('show');
+      }
+
+      screenshotOverlayClose.addEventListener('click', closeScreenshotPopup);
+      screenshotOverlay.addEventListener('click', function(e) {
+        if (e.target === this) closeScreenshotPopup();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && screenshotOverlay.classList.contains('show')) closeScreenshotPopup();
+      });
+
+      programToggle.addEventListener('change', function() {
+        try { localStorage.setItem(TOGGLE_STORAGE_KEY, programToggle.checked ? '1' : '0'); } catch (e) {}
+        renderScreenshot();
+      });
+
       screenshotBtn.addEventListener('click', function() {
         // Try DPlayer video element first
         var videoEl = document.querySelector('#dplayer video');
@@ -1761,28 +1913,21 @@
           return;
         }
 
-        var canvas = document.createElement('canvas');
-        canvas.width = videoEl.videoWidth;
-        canvas.height = videoEl.videoHeight;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-        drawWatermark(ctx, canvas.width, canvas.height);
+        // Capture the raw frame only — watermark is composited separately
+        // by renderScreenshot() so the toggle can redraw it on demand.
+        var frame = document.createElement('canvas');
+        frame.width = videoEl.videoWidth;
+        frame.height = videoEl.videoHeight;
+        frame.getContext('2d').drawImage(videoEl, 0, 0, frame.width, frame.height);
+        lastFrame = frame;
 
         // Flash effect
         screenshotFlash.classList.remove('active');
         void screenshotFlash.offsetWidth; // force reflow
         screenshotFlash.classList.add('active');
 
-        // Show result
-        var dataUrl = canvas.toDataURL('image/png');
-        screenshotImg.src = dataUrl;
-        screenshotDownload.href = dataUrl;
-        screenshotResult.classList.add('show');
-
-        // Scroll to result
-        setTimeout(function() {
-          screenshotResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 100);
+        renderScreenshot();
+        openScreenshotPopup();
       });
     })();
 
@@ -2097,6 +2242,17 @@
     document.addEventListener('MSFullscreenChange', onFullscreenChange);
 
     window._epgOpenOverlay = openOverlay;
+
+    // Returns the title of whatever's currently airing, or null if the EPG
+    // hasn't loaded yet or nothing is on. Used by the screenshot watermark.
+    window._kctvGetCurrentProgram = function() {
+      if (!epgData || !epgData.programs) return null;
+      for (var i = 0; i < epgData.programs.length; i++) {
+        var p = epgData.programs[i];
+        if (isCurrent(p.start_time, p.end_time)) return p.title;
+      }
+      return null;
+    };
 
     // --- Inject EPG button into DPlayer fullscreen controls ---
     function createEpgButton() {

@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
   <title>KCTV Archives - Juche TV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.27.1/DPlayer.min.css">
   <style>
     :root {
       --bg: #F2F2F7;
@@ -163,110 +164,44 @@
       font-size: 12px; font-weight: 600;
     }
 
-    /* === VOD Player === */
-    .vod-player {
-      position: relative; width: 100%;
+    /* === DPlayer wrapper === */
+    .player-shell {
+      position: relative; width: 100%; aspect-ratio: 16 / 9;
       background: #000;
       border-radius: var(--radius-lg);
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       box-shadow: var(--shadow-lg);
-      user-select: none; outline: none;
       border: 0.5px solid var(--separator);
     }
-    .vod-player::before { content: ''; display: block; padding-top: 56.25%; }
-    .vod-player video {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      object-fit: contain; background: #000; cursor: pointer;
-    }
-    .vod-loader {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 44px; height: 44px; z-index: 5;
-      pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
-    }
-    .vod-loader.show { opacity: 1; }
-    .vod-loader svg { width: 100%; height: 100%; animation: vodSpin 1s linear infinite; }
-    @keyframes vodSpin { 100% { transform: rotate(360deg); } }
-    .vod-big-play {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 72px; height: 72px; border-radius: 50%;
-      background: rgba(0,122,255,0.9); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 4; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-      opacity: 0; pointer-events: none; box-shadow: 0 4px 20px rgba(0,122,255,0.35);
-    }
-    .vod-big-play.show { opacity: 1; pointer-events: all; }
-    .vod-big-play:hover { transform: translate(-50%, -50%) scale(1.08); background: rgba(0,122,255,1); }
-    .vod-big-play svg { width: 28px; height: 28px; color: #fff; margin-left: 4px; }
-    .vod-center-icon {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.6);
-      width: 60px; height: 60px; border-radius: 50%;
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 4; opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
-      pointer-events: none;
-    }
-    .vod-center-icon.flash { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    .vod-center-icon svg { width: 22px; height: 22px; color: #fff; }
-    .vod-title-overlay {
-      position: absolute; top: 0; left: 0; right: 0;
-      padding: 16px 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
-      z-index: 3; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
-    }
-    .vod-title-overlay.show { opacity: 1; }
-    .vod-title-overlay h4 { color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .vod-title-overlay p { color: rgba(255,255,255,0.55); font-size: 11px; margin-top: 2px; }
+    #dplayer { width: 100%; height: 100%; }
+    .dplayer .dplayer-controller-mask,
+    .dplayer .dplayer-controller { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
 
-    /* Controls */
-    .vod-controls {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 20px 16px 12px;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.45) 60%, transparent 100%);
-      z-index: 3; opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
+    /* Player toolbar (prev/next) */
+    .player-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 7px 14px;
+      border-radius: 100px; border: 0.5px solid var(--separator);
+      background: var(--elevated); color: var(--primary);
+      cursor: pointer; transition: all 0.15s ease;
     }
-    .vod-controls.show { opacity: 1; pointer-events: all; }
-    .vod-progress-area { position: relative; width: 100%; height: 20px; display: flex; align-items: center; cursor: pointer; margin-bottom: 8px; }
-    .vod-progress-track { width: 100%; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.18); position: relative; overflow: visible; transition: height 0.15s ease; }
-    .vod-progress-area:hover .vod-progress-track { height: 4px; }
-    .vod-progress-buffered { position: absolute; top: 0; left: 0; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.3); transition: width 0.2s linear; }
-    .vod-progress-played { position: absolute; top: 0; left: 0; height: 100%; border-radius: 2px; background: var(--tint); transition: width 0.1s linear; }
-    .vod-progress-thumb { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,0.35); transform: translate(-50%, -50%) scale(0); transition: transform 0.15s ease; pointer-events: none; }
-    .vod-progress-area:hover .vod-progress-thumb, .vod-progress-area.seeking .vod-progress-thumb { transform: translate(-50%, -50%) scale(1); }
-    .vod-time-tooltip { position: absolute; bottom: 22px; transform: translateX(-50%); background: rgba(28,28,30,0.9); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; pointer-events: none; opacity: 0; transition: opacity 0.15s ease; white-space: nowrap; }
-    .vod-progress-area:hover .vod-time-tooltip.visible { opacity: 1; }
-    .vod-controls-row { display: flex; align-items: center; gap: 4px; }
-    .vod-btn { background: none; border: none; color: #fff; cursor: pointer; padding: 5px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; opacity: 0.85; }
-    .vod-btn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
-    .vod-btn svg { width: 18px; height: 18px; }
-    .vod-btn.play-btn svg { width: 20px; height: 20px; }
-    .vod-time { color: rgba(255,255,255,0.8); font-size: 11px; font-variant-numeric: tabular-nums; font-family: 'SF Mono', 'Fira Code', monospace; margin: 0 6px; white-space: nowrap; letter-spacing: 0.3px; }
-    .vod-time .vod-time-sep { color: rgba(255,255,255,0.3); margin: 0 2px; }
-    .vod-volume-wrap { display: flex; align-items: center; gap: 3px; position: relative; }
-    .vod-volume-slider { width: 0; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.12); position: relative; cursor: pointer; overflow: hidden; transition: width 0.2s ease; }
-    .vod-volume-wrap:hover .vod-volume-slider { width: 60px; }
-    .vod-volume-fill { height: 100%; border-radius: 2px; background: #fff; transition: width 0.05s linear; }
-    .vod-spacer { flex: 1; }
-    .vod-settings-menu {
-      position: absolute; bottom: calc(100% + 8px); right: 0;
-      background: rgba(28,28,30,0.96); border: 0.5px solid rgba(255,255,255,0.08);
-      border-radius: 10px; padding: 5px; min-width: 130px; display: none; z-index: 10;
-      backdrop-filter: blur(12px);
+    .toolbar-btn svg { width: 13px; height: 13px; }
+    .toolbar-btn:hover { background: var(--bg); border-color: var(--tertiary); }
+    .toolbar-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+    .toolbar-spacer { flex: 1; }
+    .toolbar-hint { font-size: 11px; color: var(--secondary); }
+
+    /* Slot badge on timeline items */
+    .slot-badge {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      color: var(--tint); background: rgba(0,122,255,0.1);
+      padding: 2px 7px; border-radius: 6px; margin-right: 6px;
+      vertical-align: middle;
     }
-    .vod-settings-menu.show { display: block; }
-    .vod-settings-menu .vod-setting-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; padding: 5px 10px 3px; }
-    .vod-speed-option { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: 5px; font-size: 12px; color: rgba(255,255,255,0.75); cursor: pointer; transition: background 0.12s; }
-    .vod-speed-option:hover { background: rgba(255,255,255,0.08); }
-    .vod-speed-option.active { color: #fff; font-weight: 600; }
-    .vod-speed-option.active::after { content: '\2713'; color: var(--tint); font-size: 10px; }
-    .vod-settings-wrap { position: relative; }
-    .vod-skip-overlay { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); border-radius: 10px; padding: 10px; cursor: pointer; z-index: 3; opacity: 0; transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none; }
-    .vod-skip-overlay.show { opacity: 1; pointer-events: all; }
-    .vod-skip-overlay:hover { background: rgba(0,0,0,0.55); }
-    .vod-skip-overlay svg { width: 20px; height: 20px; color: #fff; }
-    .vod-skip-prev { left: 10px; }
-    .vod-skip-next { right: 10px; }
+    :root.dark .slot-badge { background: rgba(10,132,255,0.16); }
 
     /* States */
     .loading { text-align: center; padding: 48px; color: var(--secondary); font-size: 14px; }
@@ -356,8 +291,7 @@
       .page-header h1 { font-size: 18px; }
       .notice-banner { flex-direction: column; gap: 10px; }
       .timeline-actions { display: none; }
-      .vod-big-play { width: 56px; height: 56px; }
-      .vod-big-play svg { width: 22px; height: 22px; }
+      .player-toolbar { margin-bottom: 18px; }
     }
   </style>
 </head>
@@ -398,7 +332,7 @@
   <main class="main">
     <a class="back-link" id="backLink" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Back to Folders
+      Back to Dates
     </a>
 
     <div class="page-header">
@@ -420,80 +354,28 @@
       </div>
     </div>
 
-    <!-- Custom VOD Player -->
-    <div class="vod-player" id="vodPlayer" style="display:none" tabindex="0">
-      <video id="videoEl" preload="metadata" playsinline></video>
-      <div class="vod-loader" id="vodLoader">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
-      </div>
-      <div class="vod-big-play" id="vodBigPlay">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="vod-center-icon" id="vodCenterIcon">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="vod-title-overlay" id="vodTitleOverlay">
-        <h4 id="vodOverlayTitle">-</h4>
-        <p id="vodOverlayDate">-</p>
-      </div>
-      <div class="vod-skip-overlay vod-skip-prev" id="vodSkipPrev" title="Previous">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-      </div>
-      <div class="vod-skip-overlay vod-skip-next" id="vodSkipNext" title="Next">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-      </div>
-      <div class="vod-controls" id="vodControls">
-        <div class="vod-progress-area" id="vodProgressArea">
-          <div class="vod-progress-track" id="vodProgressTrack">
-            <div class="vod-progress-buffered" id="vodProgressBuffered"></div>
-            <div class="vod-progress-played" id="vodProgressPlayed"></div>
-            <div class="vod-progress-thumb" id="vodProgressThumb"></div>
-          </div>
-          <div class="vod-time-tooltip" id="vodTimeTooltip">0:00</div>
-        </div>
-        <div class="vod-controls-row">
-          <button class="vod-btn play-btn" id="vodPlayBtn" title="Play/Pause (Space)">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-          <button class="vod-btn" id="vodNextBtn" title="Next">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-          </button>
-          <div class="vod-volume-wrap">
-            <button class="vod-btn" id="vodMuteBtn" title="Mute (M)">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-            </button>
-            <div class="vod-volume-slider" id="vodVolumeSlider">
-              <div class="vod-volume-fill" id="vodVolumeFill" style="width:100%"></div>
-            </div>
-          </div>
-          <div class="vod-time" id="vodTimeDisplay">
-            <span id="vodCurrentTime">0:00</span><span class="vod-time-sep">/</span><span id="vodDuration">0:00</span>
-          </div>
-          <div class="vod-spacer"></div>
-          <div class="vod-settings-wrap">
-            <button class="vod-btn" id="vodSpeedBtn" title="Playback speed">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 8v8l6-4-6-4zm2-6C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-            </button>
-            <div class="vod-settings-menu" id="vodSpeedMenu">
-              <div class="vod-setting-label">Speed</div>
-              <div class="vod-speed-option" data-speed="0.5">0.5x</div>
-              <div class="vod-speed-option active" data-speed="1">1x (Normal)</div>
-              <div class="vod-speed-option" data-speed="1.25">1.25x</div>
-              <div class="vod-speed-option" data-speed="1.5">1.5x</div>
-              <div class="vod-speed-option" data-speed="2">2x</div>
-            </div>
-          </div>
-          <button class="vod-btn" id="vodFullscreenBtn" title="Fullscreen (F)">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-          </button>
-        </div>
-      </div>
+    <!-- DPlayer -->
+    <div class="player-shell" id="playerShell" style="display:none">
+      <div id="dplayer"></div>
     </div>
 
     <!-- Player Meta -->
     <div class="player-meta" id="playerMeta" style="display:none">
       <h3 id="playerMetaTitle">-</h3>
       <p id="playerMetaDate">-</p>
+    </div>
+
+    <div class="player-toolbar" id="playerToolbar" style="display:none">
+      <button class="toolbar-btn" id="prevRecBtn" title="Previous recording">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Previous
+      </button>
+      <button class="toolbar-btn" id="nextRecBtn" title="Next recording">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="toolbar-spacer"></div>
+      <span class="toolbar-hint">Auto-plays next recording when finished</span>
     </div>
 
     <!-- Content Area -->
@@ -510,6 +392,7 @@
     <a href="kctv.html">Back to KCTV</a>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.27.1/DPlayer.min.js"></script>
   <script>
   (function() {
     // ===================== THEME =====================
@@ -545,232 +428,177 @@
     });
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
 
-    // ===================== CUSTOM VOD PLAYER =====================
-    const playerWrap = document.getElementById('vodPlayer');
-    const video = document.getElementById('videoEl');
-    const loader = document.getElementById('vodLoader');
-    const bigPlay = document.getElementById('vodBigPlay');
-    const centerIcon = document.getElementById('vodCenterIcon');
-    const controls = document.getElementById('vodControls');
-    const titleOverlay = document.getElementById('vodTitleOverlay');
-    const playBtn = document.getElementById('vodPlayBtn');
-    const muteBtn = document.getElementById('vodMuteBtn');
-    const volumeSlider = document.getElementById('vodVolumeSlider');
-    const volumeFill = document.getElementById('vodVolumeFill');
-    const progressArea = document.getElementById('vodProgressArea');
-    const progressTrack = document.getElementById('vodProgressTrack');
-    const progressPlayed = document.getElementById('vodProgressPlayed');
-    const progressBuffered = document.getElementById('vodProgressBuffered');
-    const progressThumb = document.getElementById('vodProgressThumb');
-    const timeTooltip = document.getElementById('vodTimeTooltip');
-    const currentTimeEl = document.getElementById('vodCurrentTime');
-    const durationEl = document.getElementById('vodDuration');
-    const fullscreenBtn = document.getElementById('vodFullscreenBtn');
-    const speedBtn = document.getElementById('vodSpeedBtn');
-    const speedMenu = document.getElementById('vodSpeedMenu');
-    const skipPrev = document.getElementById('vodSkipPrev');
-    const skipNext = document.getElementById('vodSkipNext');
-    const nextBtn = document.getElementById('vodNextBtn');
-
-    let controlsTimeout = null;
-    let isSeeking = false;
-    let hasPlayedOnce = false;
-
-    const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-    const ICON_MUTE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
-    const ICON_VOLUME = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
-    const ICON_VOLUME_LOW = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>';
-    const ICON_FULLSCREEN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
-    const ICON_FULLSCREEN_EXIT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>';
-
-    function fmtTime(s) { if (isNaN(s)) return '0:00'; const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const sec = Math.floor(s%60); if (h>0) return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); return m+':'+String(sec).padStart(2,'0'); }
-
-    function showControls() { controls.classList.add('show'); titleOverlay.classList.add('show'); skipPrev.classList.add('show'); skipNext.classList.add('show'); clearTimeout(controlsTimeout); if (!video.paused) controlsTimeout = setTimeout(hideControls, 3000); }
-    function hideControls() { if (isSeeking) return; controls.classList.remove('show'); titleOverlay.classList.remove('show'); skipPrev.classList.remove('show'); skipNext.classList.remove('show'); speedMenu.classList.remove('show'); }
-    function resetControlsTimeout() { showControls(); }
-
-    playerWrap.addEventListener('mousemove', resetControlsTimeout);
-    playerWrap.addEventListener('mouseleave', () => { if (!video.paused) hideControls(); });
-
-    bigPlay.addEventListener('click', () => { video.play().catch(()=>{}); });
-    function togglePlay() { if (video.paused || video.ended) { video.play().catch(()=>{}); } else { video.pause(); } }
-    function updatePlayButton() { if (video.paused) { playBtn.innerHTML = ICON_PLAY; bigPlay.classList.add('show'); } else { playBtn.innerHTML = ICON_PAUSE; bigPlay.classList.remove('show'); } }
-    playBtn.addEventListener('click', togglePlay);
-    video.addEventListener('play', () => { updatePlayButton(); hasPlayedOnce = true; showControls(); });
-    video.addEventListener('pause', () => { updatePlayButton(); showControls(); });
-    video.addEventListener('ended', () => { updatePlayButton(); showControls(); });
-
-    function flashCenterIcon(playing) { centerIcon.innerHTML = playing ? ICON_PLAY : ICON_PAUSE; centerIcon.classList.add('flash'); setTimeout(() => centerIcon.classList.remove('flash'), 500); }
-    video.addEventListener('play', () => { if (hasPlayedOnce) flashCenterIcon(false); });
-    video.addEventListener('pause', () => { if (hasPlayedOnce) flashCenterIcon(true); });
-
-    video.addEventListener('dblclick', () => toggleFullscreen());
-
-    function updateProgress() { if (!video.duration) return; const pct = (video.currentTime/video.duration)*100; progressPlayed.style.width = pct+'%'; progressThumb.style.left = pct+'%'; currentTimeEl.textContent = fmtTime(video.currentTime); if (video.buffered.length > 0) { const end = video.buffered.end(video.buffered.length-1); progressBuffered.style.width = (end/video.duration)*100+'%'; }}
-    video.addEventListener('timeupdate', updateProgress);
-    video.addEventListener('progress', updateProgress);
-
-    function seekToRatio(ratio) { if (!video.duration) return; ratio = Math.max(0, Math.min(1, ratio)); video.currentTime = ratio*video.duration; }
-    progressArea.addEventListener('click', (e) => { const rect = progressTrack.getBoundingClientRect(); seekToRatio((e.clientX-rect.left)/rect.width); });
-    progressArea.addEventListener('mousedown', (e) => { isSeeking = true; progressArea.classList.add('seeking'); seekToRatio((e.clientX-progressTrack.getBoundingClientRect().left)/progressTrack.getBoundingClientRect().width); });
-    document.addEventListener('mousemove', (e) => { if (!isSeeking) return; const rect = progressTrack.getBoundingClientRect(); seekToRatio((e.clientX-rect.left)/rect.width); });
-    document.addEventListener('mouseup', () => { if (isSeeking) { isSeeking = false; progressArea.classList.remove('seeking'); }});
-    progressArea.addEventListener('mousemove', (e) => { if (!video.duration) return; const rect = progressTrack.getBoundingClientRect(); const ratio = Math.max(0, Math.min(1, (e.clientX-rect.left)/rect.width)); timeTooltip.textContent = fmtTime(ratio*video.duration); timeTooltip.style.left = (ratio*100)+'%'; timeTooltip.classList.add('visible'); });
-    progressArea.addEventListener('mouseleave', () => { timeTooltip.classList.remove('visible'); });
-    video.addEventListener('loadedmetadata', () => { durationEl.textContent = fmtTime(video.duration); });
-    video.addEventListener('durationchange', () => { durationEl.textContent = fmtTime(video.duration); });
-    video.addEventListener('waiting', () => loader.classList.add('show'));
-    video.addEventListener('canplay', () => loader.classList.remove('show'));
-    video.addEventListener('playing', () => loader.classList.remove('show'));
-
-    function setVolume(v) { v = Math.max(0, Math.min(1, v)); video.volume = v; volumeFill.style.width = (v*100)+'%'; updateMuteIcon(); }
-    function updateMuteIcon() { if (video.muted || video.volume === 0) muteBtn.innerHTML = ICON_MUTE; else if (video.volume < 0.5) muteBtn.innerHTML = ICON_VOLUME_LOW; else muteBtn.innerHTML = ICON_VOLUME; }
-    muteBtn.addEventListener('click', () => { video.muted = !video.muted; updateMuteIcon(); });
-    video.addEventListener('volumechange', updateMuteIcon);
-    volumeSlider.addEventListener('click', (e) => { const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
-    let volDragging = false;
-    volumeSlider.addEventListener('mousedown', (e) => { volDragging = true; const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
-    document.addEventListener('mousemove', (e) => { if (!volDragging) return; const rect = volumeSlider.getBoundingClientRect(); setVolume((e.clientX-rect.left)/rect.width); });
-    document.addEventListener('mouseup', () => { volDragging = false; });
-
-    speedBtn.addEventListener('click', (e) => { e.stopPropagation(); speedMenu.classList.toggle('show'); });
-    document.querySelectorAll('.vod-speed-option').forEach(opt => {
-      opt.addEventListener('click', (e) => { e.stopPropagation(); const speed = parseFloat(opt.dataset.speed); video.playbackRate = speed; document.querySelectorAll('.vod-speed-option').forEach(o => o.classList.remove('active')); opt.classList.add('active'); speedMenu.classList.remove('show'); });
-    });
-    document.addEventListener('click', () => speedMenu.classList.remove('show'));
-
-    function toggleFullscreen() { if (document.fullscreenElement) { document.exitFullscreen(); } else { playerWrap.requestFullscreen(); } }
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-    document.addEventListener('fullscreenchange', () => {
-      fullscreenBtn.innerHTML = document.fullscreenElement ? ICON_FULLSCREEN_EXIT : ICON_FULLSCREEN;
-      playerWrap.style.borderRadius = document.fullscreenElement ? '0' : 'var(--radius-lg)';
-    });
-
-    playerWrap.addEventListener('keydown', (e) => {
-      switch(e.key) { case ' ': case 'k': e.preventDefault(); togglePlay(); break; case 'ArrowLeft': e.preventDefault(); video.currentTime = Math.max(0, video.currentTime-5); break; case 'ArrowRight': e.preventDefault(); video.currentTime = Math.min(video.duration||0, video.currentTime+5); break; case 'ArrowUp': e.preventDefault(); setVolume(video.volume+0.1); break; case 'ArrowDown': e.preventDefault(); setVolume(video.volume-0.1); break; case 'f': e.preventDefault(); toggleFullscreen(); break; case 'm': e.preventDefault(); video.muted = !video.muted; updateMuteIcon(); break; case 'n': e.preventDefault(); playNext(); break; }
-    });
-
-    skipPrev.addEventListener('click', (e) => { e.stopPropagation(); playPrev(); });
-    skipNext.addEventListener('click', (e) => { e.stopPropagation(); playNext(); });
-    nextBtn.addEventListener('click', playNext);
-
-    function playNext() { if (!currentFolder || !currentFiles.length) return; const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx >= 0 && idx < currentFiles.length-1) { const next = currentFiles[idx+1]; window.playVideo(next.path, cleanFilename(next.name), parseDateFromFilename(next.name)); }}
-    function playPrev() { if (!currentFolder || !currentFiles.length) return; const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx > 0) { const prev = currentFiles[idx-1]; window.playVideo(prev.path, cleanFilename(prev.name), parseDateFromFilename(prev.name)); }}
-
-    // ===================== ARCHIVES BROWSER =====================
+    // ===================== ARCHIVES BROWSER (grouped by date) =====================
     const API_BASE = 'https://kctv.koryofront.org';
     const contentArea = document.getElementById('contentArea');
     const backLink = document.getElementById('backLink');
+    const playerShell = document.getElementById('playerShell');
     const playerMeta = document.getElementById('playerMeta');
     const playerMetaTitle = document.getElementById('playerMetaTitle');
     const playerMetaDate = document.getElementById('playerMetaDate');
-    const vodOverlayTitle = document.getElementById('vodOverlayTitle');
-    const vodOverlayDate = document.getElementById('vodOverlayDate');
+    const playerToolbar = document.getElementById('playerToolbar');
+    const prevRecBtn = document.getElementById('prevRecBtn');
+    const nextRecBtn = document.getElementById('nextRecBtn');
 
-    let folders = [];
-    let currentFolder = null;
-    let currentFiles = [];
+    let recordingsByDate = {};   // { '2026-06-19': [ {path,name,title,date,time,timeLabel,slot}, ... ] }
+    let allDates = [];           // sorted newest first
+    let currentDate = null;
+    let currentFiles = [];       // recordings for currentDate, sorted chronologically (earliest first)
     let currentPlayingPath = null;
+    let dp = null;                // DPlayer instance, created lazily on first play
 
     function parseDateFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2})/); return match ? match[1] : ''; }
+    function parseTimeKey(name) { const match = name.match(/\d{4}-\d{2}-\d{2}-(\d{4})/); return match ? match[1] : '0000'; }
     function parseTimeFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/); if (match) { const h = parseInt(match[2],10); const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 || 12; return h12+':'+match[3]+' '+ampm; } return ''; }
     function formatDate(dateStr) { if (!dateStr) return 'Unknown Date'; const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); }
+    function formatWeekday(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('en-US', {weekday:'short'}); }
     function formatFolderName(name) { const match = name.match(/@\s*(.+)$/); return match ? match[1] : name; }
     function cleanFilename(name) { return name.replace('.mp4','').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/,''); }
     function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
     function showLoading() { contentArea.innerHTML = `<div class="loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg><span>Fetching archives...</span></div>`; }
-    function showError() { contentArea.innerHTML = `<div class="error"><div class="error-title">Error</div><div class="error-msg">Failed to load archives. Please try again.</div><button class="retry-btn" onclick="fetchFolders()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>Retry</button></div>`; }
+    function showError() { contentArea.innerHTML = `<div class="error"><div class="error-title">Error</div><div class="error-msg">Failed to load archives. Please try again.</div><button class="retry-btn" onclick="fetchAllRecordings()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>Retry</button></div>`; }
     function showEmpty() { contentArea.innerHTML = `<div class="loading"><span>No archives found.</span></div>`; }
 
-    async function fetchFolders() {
+    // Fetch the file listing for a single time-slot folder, tagged with metadata
+    async function fetchSlotFiles(folder) {
+      const res = await fetch(API_BASE + folder.path + '/');
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + folder.name);
+      const data = await res.json();
+      const slotLabel = formatFolderName(folder.name);
+      return (data || [])
+        .filter(f => f.type === 'file' && f.name.endsWith('.mp4'))
+        .map(f => ({
+          path: f.path,
+          name: f.name,
+          title: cleanFilename(f.name),
+          date: parseDateFromFilename(f.name),
+          time: parseTimeKey(f.name),
+          timeLabel: parseTimeFromFilename(f.name),
+          slot: slotLabel,
+        }));
+    }
+
+    // Fetch every time-slot folder and regroup all recordings by date
+    async function fetchAllRecordings() {
       showLoading();
       try {
         const res = await fetch(API_BASE + '/recordings');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        folders = (data || []).filter(item => item.type === 'dir');
-        const slotOrder = ['9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM'];
-        folders.sort((a,b) => { const slotA = formatFolderName(a.name); const slotB = formatFolderName(b.name); const idxA = slotOrder.indexOf(slotA); const idxB = slotOrder.indexOf(slotB); if (idxA !== -1 && idxB !== -1) return idxA - idxB; return a.name.localeCompare(b.name); });
-        if (!folders.length) { showEmpty(); return; }
-        renderFolders(folders);
-      } catch (e) { console.error('Failed to fetch folders:', e); showError(); }
-    }
+        const slotFolders = (data || []).filter(item => item.type === 'dir');
+        if (!slotFolders.length) { showEmpty(); return; }
 
-    async function loadFolder(folder) {
-      showLoading();
-      try {
-        const res = await fetch(API_BASE + folder.path + '/');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        const files = (data || []).filter(f => f.type === 'file' && f.name.endsWith('.mp4'));
-        files.sort((a,b) => { const dateA = parseDateFromFilename(a.name); const dateB = parseDateFromFilename(b.name); return dateB.localeCompare(dateA); });
-        currentFolder = folder; currentFiles = files;
-        renderTimeline(folder, files);
-      } catch (e) { console.error('Failed to load folder:', e); showError(); }
-    }
+        const results = await Promise.allSettled(slotFolders.map(fetchSlotFiles));
+        const dateMap = {};
+        results.forEach((r, i) => {
+          if (r.status !== 'fulfilled') { console.error('Failed to load folder', slotFolders[i].name, r.reason); return; }
+          r.value.forEach(rec => {
+            if (!rec.date) return;
+            (dateMap[rec.date] = dateMap[rec.date] || []).push(rec);
+          });
+        });
+        Object.keys(dateMap).forEach(date => { dateMap[date].sort((a, b) => a.time.localeCompare(b.time)); });
 
-    function renderFolders(folderList) {
-      currentFolder = null; currentFiles = []; backLink.style.display = 'none';
+        recordingsByDate = dateMap;
+        allDates = Object.keys(dateMap).sort((a, b) => b.localeCompare(a));
+        if (!allDates.length) { showEmpty(); return; }
+        renderDateGrid();
+      } catch (e) { console.error('Failed to fetch archives:', e); showError(); }
+    }
+    window.fetchAllRecordings = fetchAllRecordings;
+
+    function renderDateGrid() {
+      currentDate = null; currentFiles = []; backLink.style.display = 'none';
       let html = '<div class="folder-grid">';
-      folderList.forEach(folder => {
-        const slot = formatFolderName(folder.name);
-        html += `<div class="folder-card" onclick="openFolder('${folder.path}')"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><div class="folder-info"><h3>${slot}</h3><p>${folder.name}</p></div></div>`;
+      allDates.forEach(date => {
+        const count = recordingsByDate[date].length;
+        html += `<div class="folder-card" onclick="openDate('${date}')"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="folder-info"><h3>${formatWeekday(date)}, ${formatDate(date)}</h3><p>${count} recording${count === 1 ? '' : 's'}</p></div></div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
     }
 
-    function renderTimeline(folder, files) {
-      const slot = formatFolderName(folder.name);
+    function renderTimeline(date, files) {
       backLink.style.display = '';
-      let html = `<div class="timeline-header"><h2>Recordings in ${slot}</h2><span class="timeline-count">${files.length} recordings</span></div><div class="timeline">`;
+      let html = `<div class="timeline-header"><h2>${formatWeekday(date)}, ${formatDate(date)}</h2><span class="timeline-count">${files.length} recordings</span></div><div class="timeline">`;
       files.forEach(file => {
-        const date = parseDateFromFilename(file.name);
-        const time = parseTimeFromFilename(file.name);
-        const title = cleanFilename(file.name);
-        const videoUrl = API_BASE + file.path;
         const isActive = currentPlayingPath === file.path;
-        html += `<div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}', '${escapeHtml(title)}', '${date}')"><div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="timeline-meta"><h4>${escapeHtml(title)}</h4><p>${formatDate(date)}${time ? ' \u00b7 ' + time : ''}</p></div><div class="timeline-actions" onclick="event.stopPropagation()"><a href="${videoUrl}" download class="timeline-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a></div></div>`;
+        html += `<div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}')"><div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="timeline-meta"><h4>${escapeHtml(file.title)}</h4><p><span class="slot-badge">${escapeHtml(file.slot)}</span>${file.timeLabel || ''}</p></div><div class="timeline-actions" onclick="event.stopPropagation()"><a href="${API_BASE + file.path}" download class="timeline-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a></div></div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
     }
 
-    window.openFolder = function(encodedPath) {
-      const folder = folders.find(f => f.path === encodedPath);
-      if (folder) loadFolder(folder);
+    window.openDate = function(date) {
+      currentDate = date;
+      currentFiles = recordingsByDate[date] || [];
+      renderTimeline(date, currentFiles);
     };
 
     backLink.addEventListener('click', () => {
-      video.pause(); video.removeAttribute('src'); video.load();
-      playerWrap.style.display = 'none'; playerMeta.style.display = 'none';
-      currentPlayingPath = null; hasPlayedOnce = false;
-      renderFolders(folders);
+      if (dp) dp.pause();
+      playerShell.style.display = 'none';
+      playerMeta.style.display = 'none';
+      playerToolbar.style.display = 'none';
+      currentPlayingPath = null;
+      renderDateGrid();
     });
 
-    window.playVideo = function(filePath, title, dateStr) {
+    // ===================== DPLAYER =====================
+    function createPlayer(url) {
+      dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        autoplay: true,
+        theme: '#0A84FF',
+        lang: 'en',
+        airplay: true,
+        hotkey: true,
+        preload: 'metadata',
+        volume: 0.7,
+        mutex: true,
+        playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
+        video: { url: url, type: 'auto' },
+      });
+      // Auto-advance to the next recording in the date when one finishes
+      dp.on('ended', playNext);
+    }
+
+    window.playVideo = function(filePath) {
+      const file = currentFiles.find(f => f.path === filePath);
+      if (!file) return;
       const videoUrl = API_BASE + filePath;
       currentPlayingPath = filePath;
-      playerMetaTitle.textContent = title;
-      playerMetaDate.textContent = formatDate(dateStr);
-      vodOverlayTitle.textContent = title;
-      vodOverlayDate.textContent = formatDate(dateStr);
-      playerWrap.style.display = '';
+
+      playerMetaTitle.textContent = file.title;
+      playerMetaDate.textContent = file.slot + ' \u00b7 ' + formatDate(file.date) + (file.timeLabel ? ' \u00b7 ' + file.timeLabel : '');
+      playerShell.style.display = '';
       playerMeta.style.display = '';
-      playerWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      video.src = videoUrl;
-      video.load();
-      video.play().catch(() => {});
+      playerToolbar.style.display = '';
+      playerShell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      if (!dp) { createPlayer(videoUrl); }
+      else { dp.switchVideo({ url: videoUrl }); dp.play(); }
+
+      updateToolbarState();
       document.querySelectorAll('.timeline-item').forEach(item => {
         const onclick = item.getAttribute('onclick') || '';
-        item.classList.toggle('playing', onclick.includes(filePath));
+        item.classList.toggle('playing', onclick.includes("'" + filePath + "'"));
       });
-      if (!hasPlayedOnce) bigPlay.classList.add('show');
     };
 
-    fetchFolders();
+    function updateToolbarState() {
+      const idx = currentFiles.findIndex(f => f.path === currentPlayingPath);
+      prevRecBtn.disabled = idx <= 0;
+      nextRecBtn.disabled = idx === -1 || idx >= currentFiles.length - 1;
+    }
+
+    function playNext() { const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx >= 0 && idx < currentFiles.length - 1) window.playVideo(currentFiles[idx + 1].path); }
+    function playPrev() { const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx > 0) window.playVideo(currentFiles[idx - 1].path); }
+    prevRecBtn.addEventListener('click', playPrev);
+    nextRecBtn.addEventListener('click', playNext);
+
+    fetchAllRecordings();
   })();
   </script>
 </body>
