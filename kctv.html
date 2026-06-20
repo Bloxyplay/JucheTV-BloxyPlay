@@ -557,8 +557,10 @@
     }
     .epg-retry-btn:hover { background: rgba(0,122,255,0.18); }
     .epg-date-chip {
-      font-size: 11px; color: var(--secondary); font-weight: 600;
+      font-size: 12px; color: var(--secondary); font-weight: 600;
+      white-space: nowrap;
     }
+    .epg-date-sep { color: var(--tertiary); font-weight: 400; }
 
     /* ===== EPG Fullscreen Overlay ===== */
     .epg-overlay {
@@ -883,7 +885,7 @@
 
       <!-- Server Race Banner -->
       <div class="server-race-banner" id="raceBanner">
-        <div class="race-title" id="raceTitle">Finding the best server...</div>
+        <div class="race-title" id="raceTitle">Finding the healthiest, fastest stream&hellip;</div>
         <div class="race-servers">
           <div class="race-item" id="raceZA">
             <span class="race-flag">&#127487;&#127462;</span>
@@ -987,6 +989,8 @@
         </div>
         <div class="epg-pyongyang-time" id="epgTimeChip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="epg-date-chip" id="epgDateVal">&mdash;</span>
+          <span class="epg-date-sep">&middot;</span>
           <span class="epg-time-val" id="epgClockVal">--:--:--</span>
           <span style="color:var(--secondary);font-weight:500;">KST</span>
         </div>
@@ -1047,6 +1051,8 @@
           <div class="epg-overlay-meta">
             <div class="epg-pyongyang-time">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="epg-date-chip" id="epgOverlayDateVal">&mdash;</span>
+              <span class="epg-date-sep">&middot;</span>
               <span class="epg-time-val" id="epgOverlayClock">--:--:--</span>
               <span style="color:var(--secondary);font-weight:500;">KST</span>
             </div>
@@ -1156,61 +1162,221 @@
       'Video play error': 'Playback Error'
     };
 
+    // === HLS Health Check ===
+    // DPRK mirror sites sometimes serve a playlist that only has a couple of
+    // seconds of segments and never advances (effectively a frozen/broken
+    // stream) even though the file itself responds quickly to a HEAD/GET.
+    // These helpers fetch the actual .m3u8, measure how much segment
+    // duration is available, then re-check after a delay to confirm the
+    // playlist is actually advancing (i.e. genuinely live).
+    var HLS_TEST_WINDOW_MS = 10000;   // watch each candidate for ~10s
+    var HLS_MIN_DURATION_S = 8;       // need at least this much buffered segment time
+
+    function fetchText(url, timeoutMs, cb) {
+      var xhr = new XMLHttpRequest();
+      var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+      xhr.open('GET', bust, true);
+      xhr.timeout = timeoutMs;
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 400) cb(null, xhr.responseText);
+        else cb(new Error('HTTP ' + xhr.status));
+      };
+      xhr.onerror = function() { cb(new Error('network error')); };
+      xhr.ontimeout = function() { cb(new Error('timeout')); };
+      try { xhr.send(); } catch (e) { cb(e); }
+    }
+
+    function parseM3U8(text) {
+      var lines = text.split(/\r?\n/);
+      var segments = [];
+      var totalDuration = 0;
+      var mediaSequence = null;
+      var isMaster = false;
+      var variantUri = null;
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.indexOf('#EXT-X-STREAM-INF') === 0) {
+          isMaster = true;
+          for (var j = i + 1; j < lines.length; j++) {
+            var next = lines[j].trim();
+            if (next && next.charAt(0) !== '#') { variantUri = next; break; }
+          }
+        } else if (line.indexOf('#EXT-X-MEDIA-SEQUENCE') === 0) {
+          mediaSequence = parseInt(line.split(':')[1], 10);
+        } else if (line.indexOf('#EXTINF') === 0) {
+          var m = line.match(/#EXTINF:([\d.]+)/);
+          if (m) totalDuration += parseFloat(m[1]);
+        } else if (line && line.charAt(0) !== '#') {
+          segments.push(line);
+        }
+      }
+      return { isMaster: isMaster, variantUri: variantUri, segments: segments, totalDuration: totalDuration, mediaSequence: mediaSequence };
+    }
+
+    function resolveMediaPlaylistUrl(baseUrl, cb) {
+      fetchText(baseUrl, 6000, function(err, text) {
+        if (err) return cb(err);
+        var parsed = parseM3U8(text);
+        if (parsed.isMaster && parsed.variantUri) {
+          var resolved;
+          try { resolved = new URL(parsed.variantUri, baseUrl).href; } catch (e) { resolved = parsed.variantUri; }
+          cb(null, resolved);
+        } else {
+          cb(null, baseUrl);
+        }
+      });
+    }
+
+    // Watches a server's actual media playlist for HLS_TEST_WINDOW_MS and
+    // reports whether it's a healthy, advancing live stream. "Ping" here is
+    // measured from the same real GET request the player itself relies on
+    // (not a separate HEAD probe) — some origins (Japan mirror included)
+    // don't handle HEAD reliably even though GET/streaming works fine.
+    function testHlsHealth(server, onUpdate, cb) {
+      var t0 = performance.now();
+      resolveMediaPlaylistUrl(server.url, function(err, mediaUrl) {
+        if (err) return cb({ success: false, healthy: false, ping: null, reason: 'unreachable' });
+
+        fetchText(mediaUrl, 6500, function(err1, text1) {
+          if (err1) return cb({ success: false, healthy: false, ping: null, reason: 'unreachable' });
+          var ping = Math.round(performance.now() - t0);
+          var p1 = parseM3U8(text1);
+
+          if (p1.totalDuration < HLS_MIN_DURATION_S || p1.segments.length < 2) {
+            onUpdate(ping, 'only ' + p1.totalDuration.toFixed(1) + 's of segments \u2014 checking if it grows\u2026');
+          } else {
+            onUpdate(ping, 'buffered ' + p1.totalDuration.toFixed(1) + 's \u2014 verifying it\'s live\u2026');
+          }
+
+          setTimeout(function() {
+            fetchText(mediaUrl, 6500, function(err2, text2) {
+              if (err2) return cb({ success: true, healthy: false, ping: ping, reason: 'dropped mid-test', totalDuration: p1.totalDuration });
+              var p2 = parseM3U8(text2);
+              var lastSeg1 = p1.segments[p1.segments.length - 1];
+              var lastSeg2 = p2.segments[p2.segments.length - 1];
+              var advanced = (p1.mediaSequence !== null && p2.mediaSequence !== null)
+                ? (p2.mediaSequence > p1.mediaSequence)
+                : (lastSeg1 !== lastSeg2);
+
+              if (!advanced) {
+                cb({ success: true, healthy: false, ping: ping, reason: 'stalled (not advancing)', totalDuration: p2.totalDuration });
+              } else if (p2.totalDuration < HLS_MIN_DURATION_S || p2.segments.length < 2) {
+                cb({ success: true, healthy: false, ping: ping, reason: 'too few segments (' + p2.totalDuration.toFixed(1) + 's)', totalDuration: p2.totalDuration });
+              } else {
+                cb({ success: true, healthy: true, ping: ping, totalDuration: p2.totalDuration, segmentCount: p2.segments.length });
+              }
+            });
+          }, HLS_TEST_WINDOW_MS);
+        });
+      });
+    }
+
     // === Server Race ===
+    // For each server: watch the real HLS playlist (via GET, same as the
+    // player itself uses) for ~10s to measure real latency AND confirm it's
+    // a healthy, advancing live stream (not a thin/stalled mirror). A server
+    // that's genuinely streaming always beats one that merely "responds
+    // fast" to a probe but serves a broken few-second loop. Among servers
+    // that are both reachable and healthy, the lowest ping wins.
     function raceServers() {
       return new Promise(function(resolve) {
-        var winner = null;
+        var results = {};     // serverId -> { ping, success, health: {...} }
         var doneCount = 0;
+        var serverIds = Object.keys(SERVERS);
+        var totalServers = serverIds.length;
         var resolved = false;
 
-        function checkDone() {
-          doneCount++;
-          if (doneCount >= 2 && !resolved) { resolved = true; resolve(winner || 'za'); }
-        }
+        function pickBestAndResolve() {
+          if (resolved) return;
+          resolved = true;
 
-        function onResult(serverId, pingMs, success) {
-          var raceEl = document.getElementById('race' + serverId.toUpperCase());
-          var statusEl = document.getElementById('status' + serverId.toUpperCase());
-          var spinnerEl = document.getElementById('spinner' + serverId.toUpperCase());
+          // Prefer servers that are reachable AND pass the live-stream health check.
+          var healthyIds = serverIds.filter(function(id) {
+            var r = results[id];
+            return r && r.success && r.health && r.health.healthy;
+          });
 
-          if (success) {
-            spinnerEl.className = 'race-check';
-            spinnerEl.textContent = '\u2713';
-            statusEl.textContent = 'Connected in ' + pingMs + 'ms';
-            if (!winner) {
-              winner = serverId;
+          var bestId = null;
+          var pool = healthyIds.length ? healthyIds : serverIds.filter(function(id) {
+            var r = results[id];
+            return r && r.success;
+          });
+
+          var bestPing = Infinity;
+          pool.forEach(function(id) {
+            if (results[id].ping < bestPing) { bestPing = results[id].ping; bestId = id; }
+          });
+          if (!bestId) bestId = 'za';
+
+          // Update visuals now that everything has settled.
+          serverIds.forEach(function(id) {
+            var raceEl = document.getElementById('race' + id.toUpperCase());
+            var statusEl = document.getElementById('status' + id.toUpperCase());
+            var spinnerEl = document.getElementById('spinner' + id.toUpperCase());
+            if (!raceEl) return;
+            var r = results[id];
+
+            if (id === bestId) {
               raceEl.classList.add('winner');
-              document.getElementById('raceTitle').textContent = SERVERS[serverId].name + ' Server won!';
+              if (spinnerEl) { spinnerEl.className = 'race-check'; spinnerEl.textContent = '\u2713'; }
             } else {
               raceEl.classList.add('loser');
-              statusEl.textContent = 'Connected in ' + pingMs + 'ms (slower)';
+              if (spinnerEl) { spinnerEl.className = 'race-x'; spinnerEl.textContent = '\u2717'; }
+              if (r && r.success && r.health && !r.health.healthy && statusEl) {
+                statusEl.textContent = r.ping + 'ms, but ' + r.health.reason;
+              } else if (r && r.success && statusEl) {
+                statusEl.textContent = 'Connected in ' + r.ping + 'ms (not selected)';
+              }
             }
-          } else {
-            spinnerEl.className = 'race-x';
-            spinnerEl.textContent = '\u2717';
-            statusEl.textContent = pingMs > 0 ? 'Timeout (' + pingMs + 'ms)' : 'Unreachable';
-            raceEl.classList.add('loser');
+          });
+
+          var titleEl = document.getElementById('raceTitle');
+          if (titleEl) {
+            if (healthyIds.length) {
+              titleEl.textContent = SERVERS[bestId].name + ' Server is live with the lowest ping!';
+            } else {
+              titleEl.textContent = SERVERS[bestId].name + ' Server selected (best available)';
+            }
           }
-          if (success && !resolved) { resolved = true; resolve(serverId); }
-          else { checkDone(); }
+
+          resolve(bestId);
         }
 
-        function testServer(server, cb) {
-          var start = performance.now();
-          var xhr = new XMLHttpRequest();
-          var timeoutId;
-          xhr.open('HEAD', server.url, true);
-          xhr.timeout = 6000;
-          xhr.onload = function() { clearTimeout(timeoutId); cb(Math.round(performance.now() - start), xhr.status >= 200 && xhr.status < 400); };
-          xhr.onerror = function() { clearTimeout(timeoutId); cb(Math.round(performance.now() - start), false); };
-          xhr.ontimeout = function() { cb(Math.round(performance.now() - start), false); };
-          timeoutId = setTimeout(function() { try { xhr.abort(); } catch(e) {} cb(6000, false); }, 6500);
-          try { xhr.send(); } catch(e) { cb(0, false); }
+        function maybeFinish() {
+          doneCount++;
+          if (doneCount >= totalServers) pickBestAndResolve();
         }
 
-        testServer(SERVERS.za, function(ping, ok) { onResult('za', ping, ok); });
-        testServer(SERVERS.jp, function(ping, ok) { onResult('jp', ping, ok); });
-        setTimeout(function() { if (!resolved) { resolved = true; resolve(winner || 'za'); } }, 8000);
+        serverIds.forEach(function(id) {
+          var server = SERVERS[id];
+          var statusEl = document.getElementById('status' + id.toUpperCase());
+          results[id] = { ping: null, success: false, health: null };
+          if (statusEl) statusEl.textContent = 'Connecting\u2026';
+
+          testHlsHealth(server, function(ping, msg) {
+            if (statusEl) statusEl.textContent = ping + 'ms \u2014 ' + msg;
+          }, function(result) {
+            results[id].ping = result.ping;
+            results[id].success = result.success;
+            results[id].health = result;
+
+            if (statusEl) {
+              if (!result.success) {
+                statusEl.textContent = 'Unreachable';
+              } else {
+                statusEl.textContent = result.healthy
+                  ? result.ping + 'ms \u2014 live, ' + result.totalDuration.toFixed(1) + 's buffered \u2713'
+                  : result.ping + 'ms \u2014 ' + result.reason;
+              }
+            }
+            maybeFinish();
+          });
+        });
+
+        // Safety net in case a test never calls back at all. Worst case is
+        // roughly: 6.5s resolve + 6.5s first fetch + 10s watch + 6.5s
+        // second fetch, so give it generous headroom.
+        setTimeout(pickBestAndResolve, HLS_TEST_WINDOW_MS + 22000);
       });
     }
 
@@ -1354,22 +1520,38 @@
     }
 
     // === Ping Monitor ===
+    // Uses a real GET against the media playlist (same request type the
+    // player relies on), since some origins handle HEAD unreliably even
+    // when GET/streaming works fine.
     function startPingMonitor(serverId) {
+      var mediaUrlCache = null;
       function ping() {
         var s = SERVERS[serverId];
         if (!s || !s.url) return;
-        var start = performance.now();
-        var xhr = new XMLHttpRequest();
-        xhr.open('HEAD', s.url, true);
-        xhr.timeout = 5000;
-        xhr.onload = function() {
-          var ms = Math.round(performance.now() - start);
-          updateInfoBar(serverId, ms);
-        };
-        xhr.onerror = function() {
-          updateInfoBar(serverId, lastPingMs || 0);
-        };
-        try { xhr.send(); } catch(e) {}
+
+        function timeGet(url) {
+          var start = performance.now();
+          var xhr = new XMLHttpRequest();
+          var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+          xhr.open('GET', bust, true);
+          xhr.timeout = 5000;
+          xhr.onload = function() {
+            var ms = Math.round(performance.now() - start);
+            updateInfoBar(serverId, ms);
+          };
+          xhr.onerror = function() { updateInfoBar(serverId, lastPingMs || 0); };
+          xhr.ontimeout = function() { updateInfoBar(serverId, lastPingMs || 0); };
+          try { xhr.send(); } catch (e) {}
+        }
+
+        if (mediaUrlCache) {
+          timeGet(mediaUrlCache);
+        } else {
+          resolveMediaPlaylistUrl(s.url, function(err, mediaUrl) {
+            mediaUrlCache = err ? s.url : mediaUrl;
+            timeGet(mediaUrlCache);
+          });
+        }
       }
       ping();
       setInterval(ping, 15000);
@@ -1464,6 +1646,108 @@
       var screenshotImg = document.getElementById('screenshotImg');
       var screenshotDownload = document.getElementById('screenshotDownload');
 
+      var WATERMARK_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+      // Pyongyang-time date string, e.g. "20 Jun 2026"
+      function watermarkDate() {
+        var now = new Date();
+        var utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        var kst = new Date(utc + 9 * 3600000);
+        var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return kst.getDate() + ' ' + MON[kst.getMonth()] + ' ' + kst.getFullYear();
+      }
+
+      function roundedRectPath(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.arcTo(x + w, y, x + w, y + r, r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+        ctx.lineTo(x + r, y + h);
+        ctx.arcTo(x, y + h, x, y + h - r, r);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + r, y, r);
+        ctx.closePath();
+      }
+
+      // Picks the largest font size (down to minSize) whose resulting pill
+      // (text + chrome) still fits within maxPillWidth.
+      function fitBadgeFont(ctx, text, maxPillWidth, startSize, minSize) {
+        var size = startSize;
+        while (size > minSize) {
+          ctx.font = '700 ' + size + 'px ' + WATERMARK_FONT;
+          var textW = ctx.measureText(text).width;
+          var padX = Math.round(size * 0.85);
+          var accentW = Math.max(3, Math.round(size * 0.16));
+          var pillW = textW + padX * 2 + accentW + Math.round(size * 0.35);
+          if (pillW <= maxPillWidth) break;
+          size -= 1;
+        }
+        return size;
+      }
+
+      // Rounded dark badge, bottom-left, with a warm accent bar on the left
+      // edge and a single line of bold white text — e.g.
+      // "Shared via https://juche-tv.vercel.app  –  20 Jun 2026  –  Korean Central Television"
+      function drawWatermark(ctx, w, h) {
+        var text = 'Shared via https://juche-tv.vercel.app  \u2013  ' + watermarkDate() + '  \u2013  Korean Central Television';
+
+        var margin = Math.max(16, Math.round(w * 0.018));
+        var maxPillWidth = w - margin * 2;
+        var startSize = Math.max(13, Math.round(w * 0.019));
+        var fontSize = fitBadgeFont(ctx, text, maxPillWidth, startSize, 10);
+
+        ctx.font = '700 ' + fontSize + 'px ' + WATERMARK_FONT;
+        var textWidth = ctx.measureText(text).width;
+
+        var padX = Math.round(fontSize * 0.85);
+        var padY = Math.round(fontSize * 0.62);
+        var accentW = Math.max(3, Math.round(fontSize * 0.16));
+        var gap = Math.round(fontSize * 0.35);
+        var radius = Math.round(fontSize * 0.5);
+
+        var pillH = fontSize + padY * 2;
+        var pillW = Math.min(textWidth + padX * 2 + accentW + gap, maxPillWidth);
+        var pillX = margin;
+        var pillY = h - margin - pillH;
+
+        ctx.save();
+
+        // Drop shadow under the badge
+        ctx.shadowColor = 'rgba(0,0,0,0.45)';
+        ctx.shadowBlur = Math.round(fontSize * 0.6);
+        ctx.shadowOffsetY = Math.round(fontSize * 0.15);
+        ctx.fillStyle = 'rgba(18,18,22,0.82)';
+        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
+        ctx.fill();
+
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        // Warm accent bar on the left edge, clipped to the pill's rounding
+        ctx.save();
+        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
+        ctx.clip();
+        ctx.fillStyle = '#FF6A39';
+        ctx.fillRect(pillX, pillY, accentW, pillH);
+        ctx.restore();
+
+        // Text, clipped to the pill so it never spills past the rounded edge
+        ctx.save();
+        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
+        ctx.clip();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 ' + fontSize + 'px ' + WATERMARK_FONT;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, pillX + accentW + padX, pillY + pillH / 2 + Math.round(fontSize * 0.04));
+        ctx.restore();
+
+        ctx.restore();
+      }
+
       screenshotBtn.addEventListener('click', function() {
         // Try DPlayer video element first
         var videoEl = document.querySelector('#dplayer video');
@@ -1482,6 +1766,7 @@
         canvas.height = videoEl.videoHeight;
         var ctx = canvas.getContext('2d');
         ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        drawWatermark(ctx, canvas.width, canvas.height);
 
         // Flash effect
         screenshotFlash.classList.remove('active');
@@ -1523,14 +1808,30 @@
     function fmtHHMM(d) {
       return fmt2(d.getHours()) + ':' + fmt2(d.getMinutes());
     }
+    var DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var MON_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function fmtDate(d) {
+      return DOW_NAMES[d.getDay()] + ', ' + d.getDate() + ' ' + MON_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+    }
 
     // Tick clock
+    var lastDateStr = '';
     function tickClock() {
-      var t = fmtTime(getPyongyangTime());
+      var now = getPyongyangTime();
+      var t = fmtTime(now);
       var el = document.getElementById('epgClockVal');
       var el2 = document.getElementById('epgOverlayClock');
       if (el) el.textContent = t;
       if (el2) el2.textContent = t;
+
+      var dateStr = fmtDate(now);
+      if (dateStr !== lastDateStr) {
+        lastDateStr = dateStr;
+        var dEl = document.getElementById('epgDateVal');
+        var dEl2 = document.getElementById('epgOverlayDateVal');
+        if (dEl) dEl.textContent = dateStr;
+        if (dEl2) dEl2.textContent = dateStr;
+      }
     }
     setInterval(tickClock, 1000);
     tickClock();
