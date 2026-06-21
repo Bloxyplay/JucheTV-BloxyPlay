@@ -126,6 +126,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
+      text-decoration: none;
     }
     .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
     :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
@@ -382,6 +383,15 @@
         Juche TV
       </a>
       <div class="nav-right">
+        <a href="schedules.html" class="nav-btn" id="schedulesBtn" title="Schedules">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <path d="M8 14h2M8 17h2M14 14h2M14 17h2"/>
+          </svg>
+        </a>
         <button class="nav-btn" id="themeToggle" title="Toggle theme">
           <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
           <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -482,7 +492,7 @@
   <!-- Footer -->
   <footer class="footer">
     <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
-    <br><span>All streams are publicly available sources.</span>
+    <br><span>All streams are owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.</span>
   </footer>
 
   <script>
