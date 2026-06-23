@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+  <title>CCTV Channels - Juche TV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.26.0/DPlayer.min.css">
+  <style>
+    :root {
+      --bg: #F2F2F7;
+      --elevated: #FFFFFF;
+      --primary: #1C1C1E;
+      --secondary: #8E8E93;
+      --tertiary: #C7C7CC;
+      --separator: rgba(60, 60, 67, 0.1);
+      --tint: #007AFF;
+      --tint-secondary: #5856D6;
+      --red: #FF3B30;
+      --green: #34C759;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    :root.dark {
+      --bg: #000000;
+      --elevated: #1C1C1E;
+      --primary: #F2F2F7;
+      --secondary: #8E8E93;
+      --tertiary: #48484A;
+      --separator: rgba(140, 140, 147, 0.24);
+      --tint: #0A84FF;
+      --tint-secondary: #5E5CE6;
+      --green: #30D158;
+    }
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(242, 242, 247, 0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 0.5px solid var(--separator);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    :root.dark .nav { background: rgba(28, 28, 30, 0.72); }
+    .nav-inner {
+      max-width: 980px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 52px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 19px; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--primary); text-decoration: none;
+    }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #FF2D55, #FF9500);
+      border-radius: 9px; display: flex; align-items: center;
+      justify-content: center; color: #fff; font-size: 14px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 4px; }
+    .nav-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; background: transparent; color: var(--secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+    :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
+    .nav-btn svg { width: 18px; height: 18px; }
+
+    /* MAIN */
+    .main { max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* Hero */
+    .hero { margin-bottom: 36px; }
+    .breadcrumb {
+      font-size: 13px; color: var(--secondary); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .breadcrumb a { color: var(--tint); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .hero-top {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 10px;
+    }
+    .hero-logo {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: linear-gradient(135deg, #c8102e, #ee1c25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: var(--shadow-md);
+    }
+    .hero-logo span {
+      color: #fff; font-size: 32px; font-weight: 900; letter-spacing: -1px;
+    }
+    .hero-text h1 {
+      font-size: 28px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.2;
+    }
+    .hero-text p {
+      font-size: 14px; color: var(--secondary); line-height: 1.5; margin-top: 4px;
+    }
+    .badge-row { display: flex; gap: 6px; margin-top: 8px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 100px; letter-spacing: 0.2px;
+    }
+    .badge-live { background: rgba(52,199,89,0.12); color: var(--green); }
+    :root.dark .badge-live { background: rgba(48,209,88,0.18); }
+    .badge-hd { background: rgba(175,82,222,0.12); color: #AF52DE; }
+    :root.dark .badge-hd { background: rgba(191,90,242,0.18); color: #BF5AF2; }
+    .badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor; animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--secondary);
+      margin-bottom: 12px; padding-left: 6px;
+    }
+
+    /* Player area */
+    .player-wrap {
+      background: var(--elevated);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 0.5px solid var(--separator);
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-md);
+    }
+    .player-header {
+      padding: 16px 20px 14px;
+      border-bottom: 0.5px solid var(--separator);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .now-playing-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--green);
+      background: rgba(52,199,89,0.12); padding: 3px 10px;
+      border-radius: 100px;
+    }
+    :root.dark .now-playing-badge { background: rgba(48,209,88,0.18); }
+    #now-playing-name {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
+    }
+    #dplayer-container {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+
+    /* Channel Grid */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .ch-btn {
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      color: var(--primary);
+      position: relative; overflow: hidden;
+    }
+    .ch-btn::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 0;
+      background: linear-gradient(90deg, #c8102e, #ff4e50);
+      transition: height 0.25s ease;
+    }
+    .ch-btn:hover, .ch-btn.active {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+    .ch-btn:hover::before, .ch-btn.active::before { height: 3px; }
+    .ch-btn.active { border-color: #c8102e; }
+    .ch-logo {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: linear-gradient(135deg, #c8102e, #ee1c25);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; font-weight: 900;
+      letter-spacing: -0.5px; flex-shrink: 0;
+    }
+    .ch-name {
+      font-size: 12px; font-weight: 700; text-align: center;
+      letter-spacing: -0.1px; line-height: 1.3;
+    }
+    .ch-desc {
+      font-size: 10px; color: var(--secondary); text-align: center; line-height: 1.4;
+    }
+
+    /* Footer */
+    .footer {
+      max-width: 980px; margin: 0 auto;
+      padding: 24px 20px 40px; text-align: center;
+      font-size: 12px; color: var(--secondary);
+      border-top: 0.5px solid var(--separator); line-height: 1.8;
+    }
+
+    /* Animations */
+    .fade-in {
+      opacity: 0; transform: translateY(16px);
+      animation: fadeInUp 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
+    .stagger-1 { animation-delay: 0.05s; }
+    .stagger-2 { animation-delay: 0.1s; }
+    .stagger-3 { animation-delay: 0.15s; }
+
+    @media (max-width: 640px) {
+      .nav-inner { padding: 0 16px; height: 48px; }
+      .main { padding: 24px 16px 40px; }
+      .hero-text h1 { font-size: 22px; }
+      .channel-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        Juche TV
+      </a>
+      <div class="nav-right">
+        <a href="schedules.html" class="nav-btn" title="Schedules">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <path d="M8 14h2M8 17h2M14 14h2M14 17h2"/>
+          </svg>
+        </a>
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">
+          <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+          <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- Hero -->
+    <div class="hero fade-in">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        CCTV Channels
+      </div>
+      <div class="hero-top">
+        <div class="hero-logo"><span>C</span></div>
+        <div class="hero-text">
+          <h1>CCTV Channels</h1>
+          <p>All 17 China Central Television channels — live, direct, and free.</p>
+          <div class="badge-row">
+            <span class="badge badge-hd">HD</span>
+            <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Player -->
+    <div class="player-wrap fade-in stagger-1">
+      <div class="player-header">
+        <span class="now-playing-badge">Now Playing</span>
+        <span id="now-playing-name">CCTV-1</span>
+      </div>
+      <div id="dplayer-container"></div>
+    </div>
+
+    <!-- Channel Grid -->
+    <div class="section-label fade-in stagger-2">Select a Channel</div>
+    <div class="channel-grid fade-in stagger-3" id="channel-grid"></div>
+
+  </main>
+
+  <footer class="footer">
+    <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
+    <br><span>All streams are owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.</span>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.26.0/DPlayer.min.js"></script>
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const moon = document.getElementById('moon');
+    const sun = document.getElementById('sun');
+    const saved = localStorage.getItem('juche-theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      moon.style.display = 'none'; sun.style.display = '';
+    }
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      moon.style.display = isDark ? 'none' : '';
+      sun.style.display = isDark ? '' : 'none';
+      localStorage.setItem('juche-theme', isDark ? 'dark' : 'light');
+    });
+
+    // Channel data
+    const channels = [
+      { id: 1,  name: 'CCTV-1',  desc: 'Comprehensive',  url: 'https://cdn16.163189.xyz/163189/cctv1'  },
+      { id: 2,  name: 'CCTV-2',  desc: 'Finance',        url: 'https://cdn16.163189.xyz/163189/cctv2'  },
+      { id: 3,  name: 'CCTV-3',  desc: 'Arts & Variety', url: 'https://cdn16.163189.xyz/163189/cctv3'  },
+      { id: 4,  name: 'CCTV-4',  desc: 'International',  url: 'https://cdn16.163189.xyz/163189/cctv4'  },
+      { id: 5,  name: 'CCTV-5',  desc: 'Sports',         url: 'https://cdn16.163189.xyz/163189/cctv5'  },
+      { id: 6,  name: 'CCTV-6',  desc: 'Movie',          url: 'https://cdn16.163189.xyz/163189/cctv6'  },
+      { id: 7,  name: 'CCTV-7',  desc: 'Military & Agri',url: 'https://cdn16.163189.xyz/163189/cctv7'  },
+      { id: 8,  name: 'CCTV-8',  desc: 'Drama',          url: 'https://cdn16.163189.xyz/163189/cctv8'  },
+      { id: 9,  name: 'CCTV-9',  desc: 'Documentary',    url: 'https://cdn16.163189.xyz/163189/cctv9'  },
+      { id: 10, name: 'CCTV-10', desc: 'Science & Edu',  url: 'https://cdn16.163189.xyz/163189/cctv10' },
+      { id: 11, name: 'CCTV-11', desc: 'Opera',          url: 'https://cdn16.163189.xyz/163189/cctv11' },
+      { id: 12, name: 'CCTV-12', desc: 'Social & Law',   url: 'https://cdn16.163189.xyz/163189/cctv12' },
+      { id: 13, name: 'CCTV-13', desc: 'News',           url: 'https://cdn16.163189.xyz/163189/cctv13' },
+      { id: 14, name: 'CCTV-14', desc: 'Children',       url: 'https://cdn16.163189.xyz/163189/cctv14' },
+      { id: 15, name: 'CCTV-15', desc: 'Music',          url: 'https://cdn16.163189.xyz/163189/cctv15' },
+      { id: 16, name: 'CCTV-16', desc: 'Olympics',       url: 'https://cdn16.163189.xyz/163189/cctv16' },
+      { id: 17, name: 'CCTV-17', desc: 'Agriculture',    url: 'https://cdn16.163189.xyz/163189/cctv17' },
+    ];
+
+    let dp = null;
+    let activeIndex = 0;
+
+    function loadChannel(index) {
+      const ch = channels[index];
+      activeIndex = index;
+
+      // Update active button
+      document.querySelectorAll('.ch-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+
+      document.getElementById('now-playing-name').textContent = ch.name + ' — ' + ch.desc;
+
+      if (dp) {
+        dp.destroy();
+        dp = null;
+      }
+
+      dp = new DPlayer({
+        container: document.getElementById('dplayer-container'),
+        live: true,
+        autoplay: true,
+        video: {
+          url: ch.url,
+          type: 'customHls',
+          customType: {
+            customHls: function(video, player) {
+              if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(video.src);
+                hls.attachMedia(video);
+              } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = video.src;
+              }
+            }
+          }
+        },
+        theme: '#c8102e',
+      });
+    }
+
+    // Build grid
+    const grid = document.getElementById('channel-grid');
+    channels.forEach((ch, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'ch-btn' + (i === 0 ? ' active' : '');
+      btn.innerHTML = `
+        <div class="ch-logo">C</div>
+        <div class="ch-name">${ch.name}</div>
+        <div class="ch-desc">${ch.desc}</div>
+      `;
+      btn.addEventListener('click', () => loadChannel(i));
+      grid.appendChild(btn);
+    });
+
+    // Check for native HLS support vs need for hls.js
+    // We use native browser HLS where possible via DPlayer's native type
+    function initPlayer(index) {
+      const ch = channels[index];
+      const container = document.getElementById('dplayer-container');
+
+      if (dp) { dp.destroy(); dp = null; }
+
+      // Detect native HLS support
+      const testVid = document.createElement('video');
+      const nativeHLS = testVid.canPlayType('application/vnd.apple.mpegurl') !== '';
+
+      if (nativeHLS) {
+        // Native HLS (Safari / iOS)
+        dp = new DPlayer({
+          container,
+          live: true,
+          autoplay: true,
+          video: { url: ch.url, type: 'hls' },
+          theme: '#c8102e',
+        });
+      } else {
+        // Use hls.js via DPlayer built-in
+        dp = new DPlayer({
+          container,
+          live: true,
+          autoplay: true,
+          video: { url: ch.url, type: 'hls' },
+          theme: '#c8102e',
+          pluginOptions: {
+            hls: { enableWorker: true }
+          }
+        });
+      }
+
+      document.getElementById('now-playing-name').textContent = ch.name + ' — ' + ch.desc;
+      document.querySelectorAll('.ch-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+    }
+
+    // Override the click handler to use initPlayer
+    document.querySelectorAll('.ch-btn').forEach((btn, i) => {
+      btn.replaceWith(btn.cloneNode(true)); // reset listeners
+    });
+    document.querySelectorAll('.ch-btn').forEach((btn, i) => {
+      btn.addEventListener('click', () => initPlayer(i));
+    });
+
+    // Auto-load first channel
+    initPlayer(0);
+  </script>
+</body>
+</html>
