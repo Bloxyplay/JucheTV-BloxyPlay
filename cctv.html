@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
-  <title>CCTV-1 HD - Juche TV</title>
-  <link href="https://unpkg.com/video.js@8/dist/video-js.min.css" rel="stylesheet" />
+  <title>CCTV Channels - Juche TV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.26.0/DPlayer.min.css">
   <style>
     :root {
       --bg: #F2F2F7;
@@ -20,7 +20,6 @@
       --tint-secondary: #5856D6;
       --red: #FF3B30;
       --green: #34C759;
-      --orange: #FF9500;
       --radius-sm: 10px;
       --radius-md: 14px;
       --radius-lg: 18px;
@@ -38,501 +37,429 @@
       --tint: #0A84FF;
       --tint-secondary: #5E5CE6;
       --green: #30D158;
-      --red: #FF453A;
     }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg); color: var(--primary);
-      min-height: 100vh; display: flex; flex-direction: column;
-      transition: background 0.3s ease, color 0.3s ease;
-      -webkit-font-smoothing: antialiased;
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-    /* === NAV === */
+    /* NAV */
     .nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(242,242,247,0.72);
+      background: rgba(242, 242, 247, 0.72);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 0.5px solid var(--separator);
       transition: background 0.3s, border-color 0.3s;
     }
-    :root.dark .nav { background: rgba(28,28,30,0.72); }
+    :root.dark .nav { background: rgba(28, 28, 30, 0.72); }
     .nav-inner {
-      max-width: 1100px; margin: 0 auto;
+      max-width: 980px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 20px; height: 52px;
     }
     .logo {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 18px; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 19px; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--primary); text-decoration: none;
     }
     .logo-icon {
       width: 30px; height: 30px;
       background: linear-gradient(135deg, #FF2D55, #FF9500);
-      border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff;
+      border-radius: 9px; display: flex; align-items: center;
+      justify-content: center; color: #fff; font-size: 14px;
     }
-    .logo-icon svg { width: 16px; height: 16px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
-    #menu a {
-      font-size: 13px; font-weight: 600; color: var(--secondary);
-      text-decoration: none; padding: 6px 12px; border-radius: 8px;
-      transition: all 0.2s ease;
-    }
-    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
+    .nav-right { display: flex; align-items: center; gap: 4px; }
     .nav-btn {
-      width: 34px; height: 34px; border-radius: 50%; border: none;
-      background: transparent; color: var(--secondary);
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; background: transparent; color: var(--secondary);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.2s ease;
+      cursor: pointer; transition: all 0.2s ease; text-decoration: none;
     }
-    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
+    .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+    :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
     .nav-btn svg { width: 18px; height: 18px; }
-    .lang-wrap { position: relative; }
-    .lang-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; padding: 6px 12px;
-      border-radius: 8px; border: none;
-      background: transparent; color: var(--secondary);
-      cursor: pointer; transition: all 0.2s ease;
-    }
-    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
-    .lang-menu {
-      display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
-    }
-    .lang-menu.show { display: block; }
-    .lang-option {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; font-size: 13px; cursor: pointer;
-      transition: background 0.12s; color: var(--primary);
-    }
-    .lang-option:hover { background: rgba(0,0,0,0.04); }
-    .lang-option.active { font-weight: 700; }
-    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
 
-    /* === MAIN === */
-    .main {
-      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 28px 20px 40px;
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 600; color: var(--secondary);
-      margin-bottom: 16px; padding: 4px 0;
-      transition: color 0.2s ease; text-decoration: none;
-    }
-    .back-link:hover { color: var(--tint); }
-    .back-link svg { width: 16px; height: 16px; }
+    /* MAIN */
+    .main { max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; }
 
-    .channel-meta {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 20px; flex-wrap: wrap;
+    /* Hero */
+    .hero { margin-bottom: 36px; }
+    .breadcrumb {
+      font-size: 13px; color: var(--secondary); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
     }
-    .channel-meta .meta-icon {
-      width: 52px; height: 52px; object-fit: contain;
-      background: var(--elevated);
-      border-radius: var(--radius-sm);
-      padding: 6px;
-      border: 0.5px solid var(--separator);
+    .breadcrumb a { color: var(--tint); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .hero-top {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 10px;
     }
-    .channel-meta h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .channel-meta p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
-    .live-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; color: var(--red);
-      background: rgba(255,59,48,0.1); padding: 4px 10px;
-      border-radius: 100px; margin-left: auto;
+    .hero-logo {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: linear-gradient(135deg, #c8102e, #ee1c25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: var(--shadow-md);
     }
-    :root.dark .live-badge { background: rgba(255,69,58,0.15); }
-    .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 2s ease infinite; }
+    .hero-logo span {
+      color: #fff; font-size: 32px; font-weight: 900; letter-spacing: -1px;
+    }
+    .hero-text h1 {
+      font-size: 28px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.2;
+    }
+    .hero-text p {
+      font-size: 14px; color: var(--secondary); line-height: 1.5; margin-top: 4px;
+    }
+    .badge-row { display: flex; gap: 6px; margin-top: 8px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 100px; letter-spacing: 0.2px;
+    }
+    .badge-live { background: rgba(52,199,89,0.12); color: var(--green); }
+    :root.dark .badge-live { background: rgba(48,209,88,0.18); }
+    .badge-hd { background: rgba(175,82,222,0.12); color: #AF52DE; }
+    :root.dark .badge-hd { background: rgba(191,90,242,0.18); color: #BF5AF2; }
+    .badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor; animation: pulse 2s ease-in-out infinite;
+    }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-    /* === Player === */
-    .player-container {
-      border-radius: var(--radius-lg); overflow: hidden;
-      position: relative;
-      box-shadow: var(--shadow-lg);
-      border: 0.5px solid var(--separator);
+    /* Section label */
+    .section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--secondary);
+      margin-bottom: 12px; padding-left: 6px;
     }
-    .video-js {
-      width: 100%; aspect-ratio: 16/9; max-height: 70vh;
-      background: #000;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-    }
-    .video-js .vjs-big-play-button {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: rgba(0,122,255,0.9); border: none;
-      top: 50%; left: 50%; transform: translate(-50%,-50%);
-      margin: 0;
-      transition: all 0.2s ease;
-    }
-    .video-js .vjs-big-play-button:hover {
-      background: rgba(0,122,255,1); transform: translate(-50%,-50%) scale(1.08);
-    }
-    .video-js.vjs-has-started .vjs-big-play-button { display: none; }
-    .video-js .vjs-big-play-button .vjs-icon-placeholder:before { font-size: 26px; line-height: 64px; color: #fff; }
-    .video-js .vjs-control-bar {
-      background: rgba(0,0,0,0.55); height: 44px; padding: 0 10px; align-items: center;
-      backdrop-filter: blur(8px);
-    }
-    .video-js .vjs-progress-control { flex: 1; align-items: center; height: 100%; }
-    .video-js .vjs-progress-holder { height: 3px; margin: 0; border-radius: 2px; }
-    .video-js .vjs-play-progress { background: var(--tint); border-radius: 2px; }
-    .video-js .vjs-play-progress:before { color: var(--tint); font-size: 13px; top: -5px; }
-    .video-js .vjs-slider { background: rgba(255,255,255,0.15); border-radius: 2px; }
-    .video-js .vjs-volume-bar.vjs-slider-horizontal { height: 3px; border-radius: 2px; }
-    .video-js .vjs-volume-level { background: #fff; border-radius: 2px; }
-    .video-js .vjs-button > .vjs-icon-placeholder:before { font-size: 20px; line-height: 44px; }
-    .video-js .vjs-play-control, .video-js .vjs-mute-control, .video-js .vjs-fullscreen-control { width: 36px; }
-    .live-corner {
-      position: absolute; top: 12px; left: 12px;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; font-weight: 700; color: #fff;
-      background: rgba(255,59,48,0.85); padding: 4px 10px;
-      border-radius: 100px; z-index: 6; letter-spacing: 0.5px;
-      backdrop-filter: blur(4px);
-    }
-    .live-corner .dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 1.8s ease infinite; }
 
-    /* === Info Section === */
-    .info-section {
-      margin-top: 24px; padding: 24px;
+    /* Player area */
+    .player-wrap {
       background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-lg);
-      transition: background 0.3s, border-color 0.3s;
-    }
-    .info-section h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.2px; }
-    .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
-
-    /* === EPG === */
-    .epg-section {
-      margin-top: 24px;
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      transition: background 0.3s, border-color 0.3s;
+      border: 0.5px solid var(--separator);
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-md);
     }
-    .epg-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-bottom: 0.5px solid var(--separator);
-      flex-wrap: wrap; gap: 8px;
+    .player-header {
+      padding: 16px 20px 14px;
+      border-bottom: 0.5px solid var(--separator);
+      display: flex; align-items: center; gap: 12px;
     }
-    .epg-header h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; }
-    .epg-header h3 svg { width: 16px; height: 16px; }
-    .epg-date { font-size: 12px; color: var(--secondary); font-family: 'SF Mono', 'Fira Code', monospace; }
-    .epg-list { max-height: 360px; overflow-y: auto; }
-    .epg-item {
-      display: flex; align-items: center; gap: 16px;
-      padding: 10px 20px; border-bottom: 0.5px solid var(--separator);
-      transition: background 0.15s ease; font-size: 13px; position: relative;
+    .now-playing-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--green);
+      background: rgba(52,199,89,0.12); padding: 3px 10px;
+      border-radius: 100px;
     }
-    .epg-item:last-child { border-bottom: none; }
-    .epg-item:hover { background: rgba(0,0,0,0.02); }
-    .epg-item.current { background: rgba(0,122,255,0.05); border-left: 3px solid var(--tint); padding-left: 17px; }
-    .epg-time { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--secondary); white-space: nowrap; min-width: 72px; }
-    .epg-item.current .epg-time { color: var(--tint); font-weight: 700; }
-    .epg-name { flex: 1; font-weight: 500; }
-    .epg-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
-    .epg-status.now { background: rgba(0,122,255,0.1); color: var(--tint); }
-    .epg-status.next { background: rgba(0,0,0,0.04); color: var(--secondary); }
-    :root.dark .epg-status.next { background: rgba(255,255,255,0.06); }
-    .epg-progress { position: absolute; bottom: 0; left: 0; height: 2px; background: rgba(0,122,255,0.3); border-radius: 0 2px 2px 0; pointer-events: none; }
-    .epg-loading { padding: 32px; text-align: center; color: var(--secondary); font-size: 13px; }
-    .epg-error { padding: 32px 24px; text-align: center; }
-    .epg-error-title { font-size: 15px; font-weight: 700; color: var(--tint); margin-bottom: 4px; }
-    .epg-error-msg { font-size: 13px; color: var(--secondary); margin-bottom: 16px; }
-    .epg-retry-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; padding: 7px 16px;
-      border-radius: 100px; border: 0.5px solid var(--separator);
-      background: var(--elevated); color: var(--primary);
-      cursor: pointer; transition: all 0.15s ease;
+    :root.dark .now-playing-badge { background: rgba(48,209,88,0.18); }
+    #now-playing-name {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
     }
-    .epg-retry-btn:hover { background: var(--bg); border-color: var(--tertiary); }
+    #dplayer-container {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
 
-    /* === Footer === */
-    .footer {
-      max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 20px; display: flex; align-items: center;
-      justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 0.5px solid var(--separator);
+    /* Channel Grid */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 32px;
     }
-    .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--tint); }
+    .ch-btn {
+      background: var(--elevated);
+      border: 0.5px solid var(--separator);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      color: var(--primary);
+      position: relative; overflow: hidden;
+    }
+    .ch-btn::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 0;
+      background: linear-gradient(90deg, #c8102e, #ff4e50);
+      transition: height 0.25s ease;
+    }
+    .ch-btn:hover, .ch-btn.active {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+    .ch-btn:hover::before, .ch-btn.active::before { height: 3px; }
+    .ch-btn.active { border-color: #c8102e; }
+    .ch-logo {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: linear-gradient(135deg, #c8102e, #ee1c25);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; font-weight: 900;
+      letter-spacing: -0.5px; flex-shrink: 0;
+    }
+    .ch-name {
+      font-size: 12px; font-weight: 700; text-align: center;
+      letter-spacing: -0.1px; line-height: 1.3;
+    }
+    .ch-desc {
+      font-size: 10px; color: var(--secondary); text-align: center; line-height: 1.4;
+    }
+
+    /* Footer */
+    .footer {
+      max-width: 980px; margin: 0 auto;
+      padding: 24px 20px 40px; text-align: center;
+      font-size: 12px; color: var(--secondary);
+      border-top: 0.5px solid var(--separator); line-height: 1.8;
+    }
+
+    /* Animations */
+    .fade-in {
+      opacity: 0; transform: translateY(16px);
+      animation: fadeInUp 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
+    .stagger-1 { animation-delay: 0.05s; }
+    .stagger-2 { animation-delay: 0.1s; }
+    .stagger-3 { animation-delay: 0.15s; }
 
     @media (max-width: 640px) {
-      .channel-meta h1 { font-size: 18px; }
-      .live-badge { margin-left: 0; width: 100%; justify-content: center; }
-      .epg-header { flex-direction: column; align-items: flex-start; }
+      .nav-inner { padding: 0 16px; height: 48px; }
+      .main { padding: 24px 16px 40px; }
+      .hero-text h1 { font-size: 22px; }
+      .channel-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
     }
   </style>
 </head>
 <body>
+
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="logo">
         <div class="logo-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </div>
-        <span>Juche TV</span>
+        Juche TV
       </a>
-      <ul id="menu">
-        <li><a href="index.html">Channels</a></li>
-        <li>
-          <div class="lang-wrap">
-            <button class="lang-btn" id="langBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              <span id="langLabel">English</span>
-            </button>
-            <div class="lang-menu" id="langMenu">
-              <div class="lang-option active" data-lang="en">English</div>
-              <div class="lang-option" data-lang="zh">\u4e2d\u6587 (Chinese)</div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <button class="nav-btn" id="themeToggle" title="Toggle theme">
-            <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
-            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          </button>
-        </li>
-      </ul>
+      <div class="nav-right">
+        <a href="schedules.html" class="nav-btn" title="Schedules">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <path d="M8 14h2M8 17h2M14 14h2M14 17h2"/>
+          </svg>
+        </a>
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">
+          <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+          <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
   <main class="main">
-    <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span>Back to Channels</span>
-    </a>
 
-    <div class="channel-meta">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/CCTV-1_Logo.svg" alt="CCTV" class="meta-icon">
-      <div>
-        <h1>CCTV-1 HD</h1>
-        <p>Live from China Central Television</p>
+    <!-- Hero -->
+    <div class="hero fade-in">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        CCTV Channels
       </div>
-      <span class="live-badge"><span class="dot"></span>LIVE</span>
-    </div>
-
-    <div class="player-container">
-      <div class="live-corner"><span class="dot"></span>LIVE</div>
-      <video id="vid" class="video-js vjs-big-play-centered" playsinline preload="auto">
-        <source src="https://play.kankanlive.com/live/1720408280309109.m3u8?provider_id=juche_tv012" type="application/x-mpegURL">
-        <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.</p>
-      </video>
-    </div>
-
-    <div class="epg-section">
-      <div class="epg-header">
-        <h3>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Program Guide (CCTV-1 HD)
-        </h3>
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-          <span class="epg-date" id="epgDate"></span>
+      <div class="hero-top">
+        <div class="hero-logo"><span>C</span></div>
+        <div class="hero-text">
+          <h1>CCTV Channels</h1>
+          <p>All 17 China Central Television channels — live, direct, and free.</p>
+          <div class="badge-row">
+            <span class="badge badge-hd">HD</span>
+            <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
+          </div>
         </div>
       </div>
-      <div class="epg-list" id="epgList">
-        <div class="epg-loading">Loading...</div>
-      </div>
     </div>
 
-    <div class="info-section">
-      <h3>About CCTV-1 HD</h3>
-      <p>China Central Television (CCTV) is the national television broadcaster of China. CCTV-1 is the flagship channel broadcasting news, documentaries, and entertainment.</p>
+    <!-- Player -->
+    <div class="player-wrap fade-in stagger-1">
+      <div class="player-header">
+        <span class="now-playing-badge">Now Playing</span>
+        <span id="now-playing-name">CCTV-1</span>
+      </div>
+      <div id="dplayer-container"></div>
     </div>
+
+    <!-- Channel Grid -->
+    <div class="section-label fade-in stagger-2">Select a Channel</div>
+    <div class="channel-grid fade-in stagger-3" id="channel-grid"></div>
+
   </main>
 
   <footer class="footer">
-    <span>Juche TV. Not affiliated with any broadcasting entity.</span>
-    <a href="index.html">Back to Channels</a>
+    <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
+    <br><span>All streams are owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.</span>
   </footer>
 
-  <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.26.0/DPlayer.min.js"></script>
   <script>
-    // ===================== THEME =====================
+    // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
     const sun = document.getElementById('sun');
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !savedTheme) {
+    const saved = localStorage.getItem('juche-theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
       moon.style.display = 'none'; sun.style.display = '';
     }
     themeToggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
-      const d = document.documentElement.classList.contains('dark');
-      moon.style.display = d ? 'none' : '';
-      sun.style.display = d ? '' : 'none';
-      localStorage.setItem('theme', d ? 'dark' : 'light');
+      const isDark = document.documentElement.classList.contains('dark');
+      moon.style.display = isDark ? 'none' : '';
+      sun.style.display = isDark ? '' : 'none';
+      localStorage.setItem('juche-theme', isDark ? 'dark' : 'light');
     });
 
-    // ===================== LANG =====================
-    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
-    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(o => {
-      o.addEventListener('click', () => {
-        document.getElementById('langLabel').textContent = o.dataset.lang === 'zh' ? '\u4e2d\u6587' : 'English';
-        document.querySelectorAll('.lang-option').forEach(l => l.classList.toggle('active', l === o));
-        document.getElementById('langMenu').classList.remove('show');
+    // Channel data
+    const channels = [
+      { id: 1,  name: 'CCTV-1',  desc: 'Comprehensive',  url: 'https://cdn16.163189.xyz/163189/cctv1'  },
+      { id: 2,  name: 'CCTV-2',  desc: 'Finance',        url: 'https://cdn16.163189.xyz/163189/cctv2'  },
+      { id: 3,  name: 'CCTV-3',  desc: 'Arts & Variety', url: 'https://cdn16.163189.xyz/163189/cctv3'  },
+      { id: 4,  name: 'CCTV-4',  desc: 'International',  url: 'https://cdn16.163189.xyz/163189/cctv4'  },
+      { id: 5,  name: 'CCTV-5',  desc: 'Sports',         url: 'https://cdn16.163189.xyz/163189/cctv5'  },
+      { id: 6,  name: 'CCTV-6',  desc: 'Movie',          url: 'https://cdn16.163189.xyz/163189/cctv6'  },
+      { id: 7,  name: 'CCTV-7',  desc: 'Military & Agri',url: 'https://cdn16.163189.xyz/163189/cctv7'  },
+      { id: 8,  name: 'CCTV-8',  desc: 'Drama',          url: 'https://cdn16.163189.xyz/163189/cctv8'  },
+      { id: 9,  name: 'CCTV-9',  desc: 'Documentary',    url: 'https://cdn16.163189.xyz/163189/cctv9'  },
+      { id: 10, name: 'CCTV-10', desc: 'Science & Edu',  url: 'https://cdn16.163189.xyz/163189/cctv10' },
+      { id: 11, name: 'CCTV-11', desc: 'Opera',          url: 'https://cdn16.163189.xyz/163189/cctv11' },
+      { id: 12, name: 'CCTV-12', desc: 'Social & Law',   url: 'https://cdn16.163189.xyz/163189/cctv12' },
+      { id: 13, name: 'CCTV-13', desc: 'News',           url: 'https://cdn16.163189.xyz/163189/cctv13' },
+      { id: 14, name: 'CCTV-14', desc: 'Children',       url: 'https://cdn16.163189.xyz/163189/cctv14' },
+      { id: 15, name: 'CCTV-15', desc: 'Music',          url: 'https://cdn16.163189.xyz/163189/cctv15' },
+      { id: 16, name: 'CCTV-16', desc: 'Olympics',       url: 'https://cdn16.163189.xyz/163189/cctv16' },
+      { id: 17, name: 'CCTV-17', desc: 'Agriculture',    url: 'https://cdn16.163189.xyz/163189/cctv17' },
+    ];
+
+    let dp = null;
+    let activeIndex = 0;
+
+    function loadChannel(index) {
+      const ch = channels[index];
+      activeIndex = index;
+
+      // Update active button
+      document.querySelectorAll('.ch-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
       });
-    });
-    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
 
-    // ===================== VIDEO.JS =====================
-    const player = videojs('vid', {
-      controls: true, autoplay: true, muted: true,
-      liveui: true, fluid: true, responsive: true, playbackRates: [],
-      html5: { vhs: { overrideNative: true, enableLowInitialPlaylist: true }, nativeAudioTracks: false, nativeVideoTracks: false }
-    });
-    player.ready(function() { player.play().catch(() => {}); });
+      document.getElementById('now-playing-name').textContent = ch.name + ' — ' + ch.desc;
 
-    // ===================== EPG =====================
-    const EPG_NAME = 'CCTV-1HD';
-    function getChinaNow() {
-      const now = new Date();
-      const utcMs = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
-      return new Date(utcMs + 8 * 60 * 60 * 1000);
-    }
-    function getTodayDate() {
-      const d = getChinaNow();
-      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    }
-    function normalizeEPGData(data) {
-      if (!data) return null;
-      if (Array.isArray(data.list) && data.list.length) return data.list.map(item => ({
-        time: item.time || item.start || item.startTime || '',
-        name: item.title || item.name || item.program || 'Program',
-      }));
-      if (Array.isArray(data.programs) && data.programs.length) return data.programs.map(item => ({
-        time: item.time || item.start || item.startTime || '',
-        name: item.title || item.name || item.program || 'Program',
-      }));
-      if (Array.isArray(data.data) && data.data.length) return data.data.map(item => ({
-        time: item.time || item.start || item.startTime || '',
-        name: item.title || item.name || item.program || 'Program',
-      }));
-      if (Array.isArray(data) && data.length) return data.map(item => ({
-        time: item.time || item.start || item.startTime || '',
-        name: item.title || item.name || item.program || 'Program',
-      }));
-      for (const key of Object.keys(data)) {
-        if (Array.isArray(data[key]) && data[key].length) return data[key].map(item => ({
-          time: item.time || item.start || item.startTime || '',
-          name: item.title || item.name || item.program || 'Program',
-        }));
+      if (dp) {
+        dp.destroy();
+        dp = null;
       }
-      return null;
-    }
 
-    let _lastItems = null;
-    let _retryCount = 0;
-
-    async function fetchEPG(chName) {
-      const epgList = document.getElementById('epgList');
-      const epgDate = document.getElementById('epgDate');
-      const date = getTodayDate();
-      epgDate.textContent = date;
-      epgList.innerHTML = '<div class="epg-loading">Loading...</div>';
-
-      try {
-        const url = 'https://bloxyplaytvapi.duckdns.org/api/epg?ch=' + encodeURIComponent(chName) + '&date=' + date;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-        const response = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeout);
-
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        const data = await response.json();
-        const items = normalizeEPGData(data);
-        if (items && items.length) {
-          _retryCount = 0;
-          renderEPG(items);
-        } else { throw new Error('empty'); }
-      } catch (e) { showSkeletonError(); }
-    }
-
-    function showSkeletonError() {
-      document.getElementById('epgList').innerHTML = `
-        <div class="epg-error">
-          <div class="epg-error-title">Error</div>
-          <div class="epg-error-msg">Failed to load program guide. Please try again.</div>
-          <button class="epg-retry-btn" onclick="retryEPG()">&#x21bb; Retry</button>
-        </div>`;
-    }
-    function retryEPG() {
-      _retryCount++;
-      if (_retryCount >= 5) { showSkeletonError(); return; }
-      fetchEPG(EPG_NAME);
-    }
-    function renderEPG(items) {
-      const epgList = document.getElementById('epgList');
-      if (!items || !items.length) { showSkeletonError(); return; }
-      _lastItems = items;
-
-      let html = '';
-      const now = getChinaNow();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
-      const nowSeconds = nowMinutes * 60 + now.getSeconds();
-      let foundCurrent = false;
-
-      items.forEach((item, idx) => {
-        const time = item.time;
-        const name = item.name;
-        const parts = time.split(':').map(Number);
-        const itemMinutes = (parts[0] || 0) * 60 + (parts[1] || 0);
-        let status = '';
-        let cls = 'epg-item';
-        let progressHtml = '';
-
-        if (!foundCurrent && itemMinutes <= nowMinutes) {
-          const next = items[idx + 1];
-          if (next) {
-            const np = (next.time || '23:59').split(':').map(Number);
-            const nextMinutes = (np[0] || 0) * 60 + (np[1] || 0);
-            if (nowMinutes < nextMinutes) {
-              cls += ' current';
-              status = '<span class="epg-status now">ON NOW</span>';
-              foundCurrent = true;
-              const dur = (nextMinutes - itemMinutes) * 60;
-              const elapsed = nowSeconds - itemMinutes * 60;
-              const pct = Math.min(100, Math.round(elapsed / dur * 100));
-              progressHtml = `<div class="epg-progress" style="width:${pct}%"></div>`;
+      dp = new DPlayer({
+        container: document.getElementById('dplayer-container'),
+        live: true,
+        autoplay: true,
+        video: {
+          url: ch.url,
+          type: 'customHls',
+          customType: {
+            customHls: function(video, player) {
+              if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(video.src);
+                hls.attachMedia(video);
+              } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = video.src;
+              }
             }
-          } else {
-            cls += ' current';
-            status = '<span class="epg-status now">ON NOW</span>';
-            foundCurrent = true;
           }
-        }
-        if (!status && !foundCurrent) {
-          status = '<span class="epg-status next">UP NEXT</span>';
-        } else if (!status) {
-          status = '<span class="epg-status next">LATER</span>';
-        }
-        html += `<div class="${cls}"><span class="epg-time">${time}</span><span class="epg-name">${name}</span>${status}${progressHtml}</div>`;
+        },
+        theme: '#c8102e',
       });
-      epgList.innerHTML = html;
-      const currentEl = epgList.querySelector('.current');
-      if (currentEl) setTimeout(() => currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150);
     }
 
-    fetchEPG(EPG_NAME);
+    // Build grid
+    const grid = document.getElementById('channel-grid');
+    channels.forEach((ch, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'ch-btn' + (i === 0 ? ' active' : '');
+      btn.innerHTML = `
+        <div class="ch-logo">C</div>
+        <div class="ch-name">${ch.name}</div>
+        <div class="ch-desc">${ch.desc}</div>
+      `;
+      btn.addEventListener('click', () => loadChannel(i));
+      grid.appendChild(btn);
+    });
+
+    // Check for native HLS support vs need for hls.js
+    // We use native browser HLS where possible via DPlayer's native type
+    function initPlayer(index) {
+      const ch = channels[index];
+      const container = document.getElementById('dplayer-container');
+
+      if (dp) { dp.destroy(); dp = null; }
+
+      // Detect native HLS support
+      const testVid = document.createElement('video');
+      const nativeHLS = testVid.canPlayType('application/vnd.apple.mpegurl') !== '';
+
+      if (nativeHLS) {
+        // Native HLS (Safari / iOS)
+        dp = new DPlayer({
+          container,
+          live: true,
+          autoplay: true,
+          video: { url: ch.url, type: 'hls' },
+          theme: '#c8102e',
+        });
+      } else {
+        // Use hls.js via DPlayer built-in
+        dp = new DPlayer({
+          container,
+          live: true,
+          autoplay: true,
+          video: { url: ch.url, type: 'hls' },
+          theme: '#c8102e',
+          pluginOptions: {
+            hls: { enableWorker: true }
+          }
+        });
+      }
+
+      document.getElementById('now-playing-name').textContent = ch.name + ' — ' + ch.desc;
+      document.querySelectorAll('.ch-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+    }
+
+    // Override the click handler to use initPlayer
+    document.querySelectorAll('.ch-btn').forEach((btn, i) => {
+      btn.replaceWith(btn.cloneNode(true)); // reset listeners
+    });
+    document.querySelectorAll('.ch-btn').forEach((btn, i) => {
+      btn.addEventListener('click', () => initPlayer(i));
+    });
+
+    // Auto-load first channel
+    initPlayer(0);
   </script>
 </body>
 </html>
