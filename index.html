@@ -4,83 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0D0D0F">
   <title>Juche TV - Live Streams</title>
   <style>
-    :root {
-      --bg: #F2F2F7;
-      --elevated: #FFFFFF;
-      --primary: #1C1C1E;
-      --secondary: #8E8E93;
-      --tertiary: #C7C7CC;
-      --separator: rgba(60, 60, 67, 0.1);
-      --separator-dark: rgba(140, 140, 147, 0.24);
-      --tint: #007AFF;
-      --tint-secondary: #5856D6;
-      --red: #FF3B30;
-      --green: #34C759;
-      --orange: #FF9500;
-      --blue: #007AFF;
-      --indigo: #5856D6;
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-    :root.dark {
-      --bg: #000000;
-      --elevated: #1C1C1E;
-      --primary: #F2F2F7;
-      --secondary: #8E8E93;
-      --tertiary: #48484A;
-      --separator: rgba(140, 140, 147, 0.24);
-      --separator-dark: rgba(140, 140, 147, 0.36);
-      --tint: #0A84FF;
-      --tint-secondary: #5E5CE6;
+    :root {
+      --bg: #0D0D0F;
+      --surface: #16161A;
+      --surface2: #1E1E24;
+      --border: rgba(255,255,255,0.07);
+      --border-bright: rgba(255,255,255,0.13);
+      --primary: #F5F5F7;
+      --secondary: #8A8A96;
+      --tertiary: #3A3A44;
+      --red: #FF3B30;
       --green: #30D158;
       --blue: #0A84FF;
+      --yellow: #FFD60A;
+      --tint: #FF2D55;
+      --tint2: #FF6B35;
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 28px;
     }
 
     *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
       background: var(--bg);
       color: var(--primary);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
     }
 
-    /* === NAV BAR === */
+    /* ─── STATUS BAR MOCK ─── */
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+    .status-time { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .status-icons { display: flex; align-items: center; gap: 6px; }
+
+    /* ─── NAV ─── */
     .nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(242, 242, 247, 0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-bottom: 0.5px solid var(--separator);
-      transition: background 0.3s, border-color 0.3s;
-    }
-    :root.dark .nav {
-      background: rgba(28, 28, 30, 0.72);
+      background: rgba(13,13,15,0.85);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-bottom: 0.5px solid var(--border);
     }
     .nav-inner {
-      max-width: 980px;
+      max-width: 480px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -91,433 +82,508 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 19px;
+      gap: 10px;
+      font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--primary);
       text-decoration: none;
     }
     .logo-icon {
-      width: 30px;
-      height: 30px;
-      background: linear-gradient(135deg, #FF2D55, #FF9500);
-      border-radius: 9px;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--tint), var(--tint2));
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(255,45,85,0.45);
     }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .nav-right { display: flex; align-items: center; gap: 4px; }
     .nav-btn {
-      width: 34px;
-      height: 34px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       border: none;
-      background: transparent;
+      background: var(--surface2);
       color: var(--secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
     }
-    .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
-    :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
-    .nav-btn svg { width: 18px; height: 18px; }
+    .nav-btn:hover { background: var(--border-bright); color: var(--primary); }
+    .nav-btn svg { width: 17px; height: 17px; }
 
-    /* === MAIN === */
+    /* ─── MAIN SCROLL ─── */
     .main {
-      max-width: 980px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 32px 20px 60px;
+      padding: 20px 16px 100px;
     }
 
-    /* Hero */
-    .hero {
-      text-align: center;
-      margin-bottom: 36px;
-    }
-    .hero h1 {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.8px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-    .hero p {
-      font-size: 15px;
-      font-weight: 400;
-      color: var(--secondary);
-      line-height: 1.5;
-    }
-
-    /* Section label */
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--secondary);
-      margin-bottom: 12px;
-      padding-left: 6px;
-    }
-
-    /* Channel Card */
-    .channel-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      background: var(--elevated);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      border: 0.5px solid var(--separator);
-      margin-bottom: 12px;
+    /* ─── VOD BANNER ─── */
+    .vod-banner {
+      background: linear-gradient(135deg, #1A0A12, #0F0A1A);
+      border: 0.5px solid rgba(255,45,85,0.25);
+      border-radius: var(--radius-xl);
+      padding: 22px 22px 20px;
+      margin-bottom: 24px;
       position: relative;
       overflow: hidden;
     }
-    .channel-card::before {
+    .vod-banner::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 0;
-      background: linear-gradient(90deg, var(--tint), var(--tint-secondary));
-      transition: height 0.3s ease;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-    .channel-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      border-color: transparent;
-    }
-    .channel-card:hover::before { height: 3px; }
-    .channel-card.unavailable {
-      cursor: not-allowed;
-      opacity: 0.65;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255,45,85,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
-    .channel-card.unavailable:hover {
-      transform: none;
-      box-shadow: var(--shadow-sm);
-      border-color: var(--separator);
+    .vod-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(94,92,230,0.15) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .channel-card.unavailable::before { display: none; }
-
-    .channel-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 14px;
+    .vod-top {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .vod-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, rgba(255,45,85,0.2), rgba(94,92,230,0.2));
+      border: 0.5px solid rgba(255,45,85,0.3);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      background: var(--bg);
-      overflow: hidden;
     }
-    .channel-icon img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
+    .coming-soon-badge {
+      background: var(--yellow);
+      color: #1A1200;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 2px 12px rgba(255,214,10,0.35);
+      flex-shrink: 0;
     }
-    .channel-icon svg {
-      width: 28px;
-      height: 28px;
+    .coming-soon-badge svg { width: 10px; height: 10px; }
+
+    .vod-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,45,85,0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: default;
+      display: inline-block;
+      position: relative;
+      transition: filter 0.3s ease, -webkit-text-fill-color 0.3s ease;
     }
-    .channel-info {
-      flex: 1;
-      min-width: 0;
+    .vod-title:hover {
+      background: linear-gradient(135deg, #FFD60A, #FFAA00, #FFE566);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(255,214,10,0.7)) drop-shadow(0 0 22px rgba(255,170,0,0.45));
     }
-    .channel-info h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: -0.3px;
-    }
-    .channel-info p {
+    .vod-sub {
       font-size: 13px;
       color: var(--secondary);
       line-height: 1.5;
-      margin-bottom: 10px;
     }
 
-    /* Badges */
-    .badge-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+    /* ─── SECTION LABEL ─── */
+    .section-label {
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--secondary);
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    /* ─── CHANNEL GROUP ─── */
+    .channel-group { margin-bottom: 28px; }
+
+    /* ─── CHANNEL CARD ─── */
+    .channel-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      border: 0.5px solid var(--border);
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .channel-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(255,45,85,0.07), transparent);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .channel-card:hover {
+      border-color: rgba(255,45,85,0.3);
+      transform: scale(0.99);
+      box-shadow: 0 0 0 1px rgba(255,45,85,0.18), 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .channel-card:hover::after { opacity: 1; }
+    .channel-card:active { transform: scale(0.97); }
+    .channel-card.unavailable {
+      cursor: not-allowed;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .channel-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: var(--surface2);
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+    }
+    .channel-icon img {
+      width: 36px; height: 36px;
+      object-fit: contain;
+    }
+    .channel-icon svg { width: 26px; height: 26px; }
+
+    .channel-info { flex: 1; min-width: 0; }
+    .channel-info h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .channel-info p {
+      font-size: 12px;
+      color: var(--secondary);
+      line-height: 1.45;
+      margin-bottom: 9px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ─── BADGES ─── */
+    .badge-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 9px;
       border-radius: 100px;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
     }
-    .badge-live {
-      background: rgba(52, 199, 89, 0.12);
-      color: var(--green);
-    }
-    :root.dark .badge-live {
-      background: rgba(48, 209, 88, 0.18);
-      color: var(--green);
-    }
-    .badge-radio {
-      background: rgba(88, 86, 214, 0.12);
-      color: var(--indigo);
-    }
-    :root.dark .badge-radio {
-      background: rgba(94, 92, 230, 0.18);
-      color: #AFAFFF;
-    }
-    .badge-hd {
-      background: rgba(175, 82, 222, 0.12);
-      color: #AF52DE;
-    }
-    :root.dark .badge-hd {
-      background: rgba(191, 90, 242, 0.18);
-      color: #BF5AF2;
-    }
-    .badge-unavailable {
-      background: rgba(255, 59, 48, 0.12);
-      color: var(--red);
-    }
-    :root.dark .badge-unavailable {
-      background: rgba(255, 69, 58, 0.18);
-      color: #FF453A;
-    }
+    .badge-live { background: rgba(48,209,88,0.14); color: var(--green); border: 0.5px solid rgba(48,209,88,0.25); }
+    .badge-hd { background: rgba(10,132,255,0.14); color: var(--blue); border: 0.5px solid rgba(10,132,255,0.25); }
+    .badge-unavailable { background: rgba(255,59,48,0.1); color: var(--red); border: 0.5px solid rgba(255,59,48,0.2); }
     .badge-dot {
-      width: 5px;
-      height: 5px;
+      width: 5px; height: 5px;
       border-radius: 50%;
       background: currentColor;
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.35; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* Go chevron */
+    /* ─── CHEVRON ─── */
     .go-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: 24px; height: 24px;
       color: var(--tertiary);
       flex-shrink: 0;
-      align-self: center;
-      transition: transform 0.2s ease, color 0.2s ease;
+      transition: transform 0.2s, color 0.2s;
     }
-    .channel-card:hover .go-icon {
-      transform: translateX(3px);
-      color: var(--tint);
-    }
+    .channel-card:hover .go-icon { transform: translateX(3px); color: var(--tint); }
     .channel-card.unavailable .go-icon { display: none; }
 
-    /* === GROUPING === */
-    .channel-group {
-      margin-bottom: 32px;
+    /* ─── BOTTOM TAB BAR ─── */
+    .tab-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      background: rgba(22,22,26,0.92);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-top: 0.5px solid var(--border);
+      padding: 10px 0 24px;
+    }
+    .tab-bar-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+    }
+    .tab-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 2px 16px;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+    }
+    .tab-item.active { color: var(--tint); }
+    .tab-item svg { width: 22px; height: 22px; }
+    .tab-item:hover { color: var(--primary); }
+
+    /* ─── HERO SECTION ─── */
+    .hero {
+      margin-bottom: 20px;
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--tint);
+      margin-bottom: 6px;
+    }
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.7px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .hero p {
+      font-size: 13px;
+      color: var(--secondary);
+      line-height: 1.6;
     }
 
-    /* === FOOTER === */
+    /* ─── ANIMATIONS ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
+    .d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}
+
+    /* ─── FOOTER ─── */
     .footer {
-      max-width: 980px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 16px 20px 8px;
       text-align: center;
-      font-size: 12px;
-      color: var(--secondary);
-      border-top: 0.5px solid var(--separator);
+      font-size: 11px;
+      color: var(--tertiary);
       line-height: 1.8;
     }
 
-    /* Animations */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stagger-1 { animation-delay: 0.05s; }
-    .stagger-2 { animation-delay: 0.1s; }
-    .stagger-3 { animation-delay: 0.15s; }
-    .stagger-4 { animation-delay: 0.2s; }
-
-    @media (max-width: 640px) {
-      .nav-inner { padding: 0 16px; height: 48px; }
-      .main { padding: 24px 16px 40px; }
-      .hero h1 { font-size: 28px; }
-      .hero { margin-bottom: 28px; }
-      .channel-card { padding: 16px; }
-    }
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="logo">
         <div class="logo-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <!-- Play SVG -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
         </div>
         Juche TV
       </a>
       <div class="nav-right">
-        <a href="schedules.html" class="nav-btn" id="schedulesBtn" title="Schedules">
+        <a href="schedules.html" class="nav-btn" title="Schedules">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="3"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
             <path d="M8 14h2M8 17h2M14 14h2M14 17h2"/>
           </svg>
         </a>
-        <button class="nav-btn" id="themeToggle" title="Toggle theme">
-          <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
-          <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
+
       </div>
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main class="main">
-    <div class="hero">
-      <h1 class="fade-in">Live Streams</h1>
-      <p class="fade-in" style="animation-delay:0.08s">Watch Korean and Chinese television and radio broadcasts live.</p>
+
+    <!-- Hero -->
+    <div class="hero fade-in d1">
+      <div class="hero-eyebrow">Now Broadcasting</div>
+      <h1>Live Streams</h1>
+      <p>Korean &amp; Chinese television and radio, live from the source.</p>
+    </div>
+
+    <!-- VOD Banner -->
+    <div class="vod-banner fade-in d2">
+      <div class="vod-top">
+        <div class="vod-icon">
+          <!-- Film reel SVG -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#vodGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="vodGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FF2D55"/>
+                <stop offset="100%" stop-color="#5E5CE6"/>
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3"/>
+            <circle cx="12" cy="5" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="12" cy="19" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="5" cy="12" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="19" cy="12" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="7.22" cy="7.22" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="16.78" cy="16.78" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="7.22" cy="16.78" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+            <circle cx="16.78" cy="7.22" r="1.2" fill="url(#vodGrad)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="coming-soon-badge">
+          <!-- Star SVG -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Coming Soon
+        </div>
+      </div>
+
+      <div class="vod-title">Juche TV Video On Demand</div>
+      <p class="vod-sub">On-demand archive of DPRK broadcasts. Watch anytime, anywhere.</p>
     </div>
 
     <!-- Television -->
     <div class="channel-group">
-      <div class="section-label fade-in stagger-1">Television</div>
-      <a href="kctv.html" class="channel-card fade-in stagger-1">
+      <div class="section-label fade-in d3">Television</div>
+
+      <a href="kctv.html" class="channel-card fade-in d3">
         <div class="channel-icon">
           <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV" loading="lazy">
         </div>
         <div class="channel-info">
           <h3>Korean Central Television</h3>
-          <p>Live television broadcast from Pyongyang, DPRK. 24/7 news, cultural programs, and entertainment.</p>
+          <p>Live television from Pyongyang, DPRK. News, culture &amp; entertainment 24/7.</p>
           <div class="badge-row">
             <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
           </div>
         </div>
-        <div class="go-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </a>
 
-      <a href="cctv_channels.html" class="channel-card fade-in stagger-2">
-        <div class="channel-icon" style="background:linear-gradient(135deg,#c8102e,#ee1c25);border-radius:14px;display:flex;align-items:center;justify-content:center;width:60px;height:60px;flex-shrink:0;">
-          <span style="color:#fff;font-size:26px;font-weight:900;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;letter-spacing:-1px;">C</span>
+      <a href="cctv_channels.html" class="channel-card fade-in d4">
+        <div class="channel-icon" style="background:linear-gradient(135deg,#c8102e,#ee1c25);">
+          <span style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-1px;">C</span>
         </div>
         <div class="channel-info">
           <h3>CCTV Channels</h3>
-          <p>All 17 China Central Television channels in one place — news, sports, film, drama, documentary, music, and more. Live streams direct from CCTV.</p>
+          <p>All 17 China Central Television channels — news, sports, film, drama &amp; more.</p>
           <div class="badge-row">
             <span class="badge badge-hd">HD</span>
             <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
           </div>
         </div>
-        <div class="go-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </a>
     </div>
 
-    <!-- Radio (Unavailable) -->
+    <!-- Radio -->
     <div class="channel-group">
-      <div class="section-label fade-in stagger-3">Radio</div>
-      <div class="channel-card unavailable fade-in stagger-3">
+      <div class="section-label fade-in d5">Radio</div>
+
+      <div class="channel-card unavailable fade-in d5">
         <div class="channel-icon">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--primary);overflow:visible">
-            <circle cx="44" cy="6" r="1.5" fill="currentColor"/>
-            <line x1="44" y1="6" x2="36" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <rect x="6" y="18" width="52" height="36" rx="5" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.06"/>
-            <line x1="10" y1="26" x2="10" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-            <line x1="14" y1="24" x2="14" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-            <line x1="17" y1="23" x2="17" y2="49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
-            <line x1="20.5" y1="24" x2="20.5" y2="48" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
-            <line x1="24" y1="26" x2="24" y2="46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-            <rect x="8" y="22" width="18" height="28" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            <rect x="30" y="22" width="26" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.06"/>
-            <line x1="43" y1="24" x2="43" y2="34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-            <circle cx="37" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.08"/>
-            <circle cx="51" cy="44" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.08"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--secondary)">
+            <rect x="2" y="8" width="20" height="13" rx="3"/>
+            <path d="M7 8V6a1 1 0 0 1 .7-.95L16.5 2"/>
+            <circle cx="8" cy="14.5" r="2.5"/>
+            <line x1="13" y1="11" x2="19" y2="11"/>
+            <line x1="13" y1="14" x2="19" y2="14"/>
+            <line x1="13" y1="17" x2="17" y2="17"/>
           </svg>
         </div>
         <div class="channel-info">
-          <h3>Korean Central Broadcasting Station</h3>
-          <p>State radio broadcaster of the Democratic People's Republic of Korea. News, music, and cultural programming.</p>
+          <h3>Korean Central Broadcasting</h3>
+          <p>State radio of the DPRK. News, music &amp; cultural programming.</p>
           <div class="badge-row">
-            <span class="badge badge-unavailable">Unavailable Right Now!</span>
+            <span class="badge badge-unavailable">Unavailable</span>
           </div>
         </div>
       </div>
 
-      <div class="channel-card unavailable fade-in stagger-4">
+      <div class="channel-card unavailable fade-in d6">
         <div class="channel-icon">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px;max-width:40px;max-height:40px;object-fit:contain">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px;max-width:34px;max-height:34px;object-fit:contain">
         </div>
         <div class="channel-info">
           <h3>Voice of Korea</h3>
-          <p>International broadcasting service of the DPRK. Shortwave and internet radio in multiple languages.</p>
+          <p>International broadcasting of the DPRK. Shortwave &amp; internet radio in multiple languages.</p>
           <div class="badge-row">
-            <span class="badge badge-unavailable">Unavailable Right Now!</span>
+            <span class="badge badge-unavailable">Unavailable</span>
           </div>
         </div>
       </div>
     </div>
+
+    <footer class="footer">
+      &copy; Juche TV &mdash; Not affiliated with any broadcasting entity.<br>
+      Streams owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.
+    </footer>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
-    <br><span>All streams are owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.</span>
-  </footer>
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <a href="index.html" class="tab-item active">
+        <!-- Home -->
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Home
+      </a>
+      <a href="schedules.html" class="tab-item">
+        <!-- Calendar -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="3"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Schedule
+      </a>
+
+
+    </div>
+  </div>
 
   <script>
-    // Theme toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const moon = document.getElementById('moon');
-    const sun = document.getElementById('sun');
-    const saved = localStorage.getItem('juche-theme');
-    if (saved === 'dark') {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
-    } else if (saved === 'light') {
-      document.documentElement.classList.remove('dark');
-      moon.style.display = ''; sun.style.display = 'none';
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
+    // Clock in status bar (if present)
+    function updateTime() {
+      const el = document.getElementById('clock');
+      if (!el) return;
+      const now = new Date();
+      el.textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
     }
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      const isDark = document.documentElement.classList.contains('dark');
-      moon.style.display = isDark ? 'none' : '';
-      sun.style.display = isDark ? '' : 'none';
-      localStorage.setItem('juche-theme', isDark ? 'dark' : 'light');
-    });
+    updateTime();
+    setInterval(updateTime, 10000);
   </script>
 </body>
 </html>

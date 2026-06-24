@@ -220,43 +220,6 @@
       background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
     }
 
-    /* Server race banner */
-    .server-race-banner {
-      position: absolute; inset: 0; z-index: 20;
-      background: rgba(0,0,0,0.78);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 18px;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-    }
-    .server-race-banner.done { opacity: 0; visibility: hidden; pointer-events: none; }
-    .race-title { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
-    .race-servers { display: flex; flex-direction: column; gap: 8px; width: 260px; }
-    .race-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 10px;
-      background: rgba(255,255,255,0.07);
-      border: 0.5px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-    }
-    .race-item.winner { background: rgba(52,199,89,0.2); border-color: rgba(52,199,89,0.35); }
-    .race-item.loser { opacity: 0.35; }
-    .race-item .race-flag { font-size: 18px; }
-    .race-item .race-info { flex: 1; }
-    .race-item .race-name { color: #fff; font-size: 12px; font-weight: 700; }
-    .race-item .race-status { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 1px; }
-    .race-spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.15);
-      border-top-color: var(--green);
-      border-radius: 50%; animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .race-check { color: var(--green); font-size: 14px; font-weight: 700; }
-    .race-x { color: var(--red); font-size: 14px; font-weight: 700; }
-
     /* ===== Action Row ===== */
     .action-row {
       display: flex; flex-wrap: wrap;
@@ -285,45 +248,6 @@
     }
     .action-btn.tint svg { color: #fff; }
     .action-btn.tint:hover { background: #0066D4; }
-
-    .server-wrap { position: relative; }
-    .server-menu {
-      display: none; position: absolute; left: 0; top: calc(100% + 6px);
-      min-width: 340px; background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
-    }
-    .server-menu.show { display: block; }
-    .server-option {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px; font-size: 13px; cursor: pointer;
-      transition: background 0.12s; color: var(--primary);
-      border-bottom: 0.5px solid var(--separator);
-    }
-    .server-option:last-child { border-bottom: none; }
-    .server-option:hover { background: rgba(0,0,0,0.03); }
-    .server-option.active { font-weight: 700; }
-    .server-option .flag { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
-    .server-option .server-info { flex: 1; min-width: 0; }
-    .server-option .server-name { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-    .server-option .server-desc { font-size: 12px; color: var(--secondary); line-height: 1.6; font-weight: 400; }
-    .server-option .server-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-    .server-tag {
-      display: inline-flex; align-items: center; gap: 3px;
-      padding: 2px 8px; border-radius: 100px;
-      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
-    }
-    .server-tag.primary { background: rgba(52,199,89,0.12); color: #1a9c45; }
-    :root.dark .server-tag.primary { background: rgba(48,209,88,0.18); color: #30D158; }
-    .server-tag.mirror { background: rgba(255,149,0,0.12); color: #c77200; }
-    :root.dark .server-tag.mirror { background: rgba(255,159,10,0.18); color: #FF9F0A; }
-    .server-tag.global { background: rgba(0,122,255,0.12); color: #0055b3; }
-    :root.dark .server-tag.global { background: rgba(10,132,255,0.18); color: #0A84FF; }
-    .server-tag.regional { background: rgba(175,82,222,0.12); color: #8a3ab9; }
-    :root.dark .server-tag.regional { background: rgba(191,90,242,0.18); color: #BF5AF2; }
-    .server-option .check { margin-left: auto; color: var(--tint); font-size: 13px; opacity: 0; flex-shrink: 0; margin-top: 4px; font-weight: 700; }
-    .server-option.active .check { opacity: 1; }
 
     /* ===== Screenshot Popup ===== */
     .screenshot-overlay {
@@ -962,23 +886,6 @@
     <div class="player-wrap" id="playerWrap">
       <div class="screenshot-flash" id="screenshotFlash"></div>
 
-      <!-- Server Race Banner -->
-      <div class="server-race-banner" id="raceBanner">
-        <div class="race-title" id="raceTitle">Finding the healthiest, fastest stream&hellip;</div>
-        <div class="race-servers">
-          <div class="race-item" id="raceZA">
-            <span class="race-flag">&#127487;&#127462;</span>
-            <div class="race-info"><div class="race-name">South Africa Server</div><div class="race-status" id="statusZA">Testing connection...</div></div>
-            <div class="race-spinner" id="spinnerZA"></div>
-          </div>
-          <div class="race-item" id="raceJP">
-            <span class="race-flag">&#127471;&#127477;</span>
-            <div class="race-info"><div class="race-name">Japan Server</div><div class="race-status" id="statusJP">Testing connection...</div></div>
-            <div class="race-spinner" id="spinnerJP"></div>
-          </div>
-        </div>
-      </div>
-
       <!-- DPlayer Container -->
       <div id="dplayer"></div>
     </div>
@@ -986,11 +893,6 @@
     <!-- Stream Info Bar -->
     <div class="stream-info-bar" id="streamInfoBar" style="opacity:0;transition:opacity 0.4s ease;">
       <div class="stream-info-left">
-        <div class="info-chip" id="infoChipServer">
-          <span class="chip-dot testing" id="infoChipDot"></span>
-          <span class="chip-label" id="infoChipLabel">Server</span>
-          <span class="chip-value" id="infoChipValue">Testing...</span>
-        </div>
         <div class="info-chip" id="infoChipLatency" style="display:none;">
           <span class="chip-label">Latency</span>
           <span class="chip-value" id="infoChipLatencyValue">-- ms</span>
@@ -1003,34 +905,6 @@
 
     <!-- Action Row -->
     <div class="action-row">
-      <div class="server-wrap">
-        <button class="action-btn" id="serverBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          <span id="serverLabel">Server</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="server-menu" id="serverMenu">
-          <div class="server-option" data-server="za" id="optZA">
-            <span class="flag">&#127487;&#127462;</span>
-            <div class="server-info">
-              <div class="server-name"><span>South Africa Server</span><span class="server-tag primary">Primary</span></div>
-              <div class="server-desc">Official KCTV source powered by Koryo Front. Hosted on high-bandwidth infrastructure with global CDN coverage.</div>
-              <div class="server-meta"><span class="server-tag global">Global</span><span class="server-tag primary">Low Latency</span></div>
-            </div>
-            <span class="check">&#10003;</span>
-          </div>
-          <div class="server-option" data-server="jp" id="optJP">
-            <span class="flag">&#127471;&#127477;</span>
-            <div class="server-info">
-              <div class="server-name"><span>Japan Server</span><span class="server-tag mirror">Mirror</span></div>
-              <div class="server-desc">Unofficial relay mirror sourced from Intchoson, based in Japan. Optimized for East Asian viewers.</div>
-              <div class="server-meta"><span class="server-tag regional">East Asia</span><span class="server-tag mirror">Best-Effort</span></div>
-            </div>
-            <span class="check">&#10003;</span>
-          </div>
-        </div>
-      </div>
-
       <a href="archives-beta.html" class="action-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <span data-i18n="archives">Archives Recording</span>
@@ -1213,13 +1087,11 @@
     }
 
     var SERVERS = {
-      za: { id:'za', name:'South Africa', flag:'\u{1F1FF}\u{1F1E6}', source:'Koryo Front', url: _d(), tag:'primary' },
-      jp: { id:'jp', name:'Japan', flag:'\u{1F1EF}\u{1F1F5}', source:'Intchoson', url:'https://stream.intchoson.com/kctv/index.m3u8', tag:'mirror' }
+      za: { id:'za', name:'South Africa', flag:'\u{1F1FF}\u{1F1E6}', source:'Koryo Front', url: _d(), tag:'primary' }
     };
 
     var activeServer = 'za';
     var hlsInstance = null;
-    var raceComplete = false;
     var lastPingMs = 0;
 
     // === DPlayer English Language Pack ===
@@ -1264,242 +1136,16 @@
       'Video play error': 'Playback Error'
     };
 
-    // === HLS Health Check ===
-    // DPRK mirror sites sometimes serve a playlist that only has a couple of
-    // seconds of segments and never advances (effectively a frozen/broken
-    // stream) even though the file itself responds quickly to a HEAD/GET.
-    // These helpers fetch the actual .m3u8, measure how much segment
-    // duration is available, then re-check after a delay to confirm the
-    // playlist is actually advancing (i.e. genuinely live).
-    var HLS_TEST_WINDOW_MS = 10000;   // watch each candidate for ~10s
-    var HLS_MIN_DURATION_S = 8;       // need at least this much buffered segment time
-
-    function fetchText(url, timeoutMs, cb) {
-      var xhr = new XMLHttpRequest();
-      var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
-      xhr.open('GET', bust, true);
-      xhr.timeout = timeoutMs;
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 400) cb(null, xhr.responseText);
-        else cb(new Error('HTTP ' + xhr.status));
-      };
-      xhr.onerror = function() { cb(new Error('network error')); };
-      xhr.ontimeout = function() { cb(new Error('timeout')); };
-      try { xhr.send(); } catch (e) { cb(e); }
-    }
-
-    function parseM3U8(text) {
-      var lines = text.split(/\r?\n/);
-      var segments = [];
-      var totalDuration = 0;
-      var mediaSequence = null;
-      var isMaster = false;
-      var variantUri = null;
-      for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if (line.indexOf('#EXT-X-STREAM-INF') === 0) {
-          isMaster = true;
-          for (var j = i + 1; j < lines.length; j++) {
-            var next = lines[j].trim();
-            if (next && next.charAt(0) !== '#') { variantUri = next; break; }
-          }
-        } else if (line.indexOf('#EXT-X-MEDIA-SEQUENCE') === 0) {
-          mediaSequence = parseInt(line.split(':')[1], 10);
-        } else if (line.indexOf('#EXTINF') === 0) {
-          var m = line.match(/#EXTINF:([\d.]+)/);
-          if (m) totalDuration += parseFloat(m[1]);
-        } else if (line && line.charAt(0) !== '#') {
-          segments.push(line);
-        }
-      }
-      return { isMaster: isMaster, variantUri: variantUri, segments: segments, totalDuration: totalDuration, mediaSequence: mediaSequence };
-    }
-
-    function resolveMediaPlaylistUrl(baseUrl, cb) {
-      fetchText(baseUrl, 6000, function(err, text) {
-        if (err) return cb(err);
-        var parsed = parseM3U8(text);
-        if (parsed.isMaster && parsed.variantUri) {
-          var resolved;
-          try { resolved = new URL(parsed.variantUri, baseUrl).href; } catch (e) { resolved = parsed.variantUri; }
-          cb(null, resolved);
-        } else {
-          cb(null, baseUrl);
-        }
-      });
-    }
-
-    // Watches a server's actual media playlist for HLS_TEST_WINDOW_MS and
-    // reports whether it's a healthy, advancing live stream. "Ping" here is
-    // measured from the same real GET request the player itself relies on
-    // (not a separate HEAD probe) — some origins (Japan mirror included)
-    // don't handle HEAD reliably even though GET/streaming works fine.
-    function testHlsHealth(server, onUpdate, cb) {
-      var t0 = performance.now();
-      resolveMediaPlaylistUrl(server.url, function(err, mediaUrl) {
-        if (err) return cb({ success: false, healthy: false, ping: null, reason: 'unreachable' });
-
-        fetchText(mediaUrl, 6500, function(err1, text1) {
-          if (err1) return cb({ success: false, healthy: false, ping: null, reason: 'unreachable' });
-          var ping = Math.round(performance.now() - t0);
-          var p1 = parseM3U8(text1);
-
-          if (p1.totalDuration < HLS_MIN_DURATION_S || p1.segments.length < 2) {
-            onUpdate(ping, 'only ' + p1.totalDuration.toFixed(1) + 's of segments \u2014 checking if it grows\u2026');
-          } else {
-            onUpdate(ping, 'buffered ' + p1.totalDuration.toFixed(1) + 's \u2014 verifying it\'s live\u2026');
-          }
-
-          setTimeout(function() {
-            fetchText(mediaUrl, 6500, function(err2, text2) {
-              if (err2) return cb({ success: true, healthy: false, ping: ping, reason: 'dropped mid-test', totalDuration: p1.totalDuration });
-              var p2 = parseM3U8(text2);
-              var lastSeg1 = p1.segments[p1.segments.length - 1];
-              var lastSeg2 = p2.segments[p2.segments.length - 1];
-              var advanced = (p1.mediaSequence !== null && p2.mediaSequence !== null)
-                ? (p2.mediaSequence > p1.mediaSequence)
-                : (lastSeg1 !== lastSeg2);
-
-              if (!advanced) {
-                cb({ success: true, healthy: false, ping: ping, reason: 'stalled (not advancing)', totalDuration: p2.totalDuration });
-              } else if (p2.totalDuration < HLS_MIN_DURATION_S || p2.segments.length < 2) {
-                cb({ success: true, healthy: false, ping: ping, reason: 'too few segments (' + p2.totalDuration.toFixed(1) + 's)', totalDuration: p2.totalDuration });
-              } else {
-                cb({ success: true, healthy: true, ping: ping, totalDuration: p2.totalDuration, segmentCount: p2.segments.length });
-              }
-            });
-          }, HLS_TEST_WINDOW_MS);
-        });
-      });
-    }
-
-    // === Server Race ===
-    // For each server: watch the real HLS playlist (via GET, same as the
-    // player itself uses) for ~10s to measure real latency AND confirm it's
-    // a healthy, advancing live stream (not a thin/stalled mirror). A server
-    // that's genuinely streaming always beats one that merely "responds
-    // fast" to a probe but serves a broken few-second loop. Among servers
-    // that are both reachable and healthy, the lowest ping wins.
-    function raceServers() {
-      return new Promise(function(resolve) {
-        var results = {};     // serverId -> { ping, success, health: {...} }
-        var doneCount = 0;
-        var serverIds = Object.keys(SERVERS);
-        var totalServers = serverIds.length;
-        var resolved = false;
-
-        function pickBestAndResolve() {
-          if (resolved) return;
-          resolved = true;
-
-          // Prefer servers that are reachable AND pass the live-stream health check.
-          var healthyIds = serverIds.filter(function(id) {
-            var r = results[id];
-            return r && r.success && r.health && r.health.healthy;
-          });
-
-          var bestId = null;
-          var pool = healthyIds.length ? healthyIds : serverIds.filter(function(id) {
-            var r = results[id];
-            return r && r.success;
-          });
-
-          var bestPing = Infinity;
-          pool.forEach(function(id) {
-            if (results[id].ping < bestPing) { bestPing = results[id].ping; bestId = id; }
-          });
-          if (!bestId) bestId = 'za';
-
-          // Update visuals now that everything has settled.
-          serverIds.forEach(function(id) {
-            var raceEl = document.getElementById('race' + id.toUpperCase());
-            var statusEl = document.getElementById('status' + id.toUpperCase());
-            var spinnerEl = document.getElementById('spinner' + id.toUpperCase());
-            if (!raceEl) return;
-            var r = results[id];
-
-            if (id === bestId) {
-              raceEl.classList.add('winner');
-              if (spinnerEl) { spinnerEl.className = 'race-check'; spinnerEl.textContent = '\u2713'; }
-            } else {
-              raceEl.classList.add('loser');
-              if (spinnerEl) { spinnerEl.className = 'race-x'; spinnerEl.textContent = '\u2717'; }
-              if (r && r.success && r.health && !r.health.healthy && statusEl) {
-                statusEl.textContent = r.ping + 'ms, but ' + r.health.reason;
-              } else if (r && r.success && statusEl) {
-                statusEl.textContent = 'Connected in ' + r.ping + 'ms (not selected)';
-              }
-            }
-          });
-
-          var titleEl = document.getElementById('raceTitle');
-          if (titleEl) {
-            if (healthyIds.length) {
-              titleEl.textContent = SERVERS[bestId].name + ' Server is live with the lowest ping!';
-            } else {
-              titleEl.textContent = SERVERS[bestId].name + ' Server selected (best available)';
-            }
-          }
-
-          resolve(bestId);
-        }
-
-        function maybeFinish() {
-          doneCount++;
-          if (doneCount >= totalServers) pickBestAndResolve();
-        }
-
-        serverIds.forEach(function(id) {
-          var server = SERVERS[id];
-          var statusEl = document.getElementById('status' + id.toUpperCase());
-          results[id] = { ping: null, success: false, health: null };
-          if (statusEl) statusEl.textContent = 'Connecting\u2026';
-
-          testHlsHealth(server, function(ping, msg) {
-            if (statusEl) statusEl.textContent = ping + 'ms \u2014 ' + msg;
-          }, function(result) {
-            results[id].ping = result.ping;
-            results[id].success = result.success;
-            results[id].health = result;
-
-            if (statusEl) {
-              if (!result.success) {
-                statusEl.textContent = 'Unreachable';
-              } else {
-                statusEl.textContent = result.healthy
-                  ? result.ping + 'ms \u2014 live, ' + result.totalDuration.toFixed(1) + 's buffered \u2713'
-                  : result.ping + 'ms \u2014 ' + result.reason;
-              }
-            }
-            maybeFinish();
-          });
-        });
-
-        // Safety net in case a test never calls back at all. Worst case is
-        // roughly: 6.5s resolve + 6.5s first fetch + 10s watch + 6.5s
-        // second fetch, so give it generous headroom.
-        setTimeout(pickBestAndResolve, HLS_TEST_WINDOW_MS + 22000);
-      });
-    }
-
     // === Stream Info Bar ===
     function updateInfoBar(serverId, pingMs) {
-      var s = SERVERS[serverId];
-      if (!s) return;
-
-      document.getElementById('infoChipValue').textContent = s.name + ' Server';
-
-      var dotEl = document.getElementById('infoChipDot');
       var latencyChip = document.getElementById('infoChipLatency');
       var latencyValue = document.getElementById('infoChipLatencyValue');
 
       if (pingMs && pingMs > 0) {
         lastPingMs = pingMs;
-        dotEl.className = 'chip-dot ' + (pingMs < 200 ? 'good' : pingMs < 500 ? 'medium' : 'bad');
         latencyChip.style.display = 'inline-flex';
         latencyValue.textContent = pingMs + ' ms';
       } else {
-        dotEl.className = 'chip-dot testing';
         latencyChip.style.display = 'none';
       }
     }
@@ -1516,19 +1162,6 @@
       var streamUrl = s.url;
       if (!streamUrl) return;
 
-      var optZA = document.getElementById('optZA');
-      var optJP = document.getElementById('optJP');
-      if (serverId === 'jp') {
-        optJP && optJP.classList.add('active');
-        optZA && optZA.classList.remove('active');
-        document.getElementById('serverLabel').textContent = s.flag + ' ' + s.name + ' Server';
-      } else {
-        optZA && optZA.classList.add('active');
-        optJP && optJP.classList.remove('active');
-        document.getElementById('serverLabel').textContent = s.flag + ' ' + s.name + ' Server';
-      }
-
-      document.getElementById('raceBanner').classList.add('done');
       showInfoBar();
 
       // Destroy existing DPlayer
@@ -1544,8 +1177,6 @@
       // Clear container
       var container = document.getElementById('dplayer');
       if (container) container.innerHTML = '';
-
-      var isJapan = serverId === 'jp';
 
       // Create DPlayer
       var dp = new DPlayer({
@@ -1568,11 +1199,11 @@
             customHls: function(video, player) {
               hlsInstance = new Hls({
                 lowLatencyMode: false,
-                maxBufferLength: isJapan ? 60 : 30,
-                maxMaxBufferLength: isJapan ? 120 : 60,
-                maxBufferSize: isJapan ? 60*1000*1000 : 30*1000*1000,
+                maxBufferLength: 30,
+                maxMaxBufferLength: 60,
+                maxBufferSize: 30*1000*1000,
                 stretchShortVideoTrack: false,
-                accurateSegmentIncrement: isJapan,
+                accurateSegmentIncrement: false,
                 enableWorker: true
               });
               hlsInstance.loadSource(video.src);
@@ -1622,38 +1253,19 @@
     }
 
     // === Ping Monitor ===
-    // Uses a real GET against the media playlist (same request type the
-    // player relies on), since some origins handle HEAD unreliably even
-    // when GET/streaming works fine.
     function startPingMonitor(serverId) {
-      var mediaUrlCache = null;
       function ping() {
         var s = SERVERS[serverId];
         if (!s || !s.url) return;
-
-        function timeGet(url) {
-          var start = performance.now();
-          var xhr = new XMLHttpRequest();
-          var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
-          xhr.open('GET', bust, true);
-          xhr.timeout = 5000;
-          xhr.onload = function() {
-            var ms = Math.round(performance.now() - start);
-            updateInfoBar(serverId, ms);
-          };
-          xhr.onerror = function() { updateInfoBar(serverId, lastPingMs || 0); };
-          xhr.ontimeout = function() { updateInfoBar(serverId, lastPingMs || 0); };
-          try { xhr.send(); } catch (e) {}
-        }
-
-        if (mediaUrlCache) {
-          timeGet(mediaUrlCache);
-        } else {
-          resolveMediaPlaylistUrl(s.url, function(err, mediaUrl) {
-            mediaUrlCache = err ? s.url : mediaUrl;
-            timeGet(mediaUrlCache);
-          });
-        }
+        var start = performance.now();
+        var xhr = new XMLHttpRequest();
+        var bust = s.url + (s.url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+        xhr.open('GET', bust, true);
+        xhr.timeout = 5000;
+        xhr.onload = function() { updateInfoBar(serverId, Math.round(performance.now() - start)); };
+        xhr.onerror = function() { updateInfoBar(serverId, lastPingMs || 0); };
+        xhr.ontimeout = function() { updateInfoBar(serverId, lastPingMs || 0); };
+        try { xhr.send(); } catch (e) {}
       }
       ping();
       setInterval(ping, 15000);
@@ -1661,14 +1273,7 @@
 
     // === Main Init ===
     function _init() {
-      var params = new URLSearchParams(window.location.search);
-      var manual = params.get('server');
-      if (manual && SERVERS[manual]) {
-        document.getElementById('raceBanner').classList.add('done');
-        initPlayer(manual);
-      } else {
-        raceServers().then(function(winner) { raceComplete = true; initPlayer(winner); });
-      }
+      initPlayer('za');
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _init);
     else _init();
@@ -1721,24 +1326,6 @@
       sun.style.display = d ? '' : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
     });
-
-    // === Server Switcher ===
-    (function() {
-      var serverBtn = document.getElementById('serverBtn');
-      var serverMenu = document.getElementById('serverMenu');
-      serverBtn.addEventListener('click', function(e) { e.stopPropagation(); serverMenu.classList.toggle('show'); });
-      document.addEventListener('click', function(e) { if (!e.target.closest('.server-wrap')) { serverMenu.classList.remove('show'); }});
-      document.querySelectorAll('.server-option').forEach(function(opt) {
-        opt.addEventListener('click', function() {
-          var chosen = opt.dataset.server;
-          var params = new URLSearchParams(window.location.search);
-          var current = params.get('server') || (window._kctvActiveServer ? window._kctvActiveServer() : 'za');
-          if (chosen === current) { serverMenu.classList.remove('show'); return; }
-          params.set('server', chosen);
-          window.location.search = params.toString();
-        });
-      });
-    })();
 
     // === Screenshot Feature ===
     (function() {
@@ -2329,13 +1916,6 @@
       setTimeout(function() {
         dpBtnInterval = setInterval(tryInjectEpgButton, 500);
       }, 1000);
-    });
-
-    // Also handle server switch clicks
-    document.addEventListener('click', function(e) {
-      if (e.target.closest('.server-option') || e.target.closest('#serverBtn')) {
-        dpBtnInjected = false;
-      }
     });
 
     // Keyboard shortcut: E to open EPG
