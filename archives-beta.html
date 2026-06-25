@@ -4,294 +4,411 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
-  <title>KCTV Archives - Juche TV</title>
+  <meta name="theme-color" content="#0D0D0F">
+  <title>KCTV Archives – Juche TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.27.1/DPlayer.min.css">
   <style>
     :root {
-      --bg: #F2F2F7;
-      --elevated: #FFFFFF;
-      --primary: #1C1C1E;
-      --secondary: #8E8E93;
-      --tertiary: #C7C7CC;
-      --separator: rgba(60, 60, 67, 0.1);
-      --separator-dark: rgba(140, 140, 147, 0.24);
-      --tint: #007AFF;
-      --tint-secondary: #5856D6;
-      --red: #FF3B30;
-      --green: #34C759;
-      --orange: #FF9500;
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
-    }
-    :root.dark {
-      --bg: #000000;
-      --elevated: #1C1C1E;
-      --primary: #F2F2F7;
-      --secondary: #8E8E93;
-      --tertiary: #48484A;
-      --separator: rgba(140, 140, 147, 0.24);
-      --tint: #0A84FF;
-      --tint-secondary: #5E5CE6;
-      --green: #30D158;
-      --red: #FF453A;
-      --orange: #FF9F0A;
-    }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg); color: var(--primary);
-      min-height: 100vh; display: flex; flex-direction: column;
-      transition: background 0.3s ease, color 0.3s ease;
-      -webkit-font-smoothing: antialiased;
+      --bg:         #0D0D0F;
+      --surface:    #141417;
+      --elevated:   #1C1C21;
+      --border:     rgba(255,255,255,0.07);
+      --border-hi:  rgba(255,255,255,0.14);
+      --primary:    #F0F0F4;
+      --secondary:  #8A8A9A;
+      --muted:      #46464F;
+      --accent:     #E8212A;
+      --accent-dim: rgba(232,33,42,0.12);
+      --accent-glow:rgba(232,33,42,0.25);
+      --gold:       #C8963A;
+      --gold-dim:   rgba(200,150,58,0.1);
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+      --shadow-sm:  0 1px 4px rgba(0,0,0,0.4);
+      --shadow-md:  0 4px 20px rgba(0,0,0,0.5);
+      --shadow-lg:  0 12px 48px rgba(0,0,0,0.7);
     }
 
-    /* === NAV === */
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* Subtle noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ===================== NAV ===================== */
     .nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(242,242,247,0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-bottom: 0.5px solid var(--separator);
-      transition: background 0.3s, border-color 0.3s;
+      background: rgba(13,13,15,0.85);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border-bottom: 1px solid var(--border);
     }
-    :root.dark .nav { background: rgba(28,28,30,0.72); }
     .nav-inner {
       max-width: 1200px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 52px;
+      padding: 0 20px; height: 56px;
     }
     .logo {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 18px; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.4px;
     }
     .logo-icon {
-      width: 30px; height: 30px;
-      background: linear-gradient(135deg, #FF2D55, #FF9500);
+      width: 32px; height: 32px;
+      background: var(--accent);
       border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
     }
-    .logo-icon svg { width: 16px; height: 16px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
+    .logo-icon svg { width: 16px; height: 16px; fill: #fff; }
+    #menu { list-style: none; display: flex; align-items: center; gap: 2px; }
     #menu a {
       font-size: 13px; font-weight: 600; color: var(--secondary);
       text-decoration: none; padding: 6px 12px; border-radius: 8px;
       transition: all 0.2s ease;
     }
-    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
+    #menu a:hover { color: var(--primary); background: var(--elevated); }
     .nav-btn {
-      width: 34px; height: 34px; border-radius: 50%; border: none;
-      background: transparent; color: var(--secondary);
+      width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--elevated); color: var(--secondary);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.2s ease;
     }
-    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
-    .nav-btn svg { width: 18px; height: 18px; }
+    .nav-btn:hover { border-color: var(--border-hi); color: var(--primary); }
+    .nav-btn svg { width: 15px; height: 15px; }
     .lang-wrap { position: relative; }
     .lang-btn {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; padding: 6px 12px;
-      border-radius: 8px; border: none;
-      background: transparent; color: var(--secondary);
+      font-size: 12px; font-weight: 600; padding: 6px 10px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--elevated); color: var(--secondary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
+    .lang-btn:hover { border-color: var(--border-hi); color: var(--primary); }
     .lang-menu {
-      display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--elevated);
-      border: 0.5px solid var(--separator);
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      min-width: 170px; background: var(--elevated);
+      border: 1px solid var(--border-hi);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg); z-index: 20; overflow: hidden;
     }
     .lang-menu.show { display: block; }
     .lang-option {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; font-size: 13px; cursor: pointer;
+      padding: 11px 14px; font-size: 13px; cursor: pointer;
       transition: background 0.12s; color: var(--primary);
     }
-    .lang-option:hover { background: rgba(0,0,0,0.04); }
-    .lang-option.active { font-weight: 700; }
-    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
+    .lang-option:hover { background: rgba(255,255,255,0.05); }
+    .lang-option.active { font-weight: 700; color: var(--accent); }
+    .lang-option.active::after { content: '✓'; font-size: 12px; }
 
-    /* === MAIN === */
+    /* ===================== MAIN ===================== */
     .main {
       flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;
-      padding: 28px 20px 40px;
+      padding: 32px 20px 60px; position: relative; z-index: 1;
     }
+
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 13px; font-weight: 600; color: var(--secondary);
-      margin-bottom: 16px; padding: 4px 0;
+      margin-bottom: 20px; padding: 4px 0;
       transition: color 0.2s ease; text-decoration: none;
       cursor: pointer;
     }
-    .back-link:hover { color: var(--tint); }
+    .back-link:hover { color: var(--accent); }
     .back-link svg { width: 16px; height: 16px; }
-    .page-header {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .page-header img {
-      width: 48px; height: 48px; object-fit: contain;
-      background: var(--elevated); border-radius: var(--radius-sm);
-      padding: 6px; border: 0.5px solid var(--separator);
-    }
-    .page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .page-header p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
-    /* === Notice Banner === */
+    /* ===================== PAGE HEADER ===================== */
+    .page-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 28px;
+    }
+    .page-header-logo {
+      width: 56px; height: 56px; flex-shrink: 0;
+      background: var(--elevated); border-radius: var(--radius-md);
+      padding: 8px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-header-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .page-header-text h1 {
+      font-size: 26px; font-weight: 900; letter-spacing: -0.8px;
+      color: var(--primary);
+    }
+    .page-header-text h1 span { color: var(--accent); }
+    .page-header-text p { font-size: 13px; color: var(--secondary); margin-top: 3px; }
+
+    /* ===================== NOTICE BANNER ===================== */
     .notice-banner {
-      background: rgba(255, 149, 0, 0.06);
-      border: 0.5px solid rgba(255, 149, 0, 0.2);
+      background: var(--gold-dim);
+      border: 1px solid rgba(200,150,58,0.22);
       border-radius: var(--radius-md);
       padding: 14px 18px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       display: flex; align-items: flex-start; gap: 12px;
-      font-size: 13px; line-height: 1.6; color: var(--primary);
+      font-size: 13px; line-height: 1.65; color: var(--primary);
     }
-    .notice-banner svg { width: 20px; height: 20px; color: var(--orange); flex-shrink: 0; margin-top: 1px; }
-    .notice-banner strong { font-weight: 700; color: var(--orange); }
+    .notice-banner svg { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+    .notice-banner strong { font-weight: 700; color: var(--gold); }
     .notice-banner code {
-      background: rgba(255,149,0,0.12); padding: 1px 6px;
-      border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12px; font-weight: 600;
+      background: rgba(200,150,58,0.15); padding: 1px 6px;
+      border-radius: 4px; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600; color: var(--gold);
     }
 
-    /* === DPlayer wrapper === */
+    /* ===================== PLAYER SHELL ===================== */
     .player-shell {
       position: relative; width: 100%; aspect-ratio: 16 / 9;
       background: #000;
       border-radius: var(--radius-lg);
       overflow: hidden;
-      margin-bottom: 14px;
-      box-shadow: var(--shadow-lg);
-      border: 0.5px solid var(--separator);
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
     }
     #dplayer { width: 100%; height: 100%; }
     .dplayer .dplayer-controller-mask,
     .dplayer .dplayer-controller { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
 
-    /* Player toolbar (prev/next) */
-    .player-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+    /* ===================== PLAYER META ===================== */
+    .player-meta {
+      margin-bottom: 16px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .player-meta h3 {
+      font-size: 15px; font-weight: 700; margin-bottom: 4px;
+      letter-spacing: -0.3px; color: var(--primary);
+    }
+    .player-meta p { font-size: 12px; color: var(--secondary); font-family: 'JetBrains Mono', monospace; }
+
+    /* ===================== PLAYER TOOLBAR ===================== */
+    .player-toolbar {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
     .toolbar-btn {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; padding: 7px 14px;
-      border-radius: 100px; border: 0.5px solid var(--separator);
+      font-size: 12px; font-weight: 600; padding: 8px 16px;
+      border-radius: 100px; border: 1px solid var(--border);
       background: var(--elevated); color: var(--primary);
       cursor: pointer; transition: all 0.15s ease;
     }
     .toolbar-btn svg { width: 13px; height: 13px; }
-    .toolbar-btn:hover { background: var(--bg); border-color: var(--tertiary); }
-    .toolbar-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+    .toolbar-btn:hover { border-color: var(--border-hi); background: var(--surface); }
+    .toolbar-btn:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
     .toolbar-spacer { flex: 1; }
-    .toolbar-hint { font-size: 11px; color: var(--secondary); }
+    .toolbar-hint { font-size: 11px; color: var(--muted); }
 
-    /* Slot badge on timeline items */
-    .slot-badge {
-      display: inline-block; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.3px; text-transform: uppercase;
-      color: var(--tint); background: rgba(0,122,255,0.1);
-      padding: 2px 7px; border-radius: 6px; margin-right: 6px;
-      vertical-align: middle;
+    /* ===================== LOADING / ERROR STATES ===================== */
+    .loading {
+      text-align: center; padding: 64px 24px; color: var(--secondary); font-size: 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
     }
-    :root.dark .slot-badge { background: rgba(10,132,255,0.16); }
-
-    /* States */
-    .loading { text-align: center; padding: 48px; color: var(--secondary); font-size: 14px; }
-    .loading svg { width: 28px; height: 28px; animation: spin 1s linear infinite; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto; }
+    .loading svg { width: 28px; height: 28px; animation: spin 1s linear infinite; color: var(--accent); }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .error { text-align: center; padding: 48px 24px; color: var(--secondary); }
-    .error-title { font-size: 15px; font-weight: 700; color: var(--tint); margin-bottom: 8px; }
-    .error-msg { font-size: 13px; margin-bottom: 16px; }
+    .error { text-align: center; padding: 64px 24px; color: var(--secondary); }
+    .error-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+    .error-msg { font-size: 13px; margin-bottom: 20px; }
     .retry-btn {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 600; padding: 8px 18px;
-      border-radius: 100px; border: 0.5px solid var(--separator);
+      font-size: 13px; font-weight: 600; padding: 10px 20px;
+      border-radius: 100px; border: 1px solid var(--border);
       background: var(--elevated); color: var(--primary);
       cursor: pointer; transition: all 0.2s ease;
     }
-    .retry-btn:hover { background: var(--bg); border-color: var(--tertiary); }
+    .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* Folder Grid */
-    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-    .folder-card {
-      background: var(--elevated); border: 0.5px solid var(--separator);
-      border-radius: var(--radius-md); padding: 18px;
-      cursor: pointer; transition: all 0.2s ease;
-      display: flex; align-items: center; gap: 12px;
+    /* ===================== TOAST ===================== */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px);
+      background: var(--elevated); border: 1px solid var(--border-hi);
+      color: var(--primary); font-size: 13px; font-weight: 600;
+      padding: 10px 18px; border-radius: 100px;
+      box-shadow: var(--shadow-lg);
+      display: flex; align-items: center; gap: 8px;
+      z-index: 999; pointer-events: none;
+      opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
+      white-space: nowrap;
     }
-    .folder-card:hover { border-color: var(--tertiary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+
+    /* ===================== FOLDER GRID ===================== */
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+    }
+    .folder-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+      display: flex; align-items: center; gap: 14px;
+      position: relative; overflow: hidden;
+    }
+    .folder-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+      border-radius: 0 2px 2px 0;
+    }
+    .folder-card:hover { border-color: var(--border-hi); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .folder-card:hover::before { transform: scaleY(1); }
     .folder-card:active { transform: translateY(0); }
     .folder-icon {
       width: 44px; height: 44px; border-radius: 11px;
-      background: rgba(0,122,255,0.08); display: flex;
+      background: var(--accent-dim); display: flex;
       align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .folder-icon svg { width: 20px; height: 20px; color: var(--tint); }
-    .folder-info h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.2px; }
-    .folder-info p { font-size: 12px; color: var(--secondary); }
-
-    /* Timeline */
-    .timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-    .timeline-header h2 { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
-    .timeline-count { font-size: 12px; color: var(--secondary); background: var(--bg); padding: 3px 12px; border-radius: 100px; font-weight: 600; }
-    .timeline { display: flex; flex-direction: column; gap: 6px; }
-    .timeline-item {
-      background: var(--elevated); border: 0.5px solid var(--separator);
-      border-radius: var(--radius-sm); padding: 10px 14px;
-      display: flex; align-items: center; gap: 12px;
-      cursor: pointer; transition: all 0.2s ease;
+    .folder-icon svg { width: 20px; height: 20px; color: var(--accent); }
+    .folder-info { min-width: 0; }
+    .folder-info h3 { font-size: 14px; font-weight: 700; letter-spacing: -0.3px; color: var(--primary); }
+    .folder-info p { font-size: 12px; color: var(--secondary); margin-top: 2px; }
+    .folder-arrow {
+      margin-left: auto; flex-shrink: 0;
+      color: var(--muted); transition: color 0.2s, transform 0.2s;
     }
-    .timeline-item:hover { border-color: var(--tint); box-shadow: 0 2px 10px rgba(0,122,255,0.06); }
-    .timeline-item.playing { border-color: var(--tint); background: rgba(0,122,255,0.04); }
-    .timeline-item.playing .play-icon { background: var(--tint); color: #fff; }
+    .folder-card:hover .folder-arrow { color: var(--accent); transform: translateX(3px); }
+
+    /* ===================== TIMELINE ===================== */
+    .timeline-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+    }
+    .timeline-header h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; }
+    .timeline-count {
+      font-size: 11px; color: var(--secondary);
+      background: var(--elevated); border: 1px solid var(--border);
+      padding: 3px 12px; border-radius: 100px; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .timeline { display: flex; flex-direction: column; gap: 6px; }
+
+    .timeline-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    }
+    .timeline-item:hover { border-color: var(--border-hi); background: var(--elevated); }
+    .timeline-item.playing {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow);
+    }
+    .timeline-item.playing .play-icon { background: var(--accent); color: #fff; box-shadow: 0 0 12px var(--accent-glow); }
+
     .play-icon {
-      width: 34px; height: 34px; border-radius: 9px;
-      background: var(--bg); display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; transition: all 0.2s ease;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--elevated); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s ease; color: var(--secondary);
     }
     .play-icon svg { width: 14px; height: 14px; }
+    .timeline-item:hover .play-icon { color: var(--primary); border-color: var(--border-hi); }
+
     .timeline-meta { flex: 1; min-width: 0; }
-    .timeline-meta h4 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-    .timeline-meta p { font-size: 11px; color: var(--secondary); font-family: 'SF Mono', monospace; }
-    .timeline-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .timeline-btn {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; font-weight: 600; padding: 5px 10px;
-      border-radius: 7px; border: 0.5px solid var(--separator);
-      background: var(--bg); color: var(--primary);
-      cursor: pointer; text-decoration: none; transition: all 0.15s ease;
+    .timeline-meta h4 {
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 4px; letter-spacing: -0.2px;
     }
-    .timeline-btn:hover { background: var(--separator); }
+    .timeline-meta p {
+      font-size: 11px; color: var(--secondary);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
 
-    /* Player Meta */
-    .player-meta { margin-bottom: 24px; padding: 0 4px; }
-    .player-meta h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.2px; }
-    .player-meta p { font-size: 13px; color: var(--secondary); }
+    .slot-badge {
+      display: inline-block; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-dim);
+      padding: 2px 7px; border-radius: 4px;
+      border: 1px solid rgba(232,33,42,0.2);
+      font-family: 'JetBrains Mono', monospace;
+    }
 
-    /* Footer */
+    /* ===================== TIMELINE ACTIONS (THE FIX) ===================== */
+    .timeline-actions {
+      display: flex; gap: 6px; flex-shrink: 0; align-items: center;
+    }
+    .timeline-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--elevated); color: var(--secondary);
+      cursor: pointer; text-decoration: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .timeline-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .timeline-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .timeline-btn.share-btn:hover { border-color: #5E9EFF; color: #5E9EFF; background: rgba(94,158,255,0.1); }
+
+    @media (max-width: 640px) {
+      .timeline-item { flex-wrap: wrap; }
+      .timeline-actions {
+        order: 3;
+        width: 100%;
+        padding-left: 48px;
+        margin-top: 4px;
+      }
+      .timeline-btn {
+        font-size: 11px; padding: 5px 11px;
+      }
+    }
+
+    /* ===================== FOOTER ===================== */
     .footer {
       max-width: 1200px; width: 100%; margin: 0 auto;
       padding: 20px; display: flex; align-items: center;
-      justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 0.5px solid var(--separator);
+      justify-content: space-between; flex-wrap: wrap; gap: 10px;
+      font-size: 12px; color: var(--muted);
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
     }
     .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--tint); }
+    .footer a:hover { color: var(--accent); }
 
+    /* ===================== SMALL SCREEN TWEAKS ===================== */
     @media (max-width: 640px) {
       .folder-grid { grid-template-columns: 1fr; }
-      .page-header h1 { font-size: 18px; }
+      .page-header-text h1 { font-size: 20px; }
       .notice-banner { flex-direction: column; gap: 10px; }
-      .timeline-actions { display: none; }
-      .player-toolbar { margin-bottom: 18px; }
+      .toolbar-hint { display: none; }
+      #menu li:not(:last-child):not(:nth-last-child(2)) { display: none; }
     }
   </style>
 </head>
@@ -300,7 +417,7 @@
     <div class="nav-inner">
       <a href="index.html" class="logo">
         <div class="logo-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </div>
         <span>Juche TV</span>
       </a>
@@ -310,12 +427,12 @@
         <li>
           <div class="lang-wrap">
             <button class="lang-btn" id="langBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
               <span id="langLabel">English</span>
             </button>
             <div class="lang-menu" id="langMenu">
               <div class="lang-option active" data-lang="en">English</div>
-              <div class="lang-option" data-lang="zh">\u4e2d\u6587 (Chinese)</div>
+              <div class="lang-option" data-lang="zh">中文 (Chinese)</div>
             </div>
           </div>
         </li>
@@ -336,9 +453,11 @@
     </a>
 
     <div class="page-header">
-      <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV">
-      <div>
-        <h1>KCTV Archives</h1>
+      <div class="page-header-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV">
+      </div>
+      <div class="page-header-text">
+        <h1>KCTV <span>Archives</span></h1>
         <p>Browse and watch recorded broadcasts from Korean Central Television.</p>
       </div>
     </div>
@@ -375,6 +494,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </button>
       <div class="toolbar-spacer"></div>
+      <button class="toolbar-btn" id="shareCurrentBtn" title="Share this recording">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
       <span class="toolbar-hint">Auto-plays next recording when finished</span>
     </div>
 
@@ -382,14 +505,20 @@
     <div id="contentArea">
       <div class="loading">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
-        <span>Fetching archives...</span>
+        <span>Fetching archives…</span>
       </div>
     </div>
   </main>
 
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastMsg">Link copied!</span>
+  </div>
+
   <footer class="footer">
-    <span>Juche TV. Not affiliated with any broadcasting entity.</span>
-    <a href="kctv.html">Back to KCTV</a>
+    <span>Juche TV — Not affiliated with any broadcasting entity.</span>
+    <a href="kctv.html">← Back to KCTV</a>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dplayer/1.27.1/DPlayer.min.js"></script>
@@ -399,20 +528,14 @@
     const themeToggle = document.getElementById('themeToggle');
     const moon = document.getElementById('moon');
     const sun = document.getElementById('sun');
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !savedTheme) {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
+    // Default is now dark; apply light if saved
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.style.background = '#F2F2F7';
     }
+    // (keep dark as the canonical theme for this design)
+
     themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      const d = document.documentElement.classList.contains('dark');
-      moon.style.display = d ? 'none' : '';
-      sun.style.display = d ? '' : 'none';
-      localStorage.setItem('theme', d ? 'dark' : 'light');
+      // No-op for now — dark theme is the design
     });
 
     // ===================== LANG =====================
@@ -421,14 +544,16 @@
     });
     document.querySelectorAll('.lang-option').forEach(o => {
       o.addEventListener('click', () => {
-        document.getElementById('langLabel').textContent = o.dataset.lang === 'zh' ? '\u4e2d\u6587' : 'English';
+        document.getElementById('langLabel').textContent = o.dataset.lang === 'zh' ? '中文' : 'English';
         document.querySelectorAll('.lang-option').forEach(l => l.classList.toggle('active', l === o));
         document.getElementById('langMenu').classList.remove('show');
       });
     });
-    document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show');
+    });
 
-    // ===================== ARCHIVES BROWSER (grouped by date) =====================
+    // ===================== ARCHIVES BROWSER =====================
     const API_BASE = 'https://kctv.koryofront.org';
     const contentArea = document.getElementById('contentArea');
     const backLink = document.getElementById('backLink');
@@ -439,72 +564,146 @@
     const playerToolbar = document.getElementById('playerToolbar');
     const prevRecBtn = document.getElementById('prevRecBtn');
     const nextRecBtn = document.getElementById('nextRecBtn');
+    const shareCurrentBtn = document.getElementById('shareCurrentBtn');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    let toastTimer = null;
 
-    let recordingsByDate = {};   // { '2026-06-19': [ {path,name,title,date,time,timeLabel,slot}, ... ] }
-    let allDates = [];           // sorted newest first
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    // Compact token: extract YYYYMMDDHHNN from the filename — 12 chars, no path needed.
+    function pathToToken(filePath) {
+      const m = filePath.match(/(\d{4})-(\d{2})-(\d{2})-(\d{4})/);
+      if (!m) return btoa(filePath).replace(/=/g,'').slice(0,16);
+      return m[1]+m[2]+m[3]+m[4]; // e.g. "202606191430"
+    }
+
+    function tokenToFile(token) {
+      const all = Object.values(recordingsByDate).flat();
+      const dateStr = token.slice(0,4)+'-'+token.slice(4,6)+'-'+token.slice(6,8)+'-'+token.slice(8,12);
+      return all.find(f => f.name.includes(dateStr)) || null;
+    }
+
+    function buildShareUrl(filePath) {
+      const url = new URL(window.location.href.split('?')[0]);
+      url.searchParams.set('token', pathToToken(filePath));
+      return url.toString();
+    }
+
+    window.shareVideo = async function(filePath, event) {
+      if (event) event.stopPropagation();
+      const file = (currentFiles.length ? currentFiles : Object.values(recordingsByDate).flat()).find(f => f.path === filePath);
+      const shareUrl = buildShareUrl(filePath);
+      const title = file ? file.title : 'KCTV Archive Recording';
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text: 'Watch this KCTV archive recording on Juche TV', url: shareUrl });
+          return;
+        } catch(e) { if (e.name === 'AbortError') return; /* fall through to copy */ }
+      }
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showToast('Link copied to clipboard');
+      } catch(e) {
+        // Fallback for very restricted environments
+        const ta = document.createElement('textarea');
+        ta.value = shareUrl; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('Link copied to clipboard');
+      }
+    };
+
+    // Toolbar share button shares whatever is currently playing
+    shareCurrentBtn.addEventListener('click', () => {
+      if (currentPlayingPath) window.shareVideo(currentPlayingPath);
+    });
+
+    let recordingsByDate = {};
+    let allDates = [];
     let currentDate = null;
-    let currentFiles = [];       // recordings for currentDate, sorted chronologically (earliest first)
+    let currentFiles = [];
     let currentPlayingPath = null;
-    let dp = null;                // DPlayer instance, created lazily on first play
+    let dp = null;
 
-    function parseDateFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2})/); return match ? match[1] : ''; }
-    function parseTimeKey(name) { const match = name.match(/\d{4}-\d{2}-\d{2}-(\d{4})/); return match ? match[1] : '0000'; }
-    function parseTimeFromFilename(name) { const match = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/); if (match) { const h = parseInt(match[2],10); const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 || 12; return h12+':'+match[3]+' '+ampm; } return ''; }
-    function formatDate(dateStr) { if (!dateStr) return 'Unknown Date'; const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); }
-    function formatWeekday(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('en-US', {weekday:'short'}); }
-    function formatFolderName(name) { const match = name.match(/@\s*(.+)$/); return match ? match[1] : name; }
-    function cleanFilename(name) { return name.replace('.mp4','').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/,''); }
-    function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+    function parseDateFromFilename(name) { const m = name.match(/(\d{4}-\d{2}-\d{2})/); return m ? m[1] : ''; }
+    function parseTimeKey(name) { const m = name.match(/\d{4}-\d{2}-\d{2}-(\d{4})/); return m ? m[1] : '0000'; }
+    function parseTimeFromFilename(name) {
+      const m = name.match(/(\d{4}-\d{2}-\d{2}-(\d{2})(\d{2}))/);
+      if (m) { const h = parseInt(m[2],10); return (h%12||12)+':'+m[3]+(h>=12?' PM':' AM'); }
+      return '';
+    }
+    function formatDate(d) { if (!d) return 'Unknown Date'; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); }
+    function formatWeekday(d) { return new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'long'}); }
+    function formatFolderName(n) { const m = n.match(/@\s*(.+)$/); return m ? m[1] : n; }
+    function cleanFilename(n) { return n.replace('.mp4','').replace(/\s+\d{4}-\d{2}-\d{2}-\d{4}$/,''); }
+    function escapeHtml(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-    function showLoading() { contentArea.innerHTML = `<div class="loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg><span>Fetching archives...</span></div>`; }
-    function showError() { contentArea.innerHTML = `<div class="error"><div class="error-title">Error</div><div class="error-msg">Failed to load archives. Please try again.</div><button class="retry-btn" onclick="fetchAllRecordings()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>Retry</button></div>`; }
+    function showLoading() {
+      contentArea.innerHTML = `<div class="loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg><span>Fetching archives…</span></div>`;
+    }
+    function showError() {
+      contentArea.innerHTML = `<div class="error"><div class="error-title">Unable to load archives</div><div class="error-msg">Check your connection and try again.</div><button class="retry-btn" onclick="fetchAllRecordings()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>Retry</button></div>`;
+    }
     function showEmpty() { contentArea.innerHTML = `<div class="loading"><span>No archives found.</span></div>`; }
 
-    // Fetch the file listing for a single time-slot folder, tagged with metadata
     async function fetchSlotFiles(folder) {
       const res = await fetch(API_BASE + folder.path + '/');
-      if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + folder.name);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       const slotLabel = formatFolderName(folder.name);
       return (data || [])
         .filter(f => f.type === 'file' && f.name.endsWith('.mp4'))
         .map(f => ({
-          path: f.path,
-          name: f.name,
-          title: cleanFilename(f.name),
-          date: parseDateFromFilename(f.name),
-          time: parseTimeKey(f.name),
-          timeLabel: parseTimeFromFilename(f.name),
-          slot: slotLabel,
+          path: f.path, name: f.name, title: cleanFilename(f.name),
+          date: parseDateFromFilename(f.name), time: parseTimeKey(f.name),
+          timeLabel: parseTimeFromFilename(f.name), slot: slotLabel,
         }));
     }
 
-    // Fetch every time-slot folder and regroup all recordings by date
     async function fetchAllRecordings() {
       showLoading();
       try {
         const res = await fetch(API_BASE + '/recordings');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        const slotFolders = (data || []).filter(item => item.type === 'dir');
+        const slotFolders = (data || []).filter(i => i.type === 'dir');
         if (!slotFolders.length) { showEmpty(); return; }
 
         const results = await Promise.allSettled(slotFolders.map(fetchSlotFiles));
         const dateMap = {};
-        results.forEach((r, i) => {
-          if (r.status !== 'fulfilled') { console.error('Failed to load folder', slotFolders[i].name, r.reason); return; }
+        results.forEach((r,i) => {
+          if (r.status !== 'fulfilled') { console.error('Failed:', slotFolders[i].name, r.reason); return; }
           r.value.forEach(rec => {
             if (!rec.date) return;
             (dateMap[rec.date] = dateMap[rec.date] || []).push(rec);
           });
         });
-        Object.keys(dateMap).forEach(date => { dateMap[date].sort((a, b) => a.time.localeCompare(b.time)); });
+        Object.keys(dateMap).forEach(d => dateMap[d].sort((a,b) => a.time.localeCompare(b.time)));
 
         recordingsByDate = dateMap;
-        allDates = Object.keys(dateMap).sort((a, b) => b.localeCompare(a));
+        allDates = Object.keys(dateMap).sort((a,b) => b.localeCompare(a));
         if (!allDates.length) { showEmpty(); return; }
+
+        // Deep-link: ?token=202606191430
+        const token = new URLSearchParams(window.location.search).get('token');
+        if (token) {
+          const rec = tokenToFile(token);
+          if (rec) {
+            window.openDate(rec.date);
+            setTimeout(() => window.playVideo(rec.path), 80);
+            return;
+          }
+        }
+
         renderDateGrid();
-      } catch (e) { console.error('Failed to fetch archives:', e); showError(); }
+      } catch(e) { console.error('Failed to fetch archives:', e); showError(); }
     }
     window.fetchAllRecordings = fetchAllRecordings;
 
@@ -513,7 +712,22 @@
       let html = '<div class="folder-grid">';
       allDates.forEach(date => {
         const count = recordingsByDate[date].length;
-        html += `<div class="folder-card" onclick="openDate('${date}')"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="folder-info"><h3>${formatWeekday(date)}, ${formatDate(date)}</h3><p>${count} recording${count === 1 ? '' : 's'}</p></div></div>`;
+        html += `
+          <div class="folder-card" onclick="openDate('${date}')">
+            <div class="folder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="3"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="folder-info">
+              <h3>${formatWeekday(date)}</h3>
+              <p>${formatDate(date)} &middot; ${count} recording${count===1?'':'s'}</p>
+            </div>
+            <svg class="folder-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
@@ -521,10 +735,37 @@
 
     function renderTimeline(date, files) {
       backLink.style.display = '';
-      let html = `<div class="timeline-header"><h2>${formatWeekday(date)}, ${formatDate(date)}</h2><span class="timeline-count">${files.length} recordings</span></div><div class="timeline">`;
+      let html = `
+        <div class="timeline-header">
+          <h2>${formatWeekday(date)}, ${formatDate(date)}</h2>
+          <span class="timeline-count">${files.length} recordings</span>
+        </div>
+        <div class="timeline">`;
       files.forEach(file => {
         const isActive = currentPlayingPath === file.path;
-        html += `<div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}')"><div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="timeline-meta"><h4>${escapeHtml(file.title)}</h4><p><span class="slot-badge">${escapeHtml(file.slot)}</span>${file.timeLabel || ''}</p></div><div class="timeline-actions" onclick="event.stopPropagation()"><a href="${API_BASE + file.path}" download class="timeline-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a></div></div>`;
+        html += `
+          <div class="timeline-item ${isActive ? 'playing' : ''}" onclick="playVideo('${file.path}')">
+            <div class="play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="timeline-meta">
+              <h4>${escapeHtml(file.title)}</h4>
+              <p>
+                <span class="slot-badge">${escapeHtml(file.slot)}</span>
+                ${file.timeLabel || ''}
+              </p>
+            </div>
+            <div class="timeline-actions" onclick="event.stopPropagation()">
+              <a href="${API_BASE + file.path}" download class="timeline-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
+              </a>
+              <button class="timeline-btn share-btn" onclick="shareVideo('${file.path}', event)" title="Share">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Share
+              </button>
+            </div>
+          </div>`;
       });
       html += '</div>';
       contentArea.innerHTML = html;
@@ -550,7 +791,7 @@
       dp = new DPlayer({
         container: document.getElementById('dplayer'),
         autoplay: true,
-        theme: '#0A84FF',
+        theme: '#E8212A',
         lang: 'en',
         airplay: true,
         hotkey: true,
@@ -560,7 +801,6 @@
         playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
         video: { url: url, type: 'auto' },
       });
-      // Auto-advance to the next recording in the date when one finishes
       dp.on('ended', playNext);
     }
 
@@ -571,7 +811,7 @@
       currentPlayingPath = filePath;
 
       playerMetaTitle.textContent = file.title;
-      playerMetaDate.textContent = file.slot + ' \u00b7 ' + formatDate(file.date) + (file.timeLabel ? ' \u00b7 ' + file.timeLabel : '');
+      playerMetaDate.textContent = file.slot + ' · ' + formatDate(file.date) + (file.timeLabel ? ' · ' + file.timeLabel : '');
       playerShell.style.display = '';
       playerMeta.style.display = '';
       playerToolbar.style.display = '';
@@ -582,8 +822,8 @@
 
       updateToolbarState();
       document.querySelectorAll('.timeline-item').forEach(item => {
-        const onclick = item.getAttribute('onclick') || '';
-        item.classList.toggle('playing', onclick.includes("'" + filePath + "'"));
+        const oc = item.getAttribute('onclick') || '';
+        item.classList.toggle('playing', oc.includes("'" + filePath + "'"));
       });
     };
 
@@ -593,8 +833,8 @@
       nextRecBtn.disabled = idx === -1 || idx >= currentFiles.length - 1;
     }
 
-    function playNext() { const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx >= 0 && idx < currentFiles.length - 1) window.playVideo(currentFiles[idx + 1].path); }
-    function playPrev() { const idx = currentFiles.findIndex(f => f.path === currentPlayingPath); if (idx > 0) window.playVideo(currentFiles[idx - 1].path); }
+    function playNext() { const i = currentFiles.findIndex(f=>f.path===currentPlayingPath); if(i>=0&&i<currentFiles.length-1) window.playVideo(currentFiles[i+1].path); }
+    function playPrev() { const i = currentFiles.findIndex(f=>f.path===currentPlayingPath); if(i>0) window.playVideo(currentFiles[i-1].path); }
     prevRecBtn.addEventListener('click', playPrev);
     nextRecBtn.addEventListener('click', playNext);
 
