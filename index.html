@@ -304,6 +304,8 @@
     .badge-live { background: rgba(48,209,88,0.14); color: var(--green); border: 0.5px solid rgba(48,209,88,0.25); }
     .badge-hd { background: rgba(10,132,255,0.14); color: var(--blue); border: 0.5px solid rgba(10,132,255,0.25); }
     .badge-unavailable { background: rgba(255,59,48,0.1); color: var(--red); border: 0.5px solid rgba(255,59,48,0.2); }
+    .badge-new { background: rgba(255,214,10,0.13); color: var(--yellow); border: 0.5px solid rgba(255,214,10,0.28); }
+    .badge-pdf { background: rgba(175,82,222,0.14); color: #AF52DE; border: 0.5px solid rgba(175,82,222,0.28); }
     .badge-dot {
       width: 5px; height: 5px;
       border-radius: 50%;
@@ -401,6 +403,20 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 4px; }
+
+    /* ─── TAB MAGAZINE ─── */
+    .tab-mag-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+    .tab-new-dot {
+      position: absolute;
+      top: -2px; right: -5px;
+      width: 7px; height: 7px;
+      background: var(--yellow);
+      border-radius: 50%;
+      border: 1.5px solid var(--bg);
+      box-shadow: 0 0 6px rgba(255,214,10,0.7);
+    }
+    .tab-magazine:hover { color: #AF52DE; }
+    .tab-magazine.active { color: #AF52DE; }
   </style>
 </head>
 <body>
@@ -546,6 +562,34 @@
       </div>
     </div>
 
+    <!-- Magazines -->
+    <div class="channel-group">
+      <div class="section-label fade-in d5">Publications</div>
+      <a href="Magazine.html" class="channel-card fade-in d6">
+        <div class="channel-icon" style="background:linear-gradient(135deg,#1a0a2e,#2e0a1a);border-color:rgba(175,82,222,0.3);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#magGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="26" height="26">
+            <defs>
+              <linearGradient id="magGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#AF52DE"/>
+                <stop offset="100%" stop-color="#FF2D55"/>
+              </linearGradient>
+            </defs>
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="channel-info">
+          <h3>DPRK Magazines</h3>
+          <p>North Korean periodicals &amp; publications from Koryo Front — downloadable PDFs.</p>
+          <div class="badge-row">
+            <span class="badge badge-new"><span class="badge-dot" style="background:var(--yellow)"></span>New Papers</span>
+            <span class="badge badge-pdf">PDF</span>
+          </div>
+        </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
+
     <footer class="footer">
       &copy; Juche TV &mdash; Not affiliated with any broadcasting entity.<br>
       Streams owned by Juche TV / Bloxy Play Comprehensive Channel and Koryo Front.
@@ -569,8 +613,17 @@
         </svg>
         Schedule
       </a>
-
-
+      <a href="Magazine.html" class="tab-item tab-magazine">
+        <!-- Book/Magazine -->
+        <span class="tab-mag-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <span class="tab-new-dot"></span>
+        </span>
+        Magazines
+      </a>
     </div>
   </div>
 
