@@ -448,6 +448,21 @@
 </head>
 <body>
 
+  <!-- ── SECURITY GUARD ── -->
+  <script>
+    (function() {
+      const TOKEN_KEY = 'jtv_token';
+      const urlAuth = new URLSearchParams(window.location.search).get('auth');
+      const stored = sessionStorage.getItem(TOKEN_KEY);
+      const valid = stored && (urlAuth === stored || document.referrer.includes(location.hostname));
+      if (!valid) {
+        const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+        window.location.replace('verify.html?next=' + next);
+      }
+    })();
+  </script>
+  <!-- ── END SECURITY GUARD ── -->
+
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="logo">

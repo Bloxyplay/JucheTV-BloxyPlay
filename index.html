@@ -429,9 +429,11 @@
   <script>
     (function() {
       const TOKEN_KEY = 'jtv_token';
-      const urlToken = new URLSearchParams(window.location.search).get('auth');
-      const storedToken = sessionStorage.getItem(TOKEN_KEY);
-      const valid = urlToken && storedToken && urlToken === storedToken;
+      const urlAuth = new URLSearchParams(window.location.search).get('auth');
+      const stored = sessionStorage.getItem(TOKEN_KEY);
+      // Valid if: ?auth= matches stored token (first visit from verify)
+      // OR session already exists and came from same site (navigating back)
+      const valid = stored && (urlAuth === stored || document.referrer.includes(location.hostname));
       if (!valid) {
         window.location.replace('verify.html');
       }
