@@ -4,1932 +4,799 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
-  <title>KCTV - Juche TV</title>
+  <meta name="theme-color" content="#0a0a0f">
+  <title>KCTV — Korean Central Television · Juche TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.css">
   <style>
     :root {
-      --bg: #F2F2F7;
-      --elevated: #FFFFFF;
-      --primary: #1C1C1E;
-      --secondary: #8E8E93;
-      --tertiary: #C7C7CC;
-      --separator: rgba(60, 60, 67, 0.1);
-      --separator-dark: rgba(140, 140, 147, 0.24);
-      --tint: #007AFF;
-      --tint-secondary: #5856D6;
-      --red: #FF3B30;
-      --green: #34C759;
-      --orange: #FF9500;
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --bg:#0a0a0f; --surf:#13131a; --surf2:#1c1c27; --surf3:#242434;
+      --brd:rgba(255,255,255,0.07); --brd2:rgba(255,255,255,0.13);
+      --tx:#f0f0f8; --tx2:#8888a8; --tx3:#44445a;
+      --acc:#e8173a; --acc2:#ff6b35; --glow:rgba(232,23,58,0.28);
+      --tint:#4a90e2; --grn:#30d158; --gld:#f0b429;
+      --rsm:8px; --rmd:12px; --rlg:16px; --rxl:22px;
+      --shsm:0 1px 4px rgba(0,0,0,.45);
+      --shmd:0 4px 24px rgba(0,0,0,.55);
+      --shlg:0 16px 56px rgba(0,0,0,.72);
+      --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
     }
-    :root.dark {
-      --bg: #000000;
-      --elevated: #1C1C1E;
-      --primary: #F2F2F7;
-      --secondary: #8E8E93;
-      --tertiary: #48484A;
-      --separator: rgba(140, 140, 147, 0.24);
-      --tint: #0A84FF;
-      --tint-secondary: #5E5CE6;
-      --green: #30D158;
-      --red: #FF453A;
+    :root.light {
+      --bg:#f0f0f5; --surf:#fff; --surf2:#f5f5fa; --surf3:#eaeaf2;
+      --brd:rgba(0,0,0,.07); --brd2:rgba(0,0,0,.13);
+      --tx:#0a0a1a; --tx2:#5a5a7a; --tx3:#aaaac0;
+      --shsm:0 1px 4px rgba(0,0,0,.07); --shmd:0 4px 24px rgba(0,0,0,.10); --shlg:0 16px 56px rgba(0,0,0,.14);
     }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.3s ease, color 0.3s ease;
-      -webkit-font-smoothing: antialiased;
-    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+    body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 90% 55% at 10% 0%,rgba(232,23,58,.07) 0%,transparent 65%),radial-gradient(ellipse 60% 40% at 90% 5%,rgba(74,144,226,.05) 0%,transparent 65%)}
 
-    /* === NAV === */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(242,242,247,0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-bottom: 0.5px solid var(--separator);
-      transition: background 0.3s, border-color 0.3s;
-    }
-    :root.dark .nav { background: rgba(28,28,30,0.72); }
-    .nav-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 52px;
-    }
-    .logo {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 18px; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px;
-    }
-    .logo-icon {
-      width: 30px; height: 30px;
-      background: linear-gradient(135deg, #FF2D55, #FF9500);
-      border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff;
-    }
-    .logo-icon svg { width: 16px; height: 16px; }
-    #menu { list-style: none; display: flex; align-items: center; gap: 4px; }
-    #menu a {
-      font-size: 13px; font-weight: 600; color: var(--secondary);
-      text-decoration: none; padding: 6px 12px; border-radius: 8px;
-      transition: all 0.2s ease;
-    }
-    #menu a:hover { color: var(--primary); background: rgba(0,0,0,0.04); }
-    .nav-btn {
-      width: 34px; height: 34px; border-radius: 50%; border: none;
-      background: transparent; color: var(--secondary);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.2s ease;
-    }
-    .nav-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
-    .nav-btn svg { width: 18px; height: 18px; }
-    .lang-wrap { position: relative; }
-    .lang-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; padding: 6px 12px;
-      border-radius: 8px; border: none;
-      background: transparent; color: var(--secondary);
-      cursor: pointer; transition: all 0.2s ease;
-    }
-    .lang-btn:hover { background: rgba(0,0,0,0.04); color: var(--primary); }
-    .lang-menu {
-      display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      min-width: 160px; background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg); z-index: 20;
-      overflow: hidden;
-    }
-    .lang-menu.show { display: block; }
-    .lang-option {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; font-size: 13px; cursor: pointer;
-      transition: background 0.12s; color: var(--primary);
-    }
-    .lang-option:hover { background: rgba(0,0,0,0.04); }
-    .lang-option.active { font-weight: 700; }
-    .lang-option.active::after { content: '\2713'; color: var(--tint); font-size: 12px; font-weight: 700; }
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:200;background:rgba(10,10,15,.84);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid var(--brd)}
+    :root.light .nav{background:rgba(240,240,245,.9)}
+    .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;gap:16px}
+    .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px var(--glow)}
+    .logo-mark svg{width:15px;height:15px;fill:#fff}
+    .logo-text{font-size:16px;font-weight:800;color:var(--tx);letter-spacing:-.4px}
+    .nav-r{display:flex;align-items:center;gap:6px}
+    .nav-lnk{font-size:13px;font-weight:600;color:var(--tx2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .2s;white-space:nowrap}
+    .nav-lnk:hover{color:var(--tx);background:var(--surf2)}
+    .nav-ibtn{width:36px;height:36px;border:none;cursor:pointer;background:transparent;color:var(--tx2);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s;flex-shrink:0}
+    .nav-ibtn:hover{background:var(--surf2);color:var(--tx)}
+    .nav-ibtn svg{width:18px;height:18px}
+    .lang-wrap{position:relative}
+    .lang-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:7px 11px;border-radius:8px;border:1px solid var(--brd2);background:var(--surf2);color:var(--tx2);cursor:pointer;transition:all .2s;font-family:var(--font)}
+    .lang-btn svg{width:12px;height:12px}
+    .lang-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:160px;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rmd);box-shadow:var(--shlg);z-index:400;overflow:hidden}
+    .lang-menu.show{display:block}
+    .lang-opt{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:13px;cursor:pointer;transition:background .12s;color:var(--tx)}
+    .lang-opt:hover{background:var(--surf2)}
+    .lang-opt.active{font-weight:700;color:var(--acc)}
+    .lang-opt.active::after{content:'✓';font-size:12px}
 
-    /* === MAIN === */
-    .main {
-      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 28px 20px 40px;
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 600; color: var(--secondary);
-      margin-bottom: 16px; padding: 4px 0;
-      transition: color 0.2s ease; text-decoration: none;
-    }
-    .back-link:hover { color: var(--tint); }
-    .back-link svg { width: 16px; height: 16px; }
+    /* PAGE */
+    .page{flex:1;max-width:1160px;width:100%;margin:0 auto;padding:24px 20px 60px}
 
-    .channel-meta {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .channel-meta .meta-icon {
-      width: 52px; height: 52px; object-fit: contain;
-      background: var(--elevated);
-      border-radius: var(--radius-sm);
-      padding: 6px;
-      border: 0.5px solid var(--separator);
-    }
-    .channel-meta h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .channel-meta p { font-size: 13px; color: var(--secondary); margin-top: 2px; }
-    .live-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; color: var(--red);
-      background: rgba(255,59,48,0.1); padding: 4px 10px;
-      border-radius: 100px; margin-left: auto;
-    }
-    :root.dark .live-badge { background: rgba(255,69,58,0.15); }
-    .live-badge .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--red); animation: pulse 2s ease infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    /* BACK */
+    .back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--tx2);text-decoration:none;margin-bottom:20px;padding:6px 10px 6px 6px;border-radius:8px;transition:all .2s}
+    .back:hover{color:var(--tx);background:var(--surf2)}
+    .back svg{width:16px;height:16px}
 
-    /* ===== Player ===== */
-    .player-wrap {
-      background: #000;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      border: 0.5px solid var(--separator);
-    }
-    #dplayer {
-      width: 100% !important;
-      aspect-ratio: 16 / 9;
-    }
-    #dplayer .dplayer-video-wrap {
-      border-radius: 0;
-    }
-    #dplayer .dplayer-controller .dplayer-icons .dplayer-icon {
-      color: #fff;
-    }
-    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar {
-      background: rgba(255,255,255,0.18);
-    }
-    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar .dplayer-played {
-      background: var(--tint);
-    }
-    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-bar .dplayer-loaded {
-      background: rgba(255,255,255,0.28);
-    }
-    #dplayer .dplayer-controller .dplayer-bar-wrap .dplayer-thumb {
-      background: var(--tint);
-      box-shadow: 0 0 8px rgba(0,122,255,0.5);
-    }
-    #dplayer .dplayer-setting-box {
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-    #dplayer .dplayer-menu {
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-    #dplayer.dplayer-pause .dplayer-video-wrap {
-      filter: brightness(0.65);
-      transition: filter 0.3s ease;
-    }
-    #dplayer .dplayer-video-wrap {
-      transition: filter 0.3s ease;
-    }
-    #dplayer .dplayer-mask {
-      border-radius: 0;
-    }
-    #dplayer .dplayer-info-panel {
-      border-radius: var(--radius-sm);
-    }
-    #dplayer .dplayer-controller-mask {
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
-    }
+    /* CHANNEL HEADER */
+    .ch-hdr{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+    .ch-logo{width:56px;height:56px;flex-shrink:0;background:var(--surf);border:1px solid var(--brd2);border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center}
+    .ch-logo img{width:100%;height:100%;object-fit:contain}
+    .ch-info{flex:1;min-width:0}
+    .ch-name{font-size:22px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.15}
+    .ch-sub{font-size:13px;color:var(--tx2);margin-top:3px;font-weight:500}
+    .live-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.6px;color:#fff;background:var(--acc);padding:7px 14px;border-radius:100px;box-shadow:0 0 24px var(--glow);flex-shrink:0;animation:livePulse 3s ease infinite}
+    @keyframes livePulse{0%,100%{box-shadow:0 0 24px var(--glow)}50%{box-shadow:0 0 40px rgba(232,23,58,.5)}}
+    .live-pill .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.4s ease infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-    /* ===== Action Row ===== */
-    .action-row {
-      display: flex; flex-wrap: wrap;
-      align-items: center;
-      gap: 10px; margin-top: 16px;
-    }
-    .action-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 9px 16px;
-      background: var(--elevated); border: 0.5px solid var(--separator);
-      border-radius: var(--radius-sm); color: var(--primary);
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s ease;
-      text-decoration: none;
-    }
-    .action-btn svg { width: 15px; height: 15px; color: var(--tint); flex-shrink: 0; }
-    .action-btn:hover {
-      background: var(--bg);
-      border-color: var(--tertiary);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-    .action-btn:active { transform: translateY(0); }
-    .action-btn.tint {
-      background: var(--tint); color: #fff; border-color: transparent;
-    }
-    .action-btn.tint svg { color: #fff; }
-    .action-btn.tint:hover { background: #0066D4; }
+    /* PLAYER */
+    .player-wrap{position:relative;background:#000;border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shlg),0 0 0 1px var(--brd)}
+    #dplayer{width:100%!important;aspect-ratio:16/9}
+    .ss-flash{position:absolute;inset:0;z-index:50;background:#fff;opacity:0;pointer-events:none}
+    .ss-flash.active{animation:flash .35s ease-out forwards}
+    @keyframes flash{0%{opacity:.9}100%{opacity:0}}
+    #dplayer .dplayer-controller-mask{background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 100%)}
+    #dplayer .dplayer-bar-wrap .dplayer-bar{background:rgba(255,255,255,.18)}
+    #dplayer .dplayer-bar-wrap .dplayer-played{background:var(--acc)}
+    #dplayer .dplayer-bar-wrap .dplayer-loaded{background:rgba(255,255,255,.3)}
+    #dplayer .dplayer-bar-wrap .dplayer-thumb{background:var(--acc);box-shadow:0 0 10px rgba(232,23,58,.5)}
+    #dplayer.dplayer-pause .dplayer-video-wrap{filter:brightness(.6);transition:filter .3s}
+    #dplayer .dplayer-video-wrap{transition:filter .3s}
+    .dp-epg-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;opacity:.8;transition:opacity .2s}
+    .dp-epg-btn:hover{opacity:1}
+    .dp-epg-btn svg{width:22px;height:22px}
 
-    /* ===== Screenshot Popup ===== */
-    .screenshot-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 9999;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .screenshot-overlay.show { display: flex; opacity: 1; }
-    .screenshot-overlay-inner {
-      display: flex; flex-direction: column;
-      width: 100%; max-width: 560px;
-      max-height: 92vh;
-      background: var(--bg);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-      border: 0.5px solid rgba(255,255,255,0.1);
-      transform: translateY(20px) scale(0.96);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .screenshot-overlay.show .screenshot-overlay-inner { transform: translateY(0) scale(1); }
-    .screenshot-overlay-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 22px 16px;
-      border-bottom: 0.5px solid var(--separator);
-      flex-shrink: 0;
-    }
-    .screenshot-overlay-title {
-      font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: -0.4px;
-    }
-    .screenshot-overlay-close {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(120,120,128,0.16);
-      border: none; cursor: pointer; color: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s ease;
-      flex-shrink: 0;
-    }
-    .screenshot-overlay-close:hover { background: rgba(120,120,128,0.28); }
-    .screenshot-overlay-close svg { width: 14px; height: 14px; }
-    .screenshot-overlay-body { overflow-y: auto; flex: 1; }
-    .screenshot-overlay-body::-webkit-scrollbar { width: 5px; }
-    .screenshot-overlay-body::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
-    .screenshot-result img { width: 100%; display: block; }
+    /* STREAM BAR */
+    .stream-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 20px;background:var(--surf);border:1px solid var(--brd);border-top:none;border-radius:0 0 var(--rxl) var(--rxl);margin-top:-1px;position:relative;z-index:5;opacity:0;transition:opacity .4s}
+    .stream-bar.on{opacity:1}
+    .s-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;background:var(--surf2);color:var(--tx2);border:1px solid var(--brd)}
+    .chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .chip-dot.good{background:var(--grn)}.chip-dot.medium{background:var(--gld)}.chip-dot.bad{background:var(--acc)}.chip-dot.pinging{background:var(--tint);animation:blink 1.2s ease infinite}
+    .chip-val{font-weight:700;color:var(--tx)}
+    .s-hint{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.3px}
 
-    .screenshot-toggle-row {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 22px;
-      border-bottom: 0.5px solid var(--separator);
-    }
-    .screenshot-toggle-text { flex: 1; min-width: 0; }
-    .screenshot-toggle-label { font-size: 13.5px; font-weight: 700; color: var(--primary); }
-    .screenshot-toggle-desc { font-size: 12px; color: var(--secondary); margin-top: 2px; line-height: 1.4; }
+    /* ACTIONS */
+    .action-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rmd);color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;font-family:var(--font)}
+    .btn svg{width:15px;height:15px;color:var(--tx2);flex-shrink:0}
+    .btn:hover{background:var(--surf2);transform:translateY(-1px);box-shadow:var(--shsm)}
+    .btn:active{transform:none}
+    .btn.pri{background:var(--acc);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(232,23,58,.22)}
+    .btn.pri svg{color:rgba(255,255,255,.7)}
+    .btn.pri:hover{background:#c81030;box-shadow:0 0 28px rgba(232,23,58,.42)}
 
-    /* iOS-style switch */
-    .ios-switch { position: relative; display: inline-block; width: 46px; height: 28px; flex-shrink: 0; }
-    .ios-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .ios-switch-track {
-      position: absolute; inset: 0; cursor: pointer;
-      background: var(--tertiary); border-radius: 100px;
-      transition: background 0.2s ease;
-    }
-    .ios-switch-track::before {
-      content: ''; position: absolute; left: 2px; top: 2px;
-      width: 24px; height: 24px; border-radius: 50%; background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .ios-switch input:checked + .ios-switch-track { background: var(--green); }
-    .ios-switch input:checked + .ios-switch-track::before { transform: translateX(18px); }
-    .ios-switch input:focus-visible + .ios-switch-track { box-shadow: 0 0 0 3px rgba(0,122,255,0.35); }
+    /* EPG SECTION */
+    .epg-sec{margin-top:28px}
+    .epg-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+    .epg-sec-ttl{display:flex;align-items:center;gap:10px}
+    .epg-pill{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:3px 9px;border-radius:100px}
+    .epg-sec-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
+    .kst-clk{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tx2);background:var(--surf);border:1px solid var(--brd);padding:5px 12px;border-radius:100px}
+    .kst-clk svg{width:12px;height:12px;flex-shrink:0}
+    .kst-t{font-variant-numeric:tabular-nums}
 
-    .screenshot-actions {
-      display: flex; gap: 8px;
-      padding: 16px 22px;
-    }
-    .screenshot-actions .action-btn { flex: 1; justify-content: center; }
+    /* NOW PLAYING CARD */
+    .now-card{position:relative;overflow:hidden;background:var(--surf);border:1px solid var(--brd2);border-left:3px solid var(--acc);border-radius:var(--rxl);padding:24px 24px 20px;margin-bottom:12px;box-shadow:var(--shmd),-4px 0 28px rgba(232,23,58,.10);transition:box-shadow .3s}
+    .now-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--acc) 0%,var(--acc2) 40%,transparent 100%)}
+    .now-card:hover{box-shadow:var(--shmd),-4px 0 36px rgba(232,23,58,.18)}
+    .np-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+    .np-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--acc)}
+    .np-bdot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 1.4s ease infinite}
+    .np-cat{font-size:11px;font-weight:600;color:var(--tx2);background:var(--surf2);border:1px solid var(--brd);padding:2px 9px;border-radius:100px}
+    .np-title{font-size:22px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.2;margin-bottom:5px}
+    .np-sub{font-size:13px;color:var(--tx2);font-weight:500;margin-bottom:16px;line-height:1.5}
+    .np-sub:empty{margin-bottom:10px}
+    .np-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .np-tchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--tx);background:var(--surf2);border:1px solid var(--brd);padding:4px 11px;border-radius:100px}
+    .np-tchip svg{width:11px;height:11px;color:var(--tx2)}
+    .np-rem{font-size:12px;font-weight:600;color:var(--tx2)}
+    .np-track{height:4px;background:var(--surf3);border-radius:100px;overflow:hidden}
+    .np-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc) 0%,var(--acc2) 100%);transition:width 1s linear}
 
-    /* ===== Info Section ===== */
-    .info-section {
-      margin-top: 24px; padding: 24px;
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-lg);
-    }
-    .info-section h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.2px; }
-    .info-section p { font-size: 13px; color: var(--secondary); line-height: 1.7; }
+    /* SCHEDULE CARD */
+    .sched-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);overflow:hidden}
+    .sched-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--brd)}
+    .sched-hdr-ttl{font-size:13px;font-weight:700;color:var(--tx2);display:flex;align-items:center;gap:7px}
+    .sched-hdr-ttl svg{width:13px;height:13px}
+    .sched-all{font-size:12px;font-weight:700;color:var(--acc);cursor:pointer;background:none;border:none;font-family:var(--font);transition:opacity .2s}
+    .sched-all:hover{opacity:.7}
+    .sched-list{max-height:300px;overflow-y:auto}
+    .sched-list::-webkit-scrollbar{width:4px}
+    .sched-list::-webkit-scrollbar-track{background:transparent}
+    .sched-list::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+    .sched-row{display:flex;align-items:flex-start;gap:14px;padding:12px 20px;border-bottom:1px solid var(--brd);transition:background .15s}
+    .sched-row:last-child{border-bottom:none}
+    .sched-row.past{opacity:.35}
+    .sched-row.cur{background:linear-gradient(90deg,rgba(232,23,58,.06) 0%,transparent 100%)}
+    .sched-row:hover{background:var(--surf2)}
+    .sched-row.cur:hover{background:linear-gradient(90deg,rgba(232,23,58,.10) 0%,rgba(255,255,255,.015) 100%)}
+    .sched-time{flex-shrink:0;width:44px;font-size:11px;font-weight:700;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
+    .sched-row.cur .sched-time{color:var(--acc)}
+    .sched-dot{flex-shrink:0;margin-top:6px;width:7px;height:7px;border-radius:50%;background:var(--surf3)}
+    .sched-row.cur .sched-dot{background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 2s ease infinite}
+    .sched-body{flex:1;min-width:0}
+    .sched-ttl{font-size:13px;font-weight:600;color:var(--tx);line-height:1.4;margin-bottom:2px}
+    .sched-row.past .sched-ttl{color:var(--tx2)}
+    .sched-row.cur .sched-ttl{font-weight:700}
+    .sched-sub{font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sched-sub:empty{display:none}
+    .sched-end{flex-shrink:0;font-size:11px;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
 
-    /* ===== Footer ===== */
-    .footer {
-      max-width: 1100px; width: 100%; margin: 0 auto;
-      padding: 20px; display: flex; align-items: center;
-      justify-content: space-between; font-size: 12px;
-      color: var(--secondary); border-top: 0.5px solid var(--separator);
-    }
-    .footer a { color: var(--secondary); text-decoration: none; transition: color 0.2s; }
-    .footer a:hover { color: var(--tint); }
+    /* EPG STATES */
+    .epg-sw{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);padding:44px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .epg-si{font-size:34px}
+    .epg-sm{font-size:13px;color:var(--tx2)}
+    .epg-retry{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(232,23,58,.10);border:1px solid rgba(232,23,58,.22);padding:7px 16px;border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s}
+    .epg-retry:hover{background:rgba(232,23,58,.18)}
 
-    /* ===== Screenshot Flash ===== */
-    .screenshot-flash {
-      position: absolute; inset: 0; z-index: 50;
-      background: #fff; opacity: 0; pointer-events: none;
-      transition: none;
-    }
-    .screenshot-flash.active { animation: flashAnim 0.35s ease-out; }
-    @keyframes flashAnim {
-      0% { opacity: 0.9; }
-      100% { opacity: 0; }
-    }
+    /* ABOUT */
+    .about{margin-top:28px;background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);padding:22px 24px}
+    .about h3{font-size:14px;font-weight:800;margin-bottom:8px;color:var(--tx);letter-spacing:-.2px}
+    .about p{font-size:13px;color:var(--tx2);line-height:1.75}
 
-    /* Animations */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* FOOTER */
+    .ft{max-width:1160px;width:100%;margin:0 auto;padding:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--tx3);border-top:1px solid var(--brd)}
+    .ft a{color:var(--tx3);text-decoration:none;transition:color .2s}
+    .ft a:hover{color:var(--acc)}
 
-    /* ===== EPG System ===== */
-    .epg-section {
-      margin-top: 16px;
-    }
-    .epg-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px; gap: 12px;
-    }
-    .epg-header-left {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .epg-pill {
-      font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
-      color: #fff;
-      padding: 3px 9px; border-radius: 100px;
-    }
-    .epg-title-text {
-      font-size: 15px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px;
-    }
-    .epg-pyongyang-time {
-      font-size: 12px; font-weight: 600; color: var(--secondary);
-      display: flex; align-items: center; gap: 5px;
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      padding: 4px 10px; border-radius: 100px;
-      white-space: nowrap;
-    }
-    .epg-pyongyang-time svg { width: 12px; height: 12px; flex-shrink: 0; }
-    .epg-time-val { font-variant-numeric: tabular-nums; }
+    /* SCREENSHOT OVERLAY */
+    .ss-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
+    .ss-ov.show{display:flex;opacity:1}
+    .ss-inn{display:flex;flex-direction:column;width:100%;max-width:560px;max-height:92vh;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shlg);transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+    .ss-ov.show .ss-inn{transform:none}
+    .ss-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--brd)}
+    .ss-hdr-t{font-size:16px;font-weight:800;letter-spacing:-.3px}
+    .ss-close{width:30px;height:30px;border-radius:50%;background:var(--surf2);border:none;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .ss-close:hover{background:var(--surf3)}
+    .ss-close svg{width:14px;height:14px}
+    .ss-body{overflow-y:auto;flex:1}
+    .ss-body::-webkit-scrollbar{width:5px}
+    .ss-body::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+    .ss-img img{width:100%;display:block}
+    .ss-tog-row{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--brd)}
+    .ss-tog-text{flex:1;min-width:0}
+    .ss-tog-lbl{font-size:13.5px;font-weight:700}
+    .ss-tog-desc{font-size:12px;color:var(--tx2);margin-top:2px;line-height:1.4}
+    .ios-sw{position:relative;display:inline-block;width:46px;height:28px;flex-shrink:0}
+    .ios-sw input{position:absolute;opacity:0;width:0;height:0}
+    .ios-trk{position:absolute;inset:0;cursor:pointer;background:var(--surf3);border-radius:100px;transition:background .2s}
+    .ios-trk::before{content:'';position:absolute;left:2px;top:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.3);transition:transform .2s cubic-bezier(.32,.72,0,1)}
+    .ios-sw input:checked+.ios-trk{background:var(--grn)}
+    .ios-sw input:checked+.ios-trk::before{transform:translateX(18px)}
+    .ss-acts{display:flex;gap:8px;padding:16px 22px}
+    .ss-acts .btn{flex:1;justify-content:center}
+    .ss-pick-btn{flex-shrink:0;padding:6px 14px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(232,23,58,.10);border:1px solid rgba(232,23,58,.25);border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s,transform .15s;white-space:nowrap}
+    .ss-pick-btn:hover{background:rgba(232,23,58,.18);transform:translateY(-1px)}
+    .ss-edit-input-wrap{padding:0 22px 14px}
+    .ss-edit-input{width:100%;padding:10px 14px;font-size:13px;font-family:var(--font);font-weight:600;background:var(--surf2);border:1px solid var(--brd2);border-radius:var(--rmd);color:var(--tx);outline:none;transition:border-color .2s}
+    .ss-edit-input:focus{border-color:var(--acc)}
+    .ss-edit-input::placeholder{color:var(--tx3);font-weight:500}
 
-    /* EPG Card (SpotlightCard) */
-    .epg-card {
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      position: relative;
-      --mouse-x: 50%; --mouse-y: 50%;
-    }
-    .epg-card::after {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: var(--radius-lg);
-      background: radial-gradient(circle 220px at var(--mouse-x) var(--mouse-y), rgba(94,92,230,0.13), transparent 70%);
-      opacity: 0; transition: opacity 0.25s ease;
-      pointer-events: none; z-index: 0;
-    }
-    .epg-card:hover::after { opacity: 1; }
+    /* EPG OVERLAY */
+    .epg-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.90);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
+    .epg-ov.show{display:flex;opacity:1}
+    .epg-ov-inn{display:flex;flex-direction:column;width:100%;max-width:760px;max-height:92vh;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shlg);transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+    .epg-ov.show .epg-ov-inn{transform:none}
+    .epg-ov-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--brd);flex-shrink:0}
+    .epg-ov-ttl{font-size:16px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:10px}
+    .epg-ov-meta{display:flex;align-items:center;gap:10px}
+    .epg-ov-close{width:30px;height:30px;border-radius:50%;background:var(--surf2);border:none;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .epg-ov-close:hover{background:var(--surf3)}
+    .epg-ov-close svg{width:14px;height:14px}
+    .epg-ov-body{overflow-y:auto;flex:1}
+    .epg-ov-body::-webkit-scrollbar{width:5px}
+    .epg-ov-body::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+    .epg-fr{display:flex;align-items:flex-start;gap:14px;padding:13px 22px;border-bottom:1px solid var(--brd);transition:background .15s;cursor:pointer}
+    .epg-fr:last-child{border-bottom:none}
+    .epg-fr.epg-past{opacity:.35}
+    .epg-fr.epg-cur{background:linear-gradient(90deg,rgba(232,23,58,.07) 0%,transparent 100%)}
+    .epg-fr:hover{background:var(--surf2)}
+    .epg-ft{flex-shrink:0;width:52px;font-size:12px;font-weight:700;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
+    .epg-fr.epg-cur .epg-ft{color:var(--acc)}
+    .epg-fd{flex-shrink:0;margin-top:7px;width:8px;height:8px;border-radius:50%;background:var(--surf3)}
+    .epg-fr.epg-cur .epg-fd{background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 2s ease infinite}
+    .epg-fb{flex:1;min-width:0}
+    .epg-ftitle{font-size:14px;font-weight:700;color:var(--tx);line-height:1.4;margin-bottom:3px}
+    .epg-fr.epg-past .epg-ftitle{color:var(--tx2)}
+    .epg-ftags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .epg-fcat{font-size:11px;font-weight:600;color:var(--tint);background:rgba(74,144,226,.12);padding:2px 8px;border-radius:100px}
+    .epg-fsub{font-size:12px;color:var(--tx3);line-height:1.4;margin-top:2px;margin-bottom:5px}
+    .epg-fsub:empty{display:none;margin:0}
+    .epg-fend{flex-shrink:0;font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px;text-align:right}
+    .epg-fdur{font-size:10px;color:var(--tx3);margin-top:2px}
+    .epg-kbd{padding:10px 22px;border-top:1px solid var(--brd);text-align:center;flex-shrink:0}
+    .kbd-hint{font-size:11px;color:var(--tx3);display:inline-flex;align-items:center;gap:4px}
+    .kbd{display:inline-block;padding:1px 6px;font-size:10px;font-weight:700;font-family:var(--font);color:var(--tx2);background:var(--surf2);border:1px solid var(--brd2);border-radius:4px;box-shadow:0 1px 0 var(--brd2)}
+    .dplayer:fullscreen .epg-ov,.dplayer:-webkit-full-screen .epg-ov{position:fixed;inset:0;z-index:999999}
 
-    /* Now Playing bar */
-    .epg-now-bar {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px 18px 14px;
-      border-bottom: 0.5px solid var(--separator);
-      position: relative; z-index: 1;
+    @media(max-width:640px){
+      .ch-name{font-size:18px}
+      .action-row{flex-direction:column}
+      .btn{justify-content:center}
+      .stream-bar{flex-direction:column;align-items:flex-start}
+      .now-card{padding:18px 16px 16px}
+      .np-title{font-size:17px}
+      .sched-list{max-height:240px}
+      .epg-ov,.ss-ov{padding:8px}
+      .epg-ov-inn,.ss-inn{max-height:96vh}
+      .page{padding:16px 12px 48px}
+      .nav-lnk{display:none}
     }
-    .epg-now-icon {
-      flex-shrink: 0;
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--tint-secondary), var(--tint));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; box-shadow: 0 3px 12px rgba(88,86,214,0.3);
-    }
-    .epg-now-icon svg { width: 20px; height: 20px; }
-    .epg-now-body { flex: 1; min-width: 0; }
-    .epg-now-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
-      text-transform: uppercase; color: var(--tint-secondary);
-      margin-bottom: 3px;
-    }
-    .epg-now-title {
-      font-size: 14px; font-weight: 700; color: var(--primary);
-      line-height: 1.35; margin-bottom: 4px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .epg-now-title-sub {
-      font-size: 11px; color: var(--secondary); font-weight: 500;
-      line-height: 1.3; margin-bottom: 6px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .epg-now-title-sub:empty { display: none; margin-bottom: 0; }
-    .epg-now-meta {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    }
-    .epg-cat-badge {
-      font-size: 11px; font-weight: 600;
-      color: var(--tint); background: rgba(0,122,255,0.1);
-      padding: 2px 8px; border-radius: 100px;
-    }
-    .epg-time-badge {
-      font-size: 11px; color: var(--secondary); font-variant-numeric: tabular-nums;
-    }
-    /* Progress bar */
-    .epg-progress-wrap {
-      height: 3px; background: var(--separator);
-      border-radius: 2px; overflow: hidden; margin-top: 8px;
-    }
-    .epg-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--tint-secondary), var(--tint));
-      border-radius: 2px;
-      transition: width 30s linear;
-    }
-    .epg-now-right { flex-shrink: 0; text-align: right; }
-    .epg-remaining {
-      font-size: 11px; color: var(--secondary); font-weight: 600;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Schedule list */
-    .epg-schedule {
-      max-height: 260px; overflow-y: auto;
-      position: relative; z-index: 1;
-    }
-    .epg-schedule::-webkit-scrollbar { width: 4px; }
-    .epg-schedule::-webkit-scrollbar-track { background: transparent; }
-    .epg-schedule::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
-    .epg-row {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 11px 18px;
-      border-bottom: 0.5px solid var(--separator);
-      transition: background 0.15s ease;
-    }
-    .epg-row:last-child { border-bottom: none; }
-    .epg-row.epg-past { opacity: 0.4; }
-    .epg-row.epg-current {
-      background: linear-gradient(90deg, rgba(88,86,214,0.07) 0%, transparent 100%);
-    }
-    .epg-row:hover { background: rgba(0,0,0,0.03); }
-    :root.dark .epg-row:hover { background: rgba(255,255,255,0.04); }
-    .epg-row-time {
-      flex-shrink: 0; width: 46px;
-      font-size: 11px; font-weight: 700; color: var(--secondary);
-      font-variant-numeric: tabular-nums; padding-top: 1px;
-    }
-    .epg-row.epg-current .epg-row-time { color: var(--tint-secondary); }
-    .epg-row-dot {
-      flex-shrink: 0; margin-top: 5px;
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--separator);
-    }
-    .epg-row.epg-current .epg-row-dot {
-      background: var(--tint-secondary);
-      box-shadow: 0 0 6px rgba(88,86,214,0.6);
-      animation: pulse 2s ease infinite;
-    }
-    .epg-row-body { flex: 1; min-width: 0; }
-    .epg-row-title {
-      font-size: 13px; font-weight: 600; color: var(--primary);
-      line-height: 1.35; margin-bottom: 2px;
-    }
-    .epg-row.epg-past .epg-row-title { color: var(--secondary); }
-    .epg-row-sub {
-      font-size: 11px; color: var(--secondary);
-      line-height: 1.3; margin-top: 1px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .epg-row-sub:empty { display: none; }
-    .epg-row-end {
-      flex-shrink: 0;
-      font-size: 11px; color: var(--secondary);
-      font-variant-numeric: tabular-nums; padding-top: 1px;
-    }
-
-    /* Error / Loading states */
-    .epg-state {
-      padding: 32px 18px; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-    }
-    .epg-state-icon { font-size: 28px; }
-    .epg-state-msg { font-size: 13px; color: var(--secondary); }
-    .epg-retry-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700;
-      color: var(--tint); background: rgba(0,122,255,0.1);
-      border: 1px solid rgba(0,122,255,0.2);
-      padding: 7px 16px; border-radius: 100px;
-      cursor: pointer; border: none;
-      transition: background 0.2s ease;
-    }
-    .epg-retry-btn:hover { background: rgba(0,122,255,0.18); }
-    .epg-date-chip {
-      font-size: 12px; color: var(--secondary); font-weight: 600;
-      white-space: nowrap;
-    }
-    .epg-date-sep { color: var(--tertiary); font-weight: 400; }
-
-    /* ===== EPG Fullscreen Overlay ===== */
-    .epg-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 9999;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .epg-overlay.show {
-      display: flex;
-      opacity: 1;
-    }
-    .epg-overlay-inner {
-      display: flex; flex-direction: column;
-      width: 100%; max-width: 760px;
-      max-height: 92vh;
-      background: var(--bg);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-      border: 0.5px solid rgba(255,255,255,0.1);
-      transform: translateY(20px) scale(0.96);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .epg-overlay.show .epg-overlay-inner {
-      transform: translateY(0) scale(1);
-    }
-    .epg-overlay-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 22px 16px;
-      border-bottom: 0.5px solid var(--separator);
-      flex-shrink: 0;
-    }
-    .epg-overlay-title {
-      font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: -0.4px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .epg-overlay-meta {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .epg-overlay-close {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(120,120,128,0.16);
-      border: none; cursor: pointer; color: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s ease;
-    }
-    .epg-overlay-close:hover { background: rgba(120,120,128,0.28); }
-    .epg-overlay-close svg { width: 14px; height: 14px; }
-    .epg-overlay-body { overflow-y: auto; flex: 1; }
-    .epg-overlay-body::-webkit-scrollbar { width: 5px; }
-    .epg-overlay-body::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
-
-    /* Full EPG rows in overlay */
-    .epg-full-row {
-      display: flex; align-items: flex-start; gap: 14px;
-      padding: 13px 22px;
-      border-bottom: 0.5px solid var(--separator);
-      transition: background 0.15s;
-    }
-    .epg-full-row:last-child { border-bottom: none; }
-    .epg-full-row.epg-past { opacity: 0.38; }
-    .epg-full-row.epg-current {
-      background: linear-gradient(90deg, rgba(88,86,214,0.1) 0%, transparent 100%);
-    }
-    .epg-full-row:hover { background: rgba(0,0,0,0.04); }
-    :root.dark .epg-full-row:hover { background: rgba(255,255,255,0.04); }
-    .epg-full-time {
-      flex-shrink: 0; width: 52px;
-      font-size: 12px; font-weight: 700; color: var(--secondary);
-      font-variant-numeric: tabular-nums; padding-top: 2px;
-    }
-    .epg-full-row.epg-current .epg-full-time { color: var(--tint-secondary); }
-    .epg-full-dot {
-      flex-shrink: 0; margin-top: 7px;
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--separator);
-    }
-    .epg-full-row.epg-current .epg-full-dot {
-      background: var(--tint-secondary);
-      box-shadow: 0 0 8px rgba(88,86,214,0.7);
-      animation: pulse 2s ease infinite;
-    }
-    .epg-full-body { flex: 1; min-width: 0; }
-    .epg-full-title {
-      font-size: 14px; font-weight: 700; color: var(--primary);
-      line-height: 1.4; margin-bottom: 3px;
-    }
-    .epg-full-row.epg-past .epg-full-title { color: var(--secondary); }
-    .epg-full-tags {
-      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    }
-    .epg-full-cat {
-      font-size: 11px; font-weight: 600;
-      color: var(--tint); background: rgba(0,122,255,0.1);
-      padding: 2px 8px; border-radius: 100px;
-    }
-    .epg-full-sub {
-      font-size: 12px; color: var(--secondary);
-      line-height: 1.4; margin-top: 2px; margin-bottom: 5px;
-    }
-    .epg-full-sub:empty { display: none; margin: 0; }
-    .epg-full-end {
-      flex-shrink: 0;
-      font-size: 12px; color: var(--secondary); font-variant-numeric: tabular-nums;
-      padding-top: 2px; text-align: right;
-    }
-    .epg-full-dur {
-      font-size: 10px; color: var(--secondary); margin-top: 2px;
-    }
-
-    /* ===== EPG Overlay Inside DPlayer Fullscreen ===== */
-    /* When the overlay is moved inside DPlayer fullscreen container */
-    .dplayer:fullscreen .epg-overlay,
-    .dplayer:-webkit-full-screen .epg-overlay,
-    .dplayer:-moz-full-screen .epg-overlay,
-    .dplayer:-ms-fullscreen .epg-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 999999;
-      background: rgba(0,0,0,0.92);
-      padding: 24px;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      align-items: center;
-      justify-content: center;
-    }
-    .dplayer:fullscreen .epg-overlay.show,
-    .dplayer:-webkit-full-screen .epg-overlay.show,
-    .dplayer:-moz-full-screen .epg-overlay.show,
-    .dplayer:-ms-fullscreen .epg-overlay.show {
-      display: flex;
-      opacity: 1;
-    }
-    .dplayer:fullscreen .epg-overlay-inner,
-    .dplayer:-webkit-full-screen .epg-overlay-inner {
-      max-height: 88vh;
-      width: 100%;
-      max-width: 720px;
-    }
-
-    /* DPlayer EPG button */
-    .dp-epg-btn {
-      width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: #fff;
-      opacity: 0.8; transition: opacity 0.2s;
-    }
-    .dp-epg-btn:hover { opacity: 1; }
-    .dp-epg-btn svg { width: 22px; height: 22px; }
-
-    /* ===== Stream Info Bar ===== */
-    .stream-info-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px;
-      background: var(--elevated);
-      border: 0.5px solid var(--separator);
-      border-top: none;
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-      margin-top: -1px;
-      position: relative;
-      z-index: 5;
-    }
-    .stream-info-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .stream-info-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    .info-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-      background: var(--bg);
-      color: var(--secondary);
-      border: 0.5px solid var(--separator);
-      transition: all 0.2s ease;
-    }
-    .info-chip .chip-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .info-chip .chip-dot.good { background: var(--green); }
-    .info-chip .chip-dot.medium { background: var(--orange); }
-    .info-chip .chip-dot.bad { background: var(--red); }
-    .info-chip .chip-dot.testing { background: var(--tint); animation: pulse 1.2s ease infinite; }
-    .info-chip .chip-label { opacity: 0.7; font-weight: 500; }
-    .info-chip .chip-value { font-weight: 700; color: var(--primary); }
-
-    .features-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--secondary);
-      background: rgba(0,122,255,0.06);
-      border: 0.5px solid rgba(0,122,255,0.15);
-      letter-spacing: 0.2px;
-    }
-    :root.dark .features-hint {
-      background: rgba(10,132,255,0.1);
-      border-color: rgba(10,132,255,0.2);
-    }
-
-    /* Keyboard hint */
-    .epg-keyboard-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--secondary);
-      opacity: 0.7;
-    }
-    .kbd {
-      display: inline-block;
-      padding: 1px 6px;
-      font-size: 10px;
-      font-weight: 700;
-      font-family: inherit;
-      color: var(--secondary);
-      background: var(--bg);
-      border: 0.5px solid var(--separator);
-      border-radius: 4px;
-      box-shadow: 0 1px 0 var(--separator);
-    }
-
-    @media (max-width: 640px) {
-      .epg-section { margin-top: 12px; }
-      .epg-schedule { max-height: 200px; }
-      .channel-meta h1 { font-size: 18px; }
-      .live-badge { margin-left: 0; width: 100%; justify-content: center; }
-      .server-menu { min-width: calc(100vw - 40px); left: 0; }
-      .action-row { flex-direction: column; align-items: stretch; }
-      .action-btn { justify-content: center; }
-      .stream-info-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .stream-info-right { width: 100%; }
-      .features-hint { width: 100%; justify-content: center; }
-      .epg-overlay { padding: 8px; }
-      .epg-overlay-inner { max-height: 96vh; border-radius: 14px; }
-      .epg-full-row { padding: 11px 16px; }
-    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
-  <!-- Nav -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <span data-i18n="brand">Juche TV</span>
-      </a>
-      <ul id="menu">
-        <li><a href="index.html" data-i18n="channels">Channels</a></li>
-        <li>
-          <div class="lang-wrap">
-            <button class="lang-btn" id="langBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              <span id="langLabel">English</span>
-            </button>
-            <div class="lang-menu" id="langMenu">
-              <div class="lang-option active" data-lang="en">English</div>
-              <div class="lang-option" data-lang="zh">&#x4E2D;&#x6587; (Chinese)</div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <button class="nav-btn" id="themeToggle" title="Toggle theme">
-            <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
-            <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          </button>
-        </li>
-      </ul>
-    </div>
-  </nav>
 
-  <!-- Main -->
-  <main class="main">
-    <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span data-i18n="backToChannels">Back to Channels</span>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <span class="logo-text" data-i18n="brand">Juche TV</span>
     </a>
-
-    <div class="channel-meta">
-      <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV" class="meta-icon">
-      <div>
-        <h1 data-i18n="kctvTitle">Korean Central Television</h1>
-        <p data-i18n="liveFrom">Live from Pyongyang, DPRK</p>
-      </div>
-      <span class="live-badge"><span class="dot"></span><span data-i18n="live">LIVE</span></span>
-    </div>
-
-    <!-- Player -->
-    <div class="player-wrap" id="playerWrap">
-      <div class="screenshot-flash" id="screenshotFlash"></div>
-
-      <!-- DPlayer Container -->
-      <div id="dplayer"></div>
-    </div>
-
-    <!-- Stream Info Bar -->
-    <div class="stream-info-bar" id="streamInfoBar" style="opacity:0;transition:opacity 0.4s ease;">
-      <div class="stream-info-left">
-        <div class="info-chip" id="infoChipLatency" style="display:none;">
-          <span class="chip-label">Latency</span>
-          <span class="chip-value" id="infoChipLatencyValue">-- ms</span>
+    <div class="nav-r">
+      <a href="index.html" class="nav-lnk" data-i18n="channels">Channels</a>
+      <div class="lang-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span id="langLabel">EN</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <div class="lang-opt active" data-lang="en">English</div>
+          <div class="lang-opt" data-lang="zh">&#x4E2D;&#x6587; (Chinese)</div>
         </div>
       </div>
-      <div class="stream-info-right">
-        <div class="features-hint">-Watch Korean TV-</div>
-      </div>
-    </div>
-
-    <!-- Action Row -->
-    <div class="action-row">
-      <a href="archives-beta.html" class="action-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span data-i18n="archives">Archives Recording</span>
-      </a>
-
-      <button class="action-btn tint" id="screenshotBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <span>Take a Screenshot!</span>
+      <button class="nav-ibtn" id="themeToggle" title="Toggle theme">
+        <svg id="moonI" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Z"/></svg>
+        <svg id="sunI" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
     </div>
+  </div>
+</nav>
 
-    <!-- Screenshot Popup -->
-    <div class="screenshot-overlay" id="screenshotOverlay">
-      <div class="screenshot-overlay-inner">
-        <div class="screenshot-overlay-header">
-          <div class="screenshot-overlay-title">Screenshot Captured</div>
-          <button class="screenshot-overlay-close" id="screenshotOverlayClose" type="button" aria-label="Close">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div class="screenshot-overlay-body">
-          <div class="screenshot-result">
-            <img id="screenshotImg" alt="Screenshot">
-          </div>
-          <div class="screenshot-toggle-row">
-            <div class="screenshot-toggle-text">
-              <div class="screenshot-toggle-label">Show what's airing now</div>
-              <div class="screenshot-toggle-desc">Replace the date with the current programme name, pulled live from the EPG</div>
-            </div>
-            <label class="ios-switch">
-              <input type="checkbox" id="screenshotProgramToggle">
-              <span class="ios-switch-track"></span>
-            </label>
-          </div>
-          <div class="screenshot-actions">
-            <a class="action-btn tint" id="screenshotDownload" download="kctv-screenshot.png">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download
-            </a>
-          </div>
-        </div>
+<!-- PAGE -->
+<main class="page">
+  <a href="index.html" class="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span data-i18n="backToChannels">Back to Channels</span>
+  </a>
+
+  <div class="ch-hdr">
+    <div class="ch-logo"><img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV"></div>
+    <div class="ch-info">
+      <div class="ch-name" data-i18n="kctvTitle">Korean Central Television</div>
+      <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK · 조선중앙텔레비죤</div>
+    </div>
+    <div class="live-pill"><span class="dot"></span><span data-i18n="live">LIVE</span></div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="player-wrap" id="playerWrap">
+    <div class="ss-flash" id="ssFlash"></div>
+    <div id="dplayer"></div>
+  </div>
+
+  <!-- STREAM BAR -->
+  <div class="stream-bar" id="streamInfoBar">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="s-chip" id="infoChipLatency" style="display:none">
+        <span class="chip-dot pinging" id="latencyDot"></span>
+        <span class="chip-val" id="infoChipLatencyValue">— ms</span>
+      </div>
+    </div>
+    <span class="s-hint">-Watch Korean TV-</span>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="action-row">
+    <a href="archives-beta.html" class="btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span data-i18n="archives">Archives Recording</span>
+    </a>
+    <button class="btn pri" id="screenshotBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span>Take Screenshot</span>
+    </button>
+  </div>
+
+  <!-- EPG -->
+  <div class="epg-sec">
+    <div class="epg-sec-hdr">
+      <div class="epg-sec-ttl">
+        <span class="epg-pill">EPG</span>
+        <span class="epg-sec-name">Programme Guide</span>
+      </div>
+      <div class="kst-clk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="epgDateVal">—</span>
+        <span style="color:var(--brd2)">·</span>
+        <span class="kst-t" id="epgClockVal">--:--:--</span>
+        <span style="color:var(--tx3);font-weight:600">KST</span>
       </div>
     </div>
 
-    <!-- Info Section -->
-    <div class="info-section">
-      <h3 data-i18n="about">About KCTV</h3>
-      <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
+    <!-- Loading -->
+    <div id="epgLoading">
+      <div class="epg-sw"><div class="epg-si">📺</div><div class="epg-sm">Loading programme guide…</div></div>
     </div>
 
-    <!-- EPG System -->
-    <div class="epg-section">
-      <div class="epg-header">
-        <div class="epg-header-left">
-          <span class="epg-pill">EPG</span>
-          <span class="epg-title-text">Programme Guide</span>
-        </div>
-        <div class="epg-pyongyang-time" id="epgTimeChip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span class="epg-date-chip" id="epgDateVal">&mdash;</span>
-          <span class="epg-date-sep">&middot;</span>
-          <span class="epg-time-val" id="epgClockVal">--:--:--</span>
-          <span style="color:var(--secondary);font-weight:500;">KST</span>
-        </div>
-      </div>
-
-      <!-- EPG Card -->
-      <div class="epg-card" id="epgCard">
-        <!-- Loading state -->
-        <div class="epg-state" id="epgLoading">
-          <div class="epg-state-icon">&#x1F4FA;</div>
-          <div class="epg-state-msg">Loading programme guide&#x2026;</div>
-        </div>
-        <!-- Error state -->
-        <div class="epg-state" id="epgError" style="display:none;">
-          <div class="epg-state-icon">&#x26A0;&#xFE0F;</div>
-          <div class="epg-state-msg" id="epgErrorMsg">Failed to load programme guide.</div>
-          <button class="epg-retry-btn" id="epgRetryBtn">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            Retry
-          </button>
-        </div>
-        <!-- Live content -->
-        <div id="epgContent" style="display:none;">
-          <!-- Now Playing -->
-          <div class="epg-now-bar" id="epgNowBar">
-            <div class="epg-now-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            </div>
-            <div class="epg-now-body">
-              <div class="epg-now-label">Now Playing</div>
-              <div class="epg-now-title" id="epgNowTitle">&mdash;</div>
-              <div class="epg-now-title-sub" id="epgNowTitleSub"></div>
-              <div class="epg-now-meta">
-                <span class="epg-cat-badge" id="epgNowCat"></span>
-                <span class="epg-time-badge" id="epgNowTime"></span>
-              </div>
-              <div class="epg-progress-wrap">
-                <div class="epg-progress-fill" id="epgProgressFill" style="width:0%"></div>
-              </div>
-            </div>
-            <div class="epg-now-right">
-              <div class="epg-remaining" id="epgRemaining"></div>
-            </div>
-          </div>
-          <!-- Schedule -->
-          <div class="epg-schedule" id="epgSchedule"></div>
-        </div>
+    <!-- Error -->
+    <div id="epgError" style="display:none">
+      <div class="epg-sw">
+        <div class="epg-si">⚠️</div>
+        <div class="epg-sm" id="epgErrorMsg">Failed to load programme guide.</div>
+        <button class="epg-retry" id="epgRetryBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Retry
+        </button>
       </div>
     </div>
 
-    <!-- EPG Fullscreen Overlay -->
-    <div class="epg-overlay" id="epgOverlay">
-      <div class="epg-overlay-inner">
-        <div class="epg-overlay-header">
-          <div class="epg-overlay-title">
-            <span class="epg-pill">EPG</span>
-            &#xC870;&#xC120;&#xC911;&#xC559;&#xD154;&#xB808;&#xBE44;&#xC998;
+    <!-- Live content -->
+    <div id="epgContent" style="display:none">
+
+      <!-- ★ NOW PLAYING CARD ★ -->
+      <div class="now-card">
+        <div class="np-eyebrow">
+          <div class="np-badge"><span class="np-bdot"></span>Now Playing!</div>
+          <span class="np-cat" id="epgNowCat"></span>
+        </div>
+        <div class="np-title" id="epgNowTitle">—</div>
+        <div class="np-sub" id="epgNowTitleSub"></div>
+        <div class="np-meta">
+          <div class="np-tchip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="epgNowTime">—</span>
           </div>
-          <div class="epg-overlay-meta">
-            <div class="epg-pyongyang-time">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span class="epg-date-chip" id="epgOverlayDateVal">&mdash;</span>
-              <span class="epg-date-sep">&middot;</span>
-              <span class="epg-time-val" id="epgOverlayClock">--:--:--</span>
-              <span style="color:var(--secondary);font-weight:500;">KST</span>
-            </div>
-            <button class="epg-overlay-close" id="epgOverlayClose" title="Close (Esc)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+          <span class="np-rem" id="epgRemaining"></span>
+        </div>
+        <div class="np-track"><div class="np-fill" id="epgProgressFill" style="width:0%"></div></div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="sched-card">
+        <div class="sched-hdr">
+          <div class="sched-hdr-ttl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Today's Schedule
           </div>
+          <button class="sched-all" id="epgViewAllBtn">View Full Guide →</button>
         </div>
-        <div class="epg-overlay-body" id="epgOverlayBody">
-          <div class="epg-state"><div class="epg-state-msg">Loading&#x2026;</div></div>
+        <div class="sched-list" id="epgSchedule"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about">
+    <h3 data-i18n="about">About KCTV</h3>
+    <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
+  </div>
+</main>
+
+<!-- SCREENSHOT POPUP -->
+<div class="ss-ov" id="screenshotOverlay">
+  <div class="ss-inn">
+    <div class="ss-hdr">
+      <div class="ss-hdr-t">Screenshot Captured</div>
+      <button class="ss-close" id="screenshotOverlayClose" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ss-body">
+      <div class="ss-img"><img id="screenshotImg" alt="Screenshot"></div>
+      <div class="ss-tog-row">
+        <div class="ss-tog-text">
+          <div class="ss-tog-lbl">Show what's airing now</div>
+          <div class="ss-tog-desc">Swap the date for the current programme name pulled live from the EPG</div>
         </div>
-        <div style="padding: 10px 22px; border-top: 0.5px solid var(--separator); flex-shrink: 0; text-align: center;">
-          <span class="epg-keyboard-hint"><span class="kbd">Esc</span> to close</span>
+        <label class="ios-sw"><input type="checkbox" id="screenshotProgramToggle"><span class="ios-trk"></span></label>
+      </div>
+      <div class="ss-tog-row">
+        <div class="ss-tog-text">
+          <div class="ss-tog-lbl">🎯 Pick the programme yourself</div>
+          <div class="ss-tog-desc">Choose exactly what's showing — browse the full schedule and stamp it on your screenshot</div>
         </div>
+        <button class="ss-pick-btn" id="screenshotPickProgBtn" type="button">Browse Guide</button>
+      </div>
+      <div class="ss-tog-row" id="ssEditTextRow" style="display:none">
+        <div class="ss-tog-text">
+          <div class="ss-tog-lbl">✏️ Make it yours — edit the caption</div>
+          <div class="ss-tog-desc">Type anything you want on the watermark strip</div>
+        </div>
+        <label class="ios-sw"><input type="checkbox" id="screenshotEditTextToggle"><span class="ios-trk"></span></label>
+      </div>
+      <div class="ss-edit-input-wrap" id="ssEditInputWrap" style="display:none">
+        <input type="text" id="ssCustomText" class="ss-edit-input" placeholder="e.g. KCTV · Special Broadcast" maxlength="120">
+      </div>
+      <div class="ss-acts">
+        <a class="btn pri" id="screenshotDownload" download="kctv-screenshot.png">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
       </div>
     </div>
-  </main>
+  </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
-    <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
-  </footer>
+<!-- EPG FULL OVERLAY -->
+<div class="epg-ov" id="epgOverlay">
+  <div class="epg-ov-inn">
+    <div class="epg-ov-hdr">
+      <div class="epg-ov-ttl">
+        <span class="epg-pill">EPG</span>
+        &#xC870;&#xC120;&#xC911;&#xC559;&#xD154;&#xB808;&#xBE44;&#xC998;
+      </div>
+      <div class="epg-ov-meta">
+        <div class="kst-clk" style="font-size:11px;padding:4px 10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="epgOverlayDateVal">—</span>
+          <span style="color:var(--brd2)">·</span>
+          <span class="kst-t" id="epgOverlayClock">--:--:--</span>
+          <span style="color:var(--tx3);font-weight:600">KST</span>
+        </div>
+        <button class="epg-ov-close" id="epgOverlayClose" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="epg-ov-body" id="epgOverlayBody">
+      <div style="padding:40px 20px;text-align:center;color:var(--tx2);font-size:13px">Loading…</div>
+    </div>
+    <div class="epg-kbd">
+      <span class="kbd-hint"><span class="kbd">Esc</span> to close &nbsp;·&nbsp; <span class="kbd">E</span> to open</span>
+    </div>
+  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.js"></script>
-  <script>
-  (function() {
-    'use strict';
+<!-- FOOTER -->
+<footer class="ft">
+  <span data-i18n="footer">Juche TV. Not affiliated with any broadcasting entity.</span>
+  <a href="index.html" data-i18n="backToChannels">Back to Channels</a>
+</footer>
 
-    // === Stream Protection ===
-    var _k = [0x4B, 0x43, 0x54, 0x56];
-    var _e1 = [42,11,6,102,40,11,25,96,7,58,109,36,18,112,6,100,7,46,32,32,40,45,56,32,17,45,30,32,41,36];
-    var _e2 = [47,0,97,32,40,46,55,32,40,112,6,47,17,20,18,34,7,113,56,35,17,4,2,98,7,46,100];
-    var _e3 = [6,112,1,98];
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.js"></script>
+<script>
+(function(){'use strict';
+  var _k=[0x4B,0x43,0x54,0x56];
+  var _e1=[42,11,6,102,40,11,25,96,7,58,109,36,18,112,6,100,7,46,32,32,40,45,56,32,17,45,30,32,41,36];
+  var _e2=[47,0,97,32,40,46,55,32,40,112,6,47,17,20,18,34,7,113,56,35,17,4,2,98,7,46,100];
+  var _e3=[6,112,1,98];
+  function _x(e,k){var o='';for(var i=0;i<e.length;i++)o+=String.fromCharCode(e[i]^k[i%k.length]);return o;}
+  function _pad(b){var m=b.length%4;return m?b+new Array(5-m).join('='):b;}
+  function _d(){try{return atob(_pad(_x(_e1,_k)))+atob(_pad(_x(_e2,_k)))+atob(_pad(_x(_e3,_k)));}catch(e){return null;}}
+  var SERVERS={za:{id:'za',name:'South Africa',url:_d(),tag:'primary'}};
+  var activeServer='za',hlsInstance=null,lastPingMs=0;
 
-    function _x(enc, key) {
-      var out = '';
-      for (var i = 0; i < enc.length; i++) {
-        out += String.fromCharCode(enc[i] ^ key[i % key.length]);
-      }
-      return out;
-    }
-    function _pad(b) {
-      var m = b.length % 4;
-      return m ? b + new Array(5 - m).join('=') : b;
-    }
-    function _d() {
-      try {
-        if (typeof window === 'undefined' || typeof document === 'undefined' || typeof atob !== 'function') return null;
-        var _u1 = atob(_pad(_x(_e1, _k)));
-        var _u2 = atob(_pad(_x(_e2, _k)));
-        var _u3 = atob(_pad(_x(_e3, _k)));
-        return _u1 + _u2 + _u3;
-      } catch(e) { return null; }
-    }
+  function updateInfoBar(sid,ms){
+    var chip=document.getElementById('infoChipLatency'),val=document.getElementById('infoChipLatencyValue'),dot=document.getElementById('latencyDot');
+    if(ms&&ms>0){lastPingMs=ms;chip.style.display='inline-flex';val.textContent=ms+' ms';if(dot)dot.className='chip-dot '+(ms<300?'good':ms<700?'medium':'bad');}
+    else chip.style.display='none';
+  }
+  function showInfoBar(){document.getElementById('streamInfoBar').classList.add('on');}
 
-    var SERVERS = {
-      za: { id:'za', name:'South Africa', flag:'\u{1F1FF}\u{1F1E6}', source:'Koryo Front', url: _d(), tag:'primary' }
-    };
-
-    var activeServer = 'za';
-    var hlsInstance = null;
-    var lastPingMs = 0;
-
-    // === DPlayer English Language Pack ===
-    var enLang = {
-      'Play': 'Play',
-      'Pause': 'Pause',
-      'Replay': 'Replay',
-      'Live': 'Live',
-      'Volume': 'Volume',
-      'Mute': 'Mute',
-      'Full screen': 'Fullscreen',
-      'Exit full screen': 'Exit Fullscreen',
-      'Web full screen': 'Web Fullscreen',
-      'Exit web full screen': 'Exit Web Fullscreen',
-      'PIP mode': 'Picture-in-Picture',
-      'Exit PIP mode': 'Exit Picture-in-Picture',
-      'Screenshot': 'Screenshot',
-      'Loop': 'Loop',
-      'Speed': 'Speed',
-      'Normal': 'Normal',
-      'Video info': 'Video Info',
-      'Play speed': 'Playback Speed',
-      'Aspect ratio': 'Aspect Ratio',
-      'Default': 'Default',
-      'Subtitle': 'Subtitle',
-      'Off': 'Off',
-      'Send': 'Send',
-      'This video fails to load': 'Failed to load stream',
-      'Switch video': 'Switch Video',
-      'Switch quality': 'Quality',
-      'Switch audio': 'Audio Track',
-      'Reset': 'Reset',
-      'Show subtitle': 'Show Subtitle',
-      'Hide subtitle': 'Hide Subtitle',
-      'Opacity': 'Opacity',
-      'Font size': 'Font Size',
-      'Bottom': 'Bottom',
-      'Top': 'Top',
-      'Auto': 'Auto',
-      'Network error': 'Network Error',
-      'Video decode error': 'Decode Error',
-      'Video play error': 'Playback Error'
-    };
-
-    // === Stream Info Bar ===
-    function updateInfoBar(serverId, pingMs) {
-      var latencyChip = document.getElementById('infoChipLatency');
-      var latencyValue = document.getElementById('infoChipLatencyValue');
-
-      if (pingMs && pingMs > 0) {
-        lastPingMs = pingMs;
-        latencyChip.style.display = 'inline-flex';
-        latencyValue.textContent = pingMs + ' ms';
-      } else {
-        latencyChip.style.display = 'none';
-      }
-    }
-
-    function showInfoBar() {
-      var bar = document.getElementById('streamInfoBar');
-      bar.style.opacity = '1';
-    }
-
-    // === Player ===
-    function initPlayer(serverId) {
-      activeServer = serverId;
-      var s = SERVERS[serverId];
-      var streamUrl = s.url;
-      if (!streamUrl) return;
-
-      showInfoBar();
-
-      // Destroy existing DPlayer
-      if (window._dpInstance) {
-        try { window._dpInstance.destroy(); } catch(e) {}
-        window._dpInstance = null;
-      }
-      if (hlsInstance) {
-        try { hlsInstance.destroy(); } catch(e) {}
-        hlsInstance = null;
-      }
-
-      // Clear container
-      var container = document.getElementById('dplayer');
-      if (container) container.innerHTML = '';
-
-      // Create DPlayer
-      var dp = new DPlayer({
-        container: document.getElementById('dplayer'),
-        live: true,
-        autoplay: true,
-        screenshot: true,
-        theme: '#007AFF',
-        lang: 'en',
-        hotkey: true,
-        preload: 'auto',
-        logo: null,
-        volume: 1.0,
-        mutex: true,
-        video: {
-          url: streamUrl,
-          type: 'customHls',
-          pic: 'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',
-          customType: {
-            customHls: function(video, player) {
-              hlsInstance = new Hls({
-                lowLatencyMode: false,
-                maxBufferLength: 30,
-                maxMaxBufferLength: 60,
-                maxBufferSize: 30*1000*1000,
-                stretchShortVideoTrack: false,
-                accurateSegmentIncrement: false,
-                enableWorker: true
-              });
-              hlsInstance.loadSource(video.src);
-              hlsInstance.attachMedia(video);
-              hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play().catch(function(){});
-              });
-              hlsInstance.on(Hls.Events.ERROR, function(event, data) {
-                if (data.fatal) {
-                  switch(data.type) {
-                    case Hls.ErrorTypes.NETWORK_ERROR:
-                      hlsInstance.startLoad();
-                      break;
-                    case Hls.ErrorTypes.MEDIA_ERROR:
-                      hlsInstance.recoverMediaError();
-                      break;
-                    default:
-                      hlsInstance.destroy();
-                      setTimeout(function() {
-                        if (video.src) {
-                          hlsInstance = new Hls({ enableWorker: true });
-                          hlsInstance.loadSource(video.src);
-                          hlsInstance.attachMedia(video);
-                        }
-                      }, 5000);
-                      break;
-                  }
-                }
-              });
-            }
-          }
-        },
-        contextmenu: [
-          { text: 'Juche TV', link: window.location.href },
-          { text: 'KCTV Live Stream', link: window.location.href }
-        ]
-      });
-
-      // Store reference
-      window._dpInstance = dp;
-
-      // Start ping monitor
-      startPingMonitor(serverId);
-
-      // Dispatch event so EPG module knows player was reinit'd
-      document.dispatchEvent(new CustomEvent('dplayer:reinit'));
-    }
-
-    // === Ping Monitor ===
-    function startPingMonitor(serverId) {
-      function ping() {
-        var s = SERVERS[serverId];
-        if (!s || !s.url) return;
-        var start = performance.now();
-        var xhr = new XMLHttpRequest();
-        var bust = s.url + (s.url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
-        xhr.open('GET', bust, true);
-        xhr.timeout = 5000;
-        xhr.onload = function() { updateInfoBar(serverId, Math.round(performance.now() - start)); };
-        xhr.onerror = function() { updateInfoBar(serverId, lastPingMs || 0); };
-        xhr.ontimeout = function() { updateInfoBar(serverId, lastPingMs || 0); };
-        try { xhr.send(); } catch (e) {}
-      }
-      ping();
-      setInterval(ping, 15000);
-    }
-
-    // === Main Init ===
-    function _init() {
-      initPlayer('za');
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _init);
-    else _init();
-    window._kctvInitPlayer = initPlayer;
-    window._kctvActiveServer = function() { return activeServer; };
-    window._kctvHls = function() { return hlsInstance; };
-
-    // === I18N ===
-    var translations = {
-      en: { brand:'Juche TV', channels:'Channels', backToChannels:'Back to Channels', kctvTitle:'Korean Central Television', liveFrom:'Live from Pyongyang, DPRK', live:'LIVE', archives:'Archives Recording', about:'About KCTV', kctvDesc:'Korean Central Television (KCTV) is the state television broadcaster of the Democratic People\'s Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.', footer:'Juche TV. Not affiliated with any broadcasting entity.' },
-      zh: { brand:'\u4e3b\u4f53\u7535\u89c6', channels:'\u9891\u9053', backToChannels:'\u8fd4\u56de\u9891\u9053\u5217\u8868', kctvTitle:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0', liveFrom:'\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u5e73\u58e4\u76f4\u64ad', live:'\u76f4\u64ad', archives:'\u5f55\u50cf\u5f52\u6863', about:'\u5173\u4e8e\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0', kctvDesc:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\uff08KCTV\uff09\u662f\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u7684\u56fd\u5bb6\u7535\u89c6\u5e7f\u64ad\u516c\u53f8\u3002\u5b83\u4ece\u5e73\u58e4\u64ad\u51fa\u65b0\u95fb\u3001\u6587\u5316\u8282\u76ee\u3001\u7eaa\u5f55\u7247\u548c\u5a31\u4e50\u5185\u5bb9\u3002', footer:'\u4e3b\u4f53\u7535\u89c6\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u5b9e\u4f53\u65e0\u5173\u3002' }
-    };
-    var currentLang = localStorage.getItem('lang') || 'en';
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('lang', lang);
-      var t = translations[lang] || translations['en'];
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key]) el.textContent = t[key];
-      });
-      document.getElementById('langLabel').textContent = lang === 'zh' ? '\u4e2d\u6587' : 'English';
-      document.querySelectorAll('.lang-option').forEach(function(o) {
-        o.classList.toggle('active', o.dataset.lang === lang);
-      });
-    }
-    function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('show'); }
-    function selectLang(el) { applyLanguage(el.dataset.lang); document.getElementById('langMenu').classList.remove('show'); }
-    document.getElementById('langBtn').addEventListener('click', toggleLangMenu);
-    document.querySelectorAll('.lang-option').forEach(function(o) { o.addEventListener('click', function() { selectLang(o); }); });
-    document.addEventListener('click', function(e) { if (!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.remove('show'); });
-    applyLanguage(currentLang);
-
-    // === Theme ===
-    var themeToggle = document.getElementById('themeToggle');
-    var moon = document.getElementById('moon');
-    var sun = document.getElementById('sun');
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme')) {
-      document.documentElement.classList.add('dark');
-      moon.style.display = 'none'; sun.style.display = '';
-    }
-    themeToggle.addEventListener('click', function() {
-      document.documentElement.classList.toggle('dark');
-      var d = document.documentElement.classList.contains('dark');
-      moon.style.display = d ? 'none' : '';
-      sun.style.display = d ? '' : 'none';
-      localStorage.setItem('theme', d ? 'dark' : 'light');
+  function initPlayer(sid){
+    activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
+    showInfoBar();
+    if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
+    if(hlsInstance){try{hlsInstance.destroy();}catch(e){}hlsInstance=null;}
+    var c=document.getElementById('dplayer');if(c)c.innerHTML='';
+    var dp=new DPlayer({
+      container:document.getElementById('dplayer'),live:true,autoplay:true,screenshot:false,
+      theme:'#e8173a',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
+      video:{url:s.url,type:'customHls',
+        pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',
+        customType:{customHls:function(video){
+          hlsInstance=new Hls({lowLatencyMode:false,maxBufferLength:30,maxMaxBufferLength:60,maxBufferSize:30*1000*1000,stretchShortVideoTrack:false,accurateSegmentIncrement:false,enableWorker:true});
+          hlsInstance.loadSource(video.src);hlsInstance.attachMedia(video);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED,function(){video.play().catch(function(){});});
+          hlsInstance.on(Hls.Events.ERROR,function(ev,data){
+            if(data.fatal){switch(data.type){
+              case Hls.ErrorTypes.NETWORK_ERROR:hlsInstance.startLoad();break;
+              case Hls.ErrorTypes.MEDIA_ERROR:hlsInstance.recoverMediaError();break;
+              default:hlsInstance.destroy();setTimeout(function(){if(video.src){hlsInstance=new Hls({enableWorker:true});hlsInstance.loadSource(video.src);hlsInstance.attachMedia(video);}},5000);
+            }}
+          });
+        }}
+      },
+      contextmenu:[{text:'Juche TV',link:window.location.href},{text:'KCTV Live Stream',link:window.location.href}]
     });
-
-    // === Screenshot Feature ===
-    (function() {
-      var screenshotBtn = document.getElementById('screenshotBtn');
-      var screenshotFlash = document.getElementById('screenshotFlash');
-      var screenshotOverlay = document.getElementById('screenshotOverlay');
-      var screenshotOverlayClose = document.getElementById('screenshotOverlayClose');
-      var screenshotImg = document.getElementById('screenshotImg');
-      var screenshotDownload = document.getElementById('screenshotDownload');
-      var programToggle = document.getElementById('screenshotProgramToggle');
-
-      var WATERMARK_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-      var TOGGLE_STORAGE_KEY = 'kctv_screenshot_program_mode';
-
-      // Restore the user's last preference for the watermark mode
-      try {
-        programToggle.checked = localStorage.getItem(TOGGLE_STORAGE_KEY) === '1';
-      } catch (e) {}
-
-      // Pyongyang-time date string, e.g. "20 Jun 2026"
-      function watermarkDate() {
-        var now = new Date();
-        var utc = now.getTime() + now.getTimezoneOffset() * 60000;
-        var kst = new Date(utc + 9 * 3600000);
-        var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        return kst.getDate() + ' ' + MON[kst.getMonth()] + ' ' + kst.getFullYear();
-      }
-
-      // Pulls the title of whatever's currently airing from the EPG system,
-      // falling back gracefully if the EPG hasn't loaded or nothing is on.
-      function currentProgramName() {
-        if (typeof window._kctvGetCurrentProgram === 'function') {
-          var name = window._kctvGetCurrentProgram();
-          if (name) return name;
-        }
-        return 'Korean Central Television';
-      }
-
-      function roundedRectPath(ctx, x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.arcTo(x + w, y, x + w, y + r, r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-        ctx.lineTo(x + r, y + h);
-        ctx.arcTo(x, y + h, x, y + h - r, r);
-        ctx.lineTo(x, y + r);
-        ctx.arcTo(x, y, x + r, y, r);
-        ctx.closePath();
-      }
-
-      // Picks the largest font size (down to minSize) whose resulting pill
-      // (text + chrome) still fits within maxPillWidth.
-      function fitBadgeFont(ctx, text, maxPillWidth, startSize, minSize) {
-        var size = startSize;
-        while (size > minSize) {
-          ctx.font = '700 ' + size + 'px ' + WATERMARK_FONT;
-          var textW = ctx.measureText(text).width;
-          var padX = Math.round(size * 0.85);
-          var accentW = Math.max(3, Math.round(size * 0.16));
-          var pillW = textW + padX * 2 + accentW + Math.round(size * 0.35);
-          if (pillW <= maxPillWidth) break;
-          size -= 1;
-        }
-        return size;
-      }
-
-      // Rounded dark badge, bottom-left, with a warm accent bar on the left
-      // edge and a single line of bold white text. Two modes:
-      //  - default:    "Shared via https://juche-tv.vercel.app  –  20 Jun 2026  –  Korean Central Television"
-      //  - programMode: "{Current Programme}  –  Shared via https://juche-tv.vercel.app/"
-      function drawWatermark(ctx, w, h, programMode) {
-        var text = programMode
-          ? currentProgramName() + '  \u2013  Shared via https://juche-tv.vercel.app/'
-          : 'Shared via https://juche-tv.vercel.app  \u2013  ' + watermarkDate() + '  \u2013  Korean Central Television';
-
-        var margin = Math.max(16, Math.round(w * 0.018));
-        var maxPillWidth = w - margin * 2;
-        var startSize = Math.max(13, Math.round(w * 0.019));
-        var fontSize = fitBadgeFont(ctx, text, maxPillWidth, startSize, 10);
-
-        ctx.font = '700 ' + fontSize + 'px ' + WATERMARK_FONT;
-        var textWidth = ctx.measureText(text).width;
-
-        var padX = Math.round(fontSize * 0.85);
-        var padY = Math.round(fontSize * 0.62);
-        var accentW = Math.max(3, Math.round(fontSize * 0.16));
-        var gap = Math.round(fontSize * 0.35);
-        var radius = Math.round(fontSize * 0.5);
-
-        var pillH = fontSize + padY * 2;
-        var pillW = Math.min(textWidth + padX * 2 + accentW + gap, maxPillWidth);
-        var pillX = margin;
-        var pillY = h - margin - pillH;
-
-        ctx.save();
-
-        // Drop shadow under the badge
-        ctx.shadowColor = 'rgba(0,0,0,0.45)';
-        ctx.shadowBlur = Math.round(fontSize * 0.6);
-        ctx.shadowOffsetY = Math.round(fontSize * 0.15);
-        ctx.fillStyle = 'rgba(18,18,22,0.82)';
-        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
-        ctx.fill();
-
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
-
-        // Warm accent bar on the left edge, clipped to the pill's rounding
-        ctx.save();
-        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
-        ctx.clip();
-        ctx.fillStyle = '#FF6A39';
-        ctx.fillRect(pillX, pillY, accentW, pillH);
-        ctx.restore();
-
-        // Text, clipped to the pill so it never spills past the rounded edge
-        ctx.save();
-        roundedRectPath(ctx, pillX, pillY, pillW, pillH, radius);
-        ctx.clip();
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '700 ' + fontSize + 'px ' + WATERMARK_FONT;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(text, pillX + accentW + padX, pillY + pillH / 2 + Math.round(fontSize * 0.04));
-        ctx.restore();
-
-        ctx.restore();
-      }
-
-      // Holds the raw captured video frame (no watermark baked in yet) so
-      // toggling the watermark mode can redraw instantly without re-grabbing
-      // the video.
-      var lastFrame = null;
-
-      // Composites the cached frame + the current watermark mode onto a
-      // fresh canvas and pushes it into the popup's image/download targets.
-      function renderScreenshot() {
-        if (!lastFrame) return;
-        var canvas = document.createElement('canvas');
-        canvas.width = lastFrame.width;
-        canvas.height = lastFrame.height;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(lastFrame, 0, 0);
-        drawWatermark(ctx, canvas.width, canvas.height, programToggle.checked);
-
-        var dataUrl = canvas.toDataURL('image/png');
-        screenshotImg.src = dataUrl;
-        screenshotDownload.href = dataUrl;
-      }
-
-      function openScreenshotPopup() {
-        screenshotOverlay.classList.add('show');
-      }
-      function closeScreenshotPopup() {
-        screenshotOverlay.classList.remove('show');
-      }
-
-      screenshotOverlayClose.addEventListener('click', closeScreenshotPopup);
-      screenshotOverlay.addEventListener('click', function(e) {
-        if (e.target === this) closeScreenshotPopup();
-      });
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && screenshotOverlay.classList.contains('show')) closeScreenshotPopup();
-      });
-
-      programToggle.addEventListener('change', function() {
-        try { localStorage.setItem(TOGGLE_STORAGE_KEY, programToggle.checked ? '1' : '0'); } catch (e) {}
-        renderScreenshot();
-      });
-
-      screenshotBtn.addEventListener('click', function() {
-        // Try DPlayer video element first
-        var videoEl = document.querySelector('#dplayer video');
-        if (!videoEl || !videoEl.videoWidth) {
-          // Fallback: any video in player
-          var techEl = document.querySelector('#dplayer video, #dplayer .dplayer-video');
-          if (techEl) videoEl = techEl;
-        }
-        if (!videoEl || !videoEl.videoWidth) {
-          alert('Video is not ready yet. Please wait for the stream to load.');
-          return;
-        }
-
-        // Capture the raw frame only — watermark is composited separately
-        // by renderScreenshot() so the toggle can redraw it on demand.
-        var frame = document.createElement('canvas');
-        frame.width = videoEl.videoWidth;
-        frame.height = videoEl.videoHeight;
-        frame.getContext('2d').drawImage(videoEl, 0, 0, frame.width, frame.height);
-        lastFrame = frame;
-
-        // Flash effect
-        screenshotFlash.classList.remove('active');
-        void screenshotFlash.offsetWidth; // force reflow
-        screenshotFlash.classList.add('active');
-
-        renderScreenshot();
-        openScreenshotPopup();
-      });
+    window._dpInstance=dp;
+    /* Disable long-press speed-up on mobile */
+    (function disableLongPress(){
+      var wrap=document.getElementById('dplayer');
+      if(!wrap)return;
+      var _lpt=null;
+      wrap.addEventListener('touchstart',function(e){
+        _lpt=setTimeout(function(){},99999);
+      },{passive:true});
+      wrap.addEventListener('contextmenu',function(e){e.preventDefault();},{passive:false});
+      /* Patch DPlayer internals to suppress long-press */
+      var origAEL=wrap.addEventListener.bind(wrap);
+      /* Also suppress the DPlayer long-press by removing the touch events it adds */
+      setTimeout(function(){
+        var video=wrap.querySelector('video');
+        if(!video)return;
+        var clone=video.cloneNode(false);
+        /* We only need to block contextmenu on video */
+        video.addEventListener('contextmenu',function(e){e.stopPropagation();e.preventDefault();},{passive:false,capture:true});
+      },1000);
     })();
+    startPing(sid);
+    document.dispatchEvent(new CustomEvent('dplayer:reinit'));
+  }
 
+  function startPing(sid){
+    function ping(){var s=SERVERS[sid];if(!s||!s.url)return;var t=performance.now(),xhr=new XMLHttpRequest();xhr.open('GET',s.url+(s.url.indexOf('?')>=0?'&':'?')+'_t='+Date.now(),true);xhr.timeout=5000;xhr.onload=function(){updateInfoBar(sid,Math.round(performance.now()-t));};xhr.onerror=xhr.ontimeout=function(){updateInfoBar(sid,lastPingMs||0);};try{xhr.send();}catch(e){}}
+    ping();setInterval(ping,15000);
+  }
+
+  function _init(){initPlayer('za');}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_init);else _init();
+  window._kctvInitPlayer=initPlayer;window._kctvActiveServer=function(){return activeServer;};window._kctvHls=function(){return hlsInstance;};
+
+  /* I18N */
+  var T={
+    en:{brand:'Juche TV',channels:'Channels',backToChannels:'Back to Channels',kctvTitle:'Korean Central Television',liveFrom:'Live from Pyongyang, DPRK',live:'LIVE',archives:'Archives Recording',about:'About KCTV',kctvDesc:"Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.",footer:'Juche TV. Not affiliated with any broadcasting entity.'},
+    zh:{brand:'\u4e3b\u4f53\u7535\u89c6',channels:'\u9891\u9053',backToChannels:'\u8fd4\u56de\u9891\u9053\u5217\u8868',kctvTitle:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0',liveFrom:'\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u5e73\u58e4\u76f4\u64ad',live:'\u76f4\u64ad',archives:'\u5f55\u50cf\u5f52\u6863',about:'\u5173\u4e8e\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0',kctvDesc:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\uff08KCTV\uff09\u662f\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u7684\u56fd\u5bb6\u7535\u89c6\u5e7f\u64ad\u516c\u53f8\u3002\u5b83\u4ece\u5e73\u58e4\u64ad\u51fa\u65b0\u95fb\u3001\u6587\u5316\u8282\u76ee\u3001\u7eaa\u5f55\u7247\u548c\u5a31\u4e50\u5185\u5bb9\u3002',footer:'\u4e3b\u4f53\u7535\u89c6\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u5b9e\u4f53\u65e0\u5173\u3002'}
+  };
+  var curLang=localStorage.getItem('lang')||'en';
+  function applyLang(lang){curLang=lang;localStorage.setItem('lang',lang);var t=T[lang]||T.en;document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(t[k])el.textContent=t[k];});document.getElementById('langLabel').textContent=lang==='zh'?'中文':'EN';document.querySelectorAll('.lang-opt').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});}
+  document.getElementById('langBtn').addEventListener('click',function(){document.getElementById('langMenu').classList.toggle('show');});
+  document.querySelectorAll('.lang-opt').forEach(function(o){o.addEventListener('click',function(){applyLang(o.dataset.lang);document.getElementById('langMenu').classList.remove('show');});});
+  document.addEventListener('click',function(e){if(!e.target.closest('.lang-wrap'))document.getElementById('langMenu').classList.remove('show');});
+  applyLang(curLang);
+
+  /* THEME */
+  var moon=document.getElementById('moonI'),sun=document.getElementById('sunI');
+  function applyTheme(dark){document.documentElement.classList.toggle('light',!dark);moon.style.display=dark?'':'none';sun.style.display=dark?'none':'';}
+  var saved=localStorage.getItem('theme'),prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark=saved?saved==='dark':prefersDark;applyTheme(isDark);
+  document.getElementById('themeToggle').addEventListener('click',function(){isDark=!isDark;localStorage.setItem('theme',isDark?'dark':'light');applyTheme(isDark);});
+
+  /* SCREENSHOT */
+  (function(){
+    var btn=document.getElementById('screenshotBtn'),flash=document.getElementById('ssFlash');
+    var ov=document.getElementById('screenshotOverlay'),ovc=document.getElementById('screenshotOverlayClose');
+    var img=document.getElementById('screenshotImg'),dl=document.getElementById('screenshotDownload');
+    var tog=document.getElementById('screenshotProgramToggle');
+    var pickBtn=document.getElementById('screenshotPickProgBtn');
+    var editToggle=document.getElementById('screenshotEditTextToggle');
+    var editRow=document.getElementById('ssEditTextRow');
+    var editWrap=document.getElementById('ssEditInputWrap');
+    var customInput=document.getElementById('ssCustomText');
+    var FONT='-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif',SK='kctv_ss_prog';
+    var pickedProgram=null,customText=null;
+    try{tog.checked=localStorage.getItem(SK)==='1';}catch(e){}
+    function wDate(){var n=new Date(),k=new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);return k.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][k.getMonth()]+' '+k.getFullYear();}
+    function curProg(){
+      if(pickedProgram)return pickedProgram;
+      if(typeof window._kctvGetCurrentProgram==='function'){var n=window._kctvGetCurrentProgram();if(n)return n;}
+      return 'Korean Central Television';
+    }
+    function rrp(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+    function fitSz(ctx,txt,maxW,start,min){var sz=start;while(sz>min){ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),aw=Math.max(3,Math.round(sz*0.16));if(tw+px*2+aw+Math.round(sz*0.35)<=maxW)break;sz--;}return sz;}
+    function getWMText(){
+      if(customText!==null&&customText.trim()!=='')return customText.trim();
+      if(tog.checked||pickedProgram)return curProg()+'\u2002\u2013\u2002Shared via https://juche-tv.vercel.app/';
+      return 'Shared via https://juche-tv.vercel.app  \u2013  '+wDate()+'  \u2013  Korean Central Television';
+    }
+    function drawWM(ctx,w,h){
+      var txt=getWMText();
+      var mg=Math.max(16,Math.round(w*0.018)),maxPW=w-mg*2,sz=fitSz(ctx,txt,maxPW,Math.max(13,Math.round(w*0.019)),10);
+      ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),py=Math.round(sz*0.62),aw=Math.max(3,Math.round(sz*0.16)),gap=Math.round(sz*0.35),r=Math.round(sz*0.5),ph=sz+py*2,pw=Math.min(tw+px*2+aw+gap,maxPW),pX=mg,pY=h-mg-ph;
+      ctx.save();ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=Math.round(sz*0.6);ctx.shadowOffsetY=Math.round(sz*0.15);ctx.fillStyle='rgba(18,18,22,.82)';rrp(ctx,pX,pY,pw,ph,r);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#e8173a';ctx.fillRect(pX,pY,aw,ph);ctx.restore();
+      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#fff';ctx.font='700 '+sz+'px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(txt,pX+aw+px,pY+ph/2+Math.round(sz*0.04));ctx.restore();ctx.restore();
+    }
+    var lastFrame=null;
+    function renderSS(){if(!lastFrame)return;var c=document.createElement('canvas');c.width=lastFrame.width;c.height=lastFrame.height;var ctx=c.getContext('2d');ctx.drawImage(lastFrame,0,0);drawWM(ctx,c.width,c.height);var url=c.toDataURL('image/png');img.src=url;dl.href=url;}
+    function openSS(){ov.classList.add('show');}function closeSS(){ov.classList.remove('show');}
+    ovc.addEventListener('click',closeSS);ov.addEventListener('click',function(e){if(e.target===this)closeSS();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('show'))closeSS();});
+    tog.addEventListener('change',function(){
+      try{localStorage.setItem(SK,tog.checked?'1':'0');}catch(e){}
+      if(tog.checked){pickedProgram=null;pickBtn.textContent='Browse Guide';}
+      renderSS();
+    });
+
+    /* Pick programme — open EPG overlay, intercept selection */
+    pickBtn.addEventListener('click',function(){
+      /* Open EPG overlay */
+      if(typeof window._epgOpenOverlay==='function')window._epgOpenOverlay();
+      /* Listen for a click on an EPG row */
+      var epgBody=document.getElementById('epgOverlayBody');
+      if(!epgBody)return;
+      function onRowClick(e){
+        var row=e.target.closest('.epg-fr');
+        if(!row)return;
+        var titleEl=row.querySelector('.epg-ftitle');
+        if(titleEl){
+          pickedProgram=titleEl.textContent.trim();
+          pickBtn.textContent='\u2713 '+pickedProgram.substring(0,28)+(pickedProgram.length>28?'\u2026':'');
+          tog.checked=false;
+          try{localStorage.setItem(SK,'0');}catch(e){}
+        }
+        epgBody.removeEventListener('click',onRowClick);
+        /* Close EPG overlay */
+        var closeBtn=document.getElementById('epgOverlayClose');
+        if(closeBtn)closeBtn.click();
+        renderSS();
+      }
+      epgBody.addEventListener('click',onRowClick);
+    });
+
+    /* Edit text toggle */
+    editToggle.addEventListener('change',function(){
+      editWrap.style.display=editToggle.checked?'block':'none';
+      if(!editToggle.checked){customText=null;customInput.value='';}
+      renderSS();
+    });
+    customInput.addEventListener('input',function(){
+      customText=customInput.value;
+      renderSS();
+    });
+    /* Show edit row once screenshot popup opens */
+    function showEditRow(){editRow.style.display='';}
+
+    btn.addEventListener('click',function(){
+      var v=document.querySelector('#dplayer video');if(!v||!v.videoWidth){alert('Video not ready. Please wait for the stream.');return;}
+      var f=document.createElement('canvas');f.width=v.videoWidth;f.height=v.videoHeight;f.getContext('2d').drawImage(v,0,0,f.width,f.height);lastFrame=f;
+      flash.classList.remove('active');void flash.offsetWidth;flash.classList.add('active');
+      showEditRow();renderSS();openSS();
+    });
   })();
-  </script>
+})();
+</script>
 
-  <script>
-  // ===== EPG SYSTEM =====
-  (function() {
-    function epgDateString(d) {
-      return d.getFullYear() + '-' + fmt2(d.getMonth() + 1) + '-' + fmt2(d.getDate());
+<script>
+/* EPG SYSTEM */
+(function(){
+  function getPT(){var n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);}
+  function fmt2(n){return String(n).padStart(2,'0');}
+  function fmtTime(d){return fmt2(d.getHours())+':'+fmt2(d.getMinutes())+':'+fmt2(d.getSeconds());}
+  var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtDate(d){return DOW[d.getDay()]+', '+d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear();}
+  function epgDS(d){return d.getFullYear()+'-'+fmt2(d.getMonth()+1)+'-'+fmt2(d.getDate());}
+  function getUrl(){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+epgDS(getPT());}
+  var epgData=null,lastDS='';
+
+  function tick(){var now=getPT(),t=fmtTime(now);['epgClockVal','epgOverlayClock'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t;});var ds=fmtDate(now);if(ds!==lastDS){lastDS=ds;['epgDateVal','epgOverlayDateVal'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=ds;});}}
+  setInterval(tick,1000);tick();
+
+  function parseKST(hhmm){var p=hhmm.split(':'),d=new Date(getPT());d.setHours(+p[0],+p[1],0,0);return d;}
+  function getDur(s,e){var d=(parseKST(e)-parseKST(s))/60000;return d<0?d+1440:d;}
+  function getMinsLeft(e){var d=(parseKST(e)-getPT())/60000;return Math.round(d<0?d+1440:d);}
+  function getPct(s,e){var now=getPT(),st=parseKST(s),en=parseKST(e),tot=en-st,el=now-st;return tot<=0?0:Math.min(Math.max(el/tot*100,0),100);}
+  function isPast(e){return getPT()>parseKST(e);}
+  function isCur(s,e){var n=getPT();return n>=parseKST(s)&&n<parseKST(e);}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function titleEn(p){if(!p||!p.title)return'';return typeof p.title==='object'?(p.title.en||''):p.title;}
+  function titleSub(p){if(!p||!p.title||typeof p.title!=='object')return'';var r=[];if(p.title.ko)r.push(p.title.ko);if(p.title.zh)r.push(p.title.zh);return r.join('  ·  ');}
+
+  function renderEPG(data){
+    epgData=data;var progs=data.programs,curIdx=-1;
+    progs.forEach(function(p,i){if(isCur(p.start,p.end))curIdx=i;});
+    var cur=curIdx>=0?progs[curIdx]:null;
+    if(cur){
+      document.getElementById('epgNowTitle').textContent=titleEn(cur);
+      document.getElementById('epgNowTitleSub').textContent=titleSub(cur);
+      document.getElementById('epgNowCat').textContent=cur.category;
+      document.getElementById('epgNowTime').textContent=cur.start+' – '+cur.end;
+      document.getElementById('epgProgressFill').style.width=getPct(cur.start,cur.end).toFixed(1)+'%';
+      document.getElementById('epgRemaining').textContent=getMinsLeft(cur.end)+' min left';
+    } else {
+      document.getElementById('epgNowTitle').textContent='Off Air';
+      ['epgNowTitleSub','epgNowCat','epgNowTime','epgRemaining'].forEach(function(id){document.getElementById(id).textContent='';});
+      document.getElementById('epgProgressFill').style.width='0%';
     }
-    function getEpgUrl() {
-      return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date=' + epgDateString(getPyongyangTime());
-    }
-    var epgData = null;
-
-    // --- Pyongyang time (UTC+9) ---
-    function getPyongyangTime() {
-      var now = new Date();
-      var utc = now.getTime() + now.getTimezoneOffset() * 60000;
-      return new Date(utc + 9 * 3600000);
-    }
-    function fmt2(n) { return String(n).padStart(2, '0'); }
-    function fmtTime(d) {
-      return fmt2(d.getHours()) + ':' + fmt2(d.getMinutes()) + ':' + fmt2(d.getSeconds());
-    }
-    function fmtHHMM(d) {
-      return fmt2(d.getHours()) + ':' + fmt2(d.getMinutes());
-    }
-    var DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var MON_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    function fmtDate(d) {
-      return DOW_NAMES[d.getDay()] + ', ' + d.getDate() + ' ' + MON_NAMES[d.getMonth()] + ' ' + d.getFullYear();
-    }
-
-    // Tick clock
-    var lastDateStr = '';
-    function tickClock() {
-      var now = getPyongyangTime();
-      var t = fmtTime(now);
-      var el = document.getElementById('epgClockVal');
-      var el2 = document.getElementById('epgOverlayClock');
-      if (el) el.textContent = t;
-      if (el2) el2.textContent = t;
-
-      var dateStr = fmtDate(now);
-      if (dateStr !== lastDateStr) {
-        lastDateStr = dateStr;
-        var dEl = document.getElementById('epgDateVal');
-        var dEl2 = document.getElementById('epgOverlayDateVal');
-        if (dEl) dEl.textContent = dateStr;
-        if (dEl2) dEl2.textContent = dateStr;
-      }
-    }
-    setInterval(tickClock, 1000);
-    tickClock();
-
-    // --- Parse HH:MM string into today's Date in KST ---
-    function parseKST(hhmm) {
-      var parts = hhmm.split(':');
-      var now = getPyongyangTime();
-      var d = new Date(now);
-      d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
-      return d;
-    }
-
-    function getDuration(start, end) {
-      var diff = (parseKST(end) - parseKST(start)) / 60000;
-      if (diff < 0) diff += 24 * 60;
-      return diff;
-    }
-
-    function getMinutesRemaining(endHHMM) {
-      var now = getPyongyangTime();
-      var end = parseKST(endHHMM);
-      var diff = (end - now) / 60000;
-      if (diff < 0) diff += 24 * 60;
-      return Math.round(diff);
-    }
-
-    function getProgress(startHHMM, endHHMM) {
-      var now = getPyongyangTime();
-      var start = parseKST(startHHMM);
-      var end = parseKST(endHHMM);
-      var total = end - start;
-      var elapsed = now - start;
-      if (total <= 0) return 0;
-      return Math.min(Math.max((elapsed / total) * 100, 0), 100);
-    }
-
-    function isPast(endHHMM) {
-      return getPyongyangTime() > parseKST(endHHMM);
-    }
-    function isCurrent(startHHMM, endHHMM) {
-      var now = getPyongyangTime();
-      return now >= parseKST(startHHMM) && now < parseKST(endHHMM);
-    }
-
-    // --- Title helpers (title is now {en, ko, zh}) ---
-    function escHtml(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    function titleEn(p) {
-      if (!p || !p.title) return '';
-      return typeof p.title === 'object' ? (p.title.en || '') : p.title;
-    }
-    function titleSubText(p) {
-      if (!p || !p.title || typeof p.title !== 'object') return '';
-      var parts = [];
-      if (p.title.ko) parts.push(p.title.ko);
-      if (p.title.zh) parts.push(p.title.zh);
-      return parts.join('  \u00b7  ');
-    }
-
-    // --- Render mini EPG ---
-    function renderEPG(data) {
-      epgData = data;
-      var programs = data.programs;
-      var now = getPyongyangTime();
-
-      // Find current
-      var currentIdx = -1;
-      programs.forEach(function(p, i) {
-        if (isCurrent(p.start, p.end)) currentIdx = i;
-      });
-
-      // Now bar
-      var cur = currentIdx >= 0 ? programs[currentIdx] : null;
-      if (cur) {
-        document.getElementById('epgNowTitle').textContent = titleEn(cur);
-        document.getElementById('epgNowTitleSub').textContent = titleSubText(cur);
-        document.getElementById('epgNowCat').textContent = cur.category;
-        document.getElementById('epgNowTime').textContent = cur.start + ' \u2013 ' + cur.end;
-        document.getElementById('epgProgressFill').style.width = getProgress(cur.start, cur.end).toFixed(1) + '%';
-        var rem = getMinutesRemaining(cur.end);
-        document.getElementById('epgRemaining').textContent = rem + ' min left';
-      } else {
-        document.getElementById('epgNowTitle').textContent = 'Off Air';
-        document.getElementById('epgNowTitleSub').textContent = '';
-        document.getElementById('epgNowCat').textContent = '';
-        document.getElementById('epgNowTime').textContent = '';
-        document.getElementById('epgProgressFill').style.width = '0%';
-        document.getElementById('epgRemaining').textContent = '';
-      }
-
-      // Schedule rows (show from current onwards + a few past)
-      var scheduleEl = document.getElementById('epgSchedule');
-      scheduleEl.innerHTML = '';
-      var startFrom = Math.max(0, currentIdx - 2);
-      programs.slice(startFrom).forEach(function(p, i) {
-        var absIdx = startFrom + i;
-        var past = isPast(p.end);
-        var curr = isCurrent(p.start, p.end);
-        var row = document.createElement('div');
-        row.className = 'epg-row' + (past ? ' epg-past' : '') + (curr ? ' epg-current' : '');
-        row.innerHTML =
-          '<div class="epg-row-time">' + escHtml(p.start) + '</div>' +
-          '<div class="epg-row-dot"></div>' +
-          '<div class="epg-row-body">' +
-            '<div class="epg-row-title">' + escHtml(titleEn(p)) + '</div>' +
-            '<div class="epg-row-sub">' + escHtml(titleSubText(p)) + '</div>' +
-          '</div>' +
-          '<div class="epg-row-end">' + escHtml(p.end) + '</div>';
-        scheduleEl.appendChild(row);
-        // Auto scroll to current
-        if (curr) {
-          setTimeout(function() { row.scrollIntoView({ block: 'nearest' }); }, 100);
-        }
-      });
-
-      document.getElementById('epgLoading').style.display = 'none';
-      document.getElementById('epgError').style.display = 'none';
-      document.getElementById('epgContent').style.display = '';
-
-      // Update progress every minute
-      setTimeout(function() { if (epgData) renderEPG(epgData); }, 60000);
-    }
-
-    // --- Render full overlay EPG ---
-    function renderOverlay(data) {
-      var programs = data.programs;
-      var body = document.getElementById('epgOverlayBody');
-      body.innerHTML = '';
-      programs.forEach(function(p) {
-        var past = isPast(p.end);
-        var curr = isCurrent(p.start, p.end);
-        var dur = getDuration(p.start, p.end);
-        var row = document.createElement('div');
-        row.className = 'epg-full-row' + (past ? ' epg-past' : '') + (curr ? ' epg-current' : '');
-        row.innerHTML =
-          '<div class="epg-full-time">' + escHtml(p.start) + '</div>' +
-          '<div class="epg-full-dot"></div>' +
-          '<div class="epg-full-body">' +
-            '<div class="epg-full-title">' + escHtml(titleEn(p)) + '</div>' +
-            '<div class="epg-full-sub">' + escHtml(titleSubText(p)) + '</div>' +
-            '<div class="epg-full-tags">' +
-              '<span class="epg-full-cat">' + escHtml(p.category) + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="epg-full-end">' +
-            escHtml(p.end) +
-            '<div class="epg-full-dur">' + dur + ' min</div>' +
-          '</div>';
-        body.appendChild(row);
-        if (curr) setTimeout(function() { row.scrollIntoView({ block: 'center' }); }, 80);
-      });
-    }
-
-    // --- Load JSON ---
-    function loadEPG() {
-      document.getElementById('epgLoading').style.display = '';
-      document.getElementById('epgError').style.display = 'none';
-      document.getElementById('epgContent').style.display = 'none';
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', getEpgUrl(), true);
-      xhr.timeout = 8000;
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          try {
-            var data = JSON.parse(xhr.responseText);
-            renderEPG(data);
-          } catch(e) {
-            showError('Invalid EPG data format.');
-          }
-        } else {
-          showError('Server returned ' + xhr.status + '.');
-        }
-      };
-      xhr.onerror = function() { showError('Network error. Check connection.'); };
-      xhr.ontimeout = function() { showError('Request timed out.'); };
-      xhr.send();
-    }
-
-    function showError(msg) {
-      document.getElementById('epgLoading').style.display = 'none';
-      document.getElementById('epgErrorMsg').textContent = msg;
-      document.getElementById('epgError').style.display = '';
-      document.getElementById('epgContent').style.display = 'none';
-    }
-
-    document.getElementById('epgRetryBtn').addEventListener('click', loadEPG);
-
-    // --- SpotlightCard on EPG card ---
-    var card = document.getElementById('epgCard');
-    if (card) {
-      card.addEventListener('mousemove', function(e) {
-        var rect = card.getBoundingClientRect();
-        card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
-        card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
-      });
-    }
-
-    // --- Overlay open/close ---
-    var overlay = document.getElementById('epgOverlay');
-    var overlayInner = overlay.querySelector('.epg-overlay-inner');
-    var originalParent = overlay.parentNode;
-    var isOverlayOpen = false;
-
-    function openOverlay() {
-      isOverlayOpen = true;
-      // Check if DPlayer is in fullscreen mode
-      var dplayerEl = document.querySelector('.dplayer');
-      var isInFullscreen = dplayerEl && (
-        document.fullscreenElement === dplayerEl ||
-        document.webkitFullscreenElement === dplayerEl ||
-        document.mozFullScreenElement === dplayerEl ||
-        document.msFullscreenElement === dplayerEl
-      );
-
-      if (isInFullscreen && dplayerEl) {
-        // Move overlay inside DPlayer so it shows in fullscreen
-        dplayerEl.appendChild(overlay);
-      } else {
-        // Keep overlay in normal DOM position
-        if (overlay.parentNode !== originalParent) {
-          originalParent.appendChild(overlay);
-        }
-      }
-
-      overlay.classList.add('show');
-      if (epgData) renderOverlay(epgData);
-    }
-
-    function closeOverlay() {
-      isOverlayOpen = false;
-      overlay.classList.remove('show');
-      // Restore to original parent after transition
-      setTimeout(function() {
-        if (overlay.parentNode !== originalParent) {
-          originalParent.appendChild(overlay);
-        }
-      }, 350);
-    }
-
-    document.getElementById('epgOverlayClose').addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', function(e) {
-      if (e.target === this) closeOverlay();
+    var list=document.getElementById('epgSchedule');list.innerHTML='';
+    var from=Math.max(0,curIdx-2);
+    progs.slice(from).forEach(function(p){
+      var past=isPast(p.end),curr=isCur(p.start,p.end);
+      var row=document.createElement('div');
+      row.className='sched-row'+(past?' past':'')+(curr?' cur':'');
+      row.innerHTML='<div class="sched-time">'+esc(p.start)+'</div><div class="sched-dot"></div><div class="sched-body"><div class="sched-ttl">'+esc(titleEn(p))+'</div><div class="sched-sub">'+esc(titleSub(p))+'</div></div><div class="sched-end">'+esc(p.end)+'</div>';
+      list.appendChild(row);
+      if(curr)setTimeout(function(){row.scrollIntoView({block:'nearest'});},100);
     });
+    document.getElementById('epgLoading').style.display='none';
+    document.getElementById('epgError').style.display='none';
+    document.getElementById('epgContent').style.display='';
+    setTimeout(function(){if(epgData)renderEPG(epgData);},60000);
+  }
 
-    // ESC key to close overlay
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && isOverlayOpen) {
-        closeOverlay();
-      }
+  function renderOv(data){
+    var progs=data.programs,body=document.getElementById('epgOverlayBody');body.innerHTML='';
+    progs.forEach(function(p){
+      var past=isPast(p.end),curr=isCur(p.start,p.end),dur=getDur(p.start,p.end);
+      var row=document.createElement('div');
+      row.className='epg-fr'+(past?' epg-past':'')+(curr?' epg-cur':'');
+      row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleEn(p))+'</div><div class="epg-fsub">'+esc(titleSub(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(p.category)+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
+      body.appendChild(row);
+      if(curr)setTimeout(function(){row.scrollIntoView({block:'center'});},80);
     });
+  }
 
-    // Listen for fullscreen changes to reposition overlay
-    function onFullscreenChange() {
-      if (!isOverlayOpen) return;
+  function loadEPG(){
+    document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';
+    var xhr=new XMLHttpRequest();xhr.open('GET',getUrl(),true);xhr.timeout=8000;
+    xhr.onload=function(){if(xhr.status===200){try{renderEPG(JSON.parse(xhr.responseText));}catch(e){showErr('Invalid EPG data.');}}else showErr('Server error '+xhr.status+'.');};
+    xhr.onerror=function(){showErr('Network error.');};xhr.ontimeout=function(){showErr('Timed out.');};xhr.send();
+  }
+  function showErr(msg){document.getElementById('epgLoading').style.display='none';document.getElementById('epgErrorMsg').textContent=msg;document.getElementById('epgError').style.display='';document.getElementById('epgContent').style.display='none';}
+  document.getElementById('epgRetryBtn').addEventListener('click',loadEPG);
 
-      var dplayerEl = document.querySelector('.dplayer');
-      var isInFullscreen = dplayerEl && (
-        document.fullscreenElement === dplayerEl ||
-        document.webkitFullscreenElement === dplayerEl ||
-        document.mozFullScreenElement === dplayerEl ||
-        document.msFullscreenElement === dplayerEl
-      );
+  var ov=document.getElementById('epgOverlay'),origP=ov.parentNode,isOvOpen=false;
+  function openOv(){isOvOpen=true;var dp=document.querySelector('.dplayer'),inFS=dp&&(document.fullscreenElement===dp||document.webkitFullscreenElement===dp);if(inFS&&dp)dp.appendChild(ov);else if(ov.parentNode!==origP)origP.appendChild(ov);ov.classList.add('show');if(epgData)renderOv(epgData);}
+  function closeOv(){isOvOpen=false;ov.classList.remove('show');setTimeout(function(){if(ov.parentNode!==origP)origP.appendChild(ov);},350);}
+  document.getElementById('epgOverlayClose').addEventListener('click',closeOv);
+  ov.addEventListener('click',function(e){if(e.target===this)closeOv();});
+  document.getElementById('epgViewAllBtn').addEventListener('click',openOv);
+  document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='Escape'&&isOvOpen)closeOv();if((e.key==='e'||e.key==='E')&&!isOvOpen)openOv();});
+  function onFSC(){if(!isOvOpen)return;var dp=document.querySelector('.dplayer'),inFS=dp&&(document.fullscreenElement===dp||document.webkitFullscreenElement===dp);if(inFS&&dp){if(ov.parentNode!==dp)dp.appendChild(ov);}else{if(ov.parentNode!==origP)origP.appendChild(ov);}}
+  document.addEventListener('fullscreenchange',onFSC);document.addEventListener('webkitfullscreenchange',onFSC);
+  window._epgOpenOverlay=openOv;
 
-      if (isInFullscreen && dplayerEl) {
-        if (overlay.parentNode !== dplayerEl) {
-          dplayerEl.appendChild(overlay);
-        }
-      } else {
-        if (overlay.parentNode !== originalParent) {
-          originalParent.appendChild(overlay);
-        }
-      }
-    }
+  window._kctvGetCurrentProgram=function(){if(!epgData||!epgData.programs)return null;for(var i=0;i<epgData.programs.length;i++){var p=epgData.programs[i];if(isCur(p.start,p.end))return titleEn(p);}return null;};
 
-    document.addEventListener('fullscreenchange', onFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-    document.addEventListener('mozfullscreenchange', onFullscreenChange);
-    document.addEventListener('MSFullscreenChange', onFullscreenChange);
-
-    window._epgOpenOverlay = openOverlay;
-
-    // Returns the title of whatever's currently airing, or null if the EPG
-    // hasn't loaded yet or nothing is on. Used by the screenshot watermark.
-    window._kctvGetCurrentProgram = function() {
-      if (!epgData || !epgData.programs) return null;
-      for (var i = 0; i < epgData.programs.length; i++) {
-        var p = epgData.programs[i];
-        if (isCurrent(p.start, p.end)) return titleEn(p);
-      }
-      return null;
-    };
-
-    // --- Inject EPG button into DPlayer fullscreen controls ---
-    function createEpgButton() {
-      var btn = document.createElement('div');
-      btn.className = 'dplayer-icon dp-epg-btn';
-      btn.title = 'Programme Guide (E)';
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>';
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openOverlay();
-      });
-      return btn;
-    }
-
-    var dpBtnInjected = false;
-    var dpBtnInterval = null;
-
-    function tryInjectEpgButton() {
-      var icons = document.querySelector('#dplayer .dplayer-icons-right');
-      if (icons && !dpBtnInjected) {
-        dpBtnInjected = true;
-        if (dpBtnInterval) { clearInterval(dpBtnInterval); dpBtnInterval = null; }
-        // Remove any existing EPG button first
-        var existing = icons.querySelector('.dp-epg-btn');
-        if (existing) existing.remove();
-        icons.insertBefore(createEpgButton(), icons.firstChild);
-      }
-    }
-
-    // Poll until DPlayer controls are rendered
-    dpBtnInterval = setInterval(tryInjectEpgButton, 500);
-
-    // Listen for DPlayer reinit events to re-inject button
-    document.addEventListener('dplayer:reinit', function() {
-      dpBtnInjected = false;
-      // Small delay for DPlayer to render new controls
-      setTimeout(function() {
-        dpBtnInterval = setInterval(tryInjectEpgButton, 500);
-      }, 1000);
-    });
-
-    // Keyboard shortcut: E to open EPG
-    document.addEventListener('keydown', function(e) {
-      // Don't trigger if user is typing in an input
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'e' || e.key === 'E') {
-        openOverlay();
-      }
-    });
-
-    // Start loading
-    loadEPG();
-  })();
-  </script>
+  var injected=false,ivl=null;
+  function createEpgBtn(){var b=document.createElement('div');b.className='dplayer-icon dp-epg-btn';b.title='Programme Guide (E)';b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>';b.addEventListener('click',function(e){e.stopPropagation();openOv();});return b;}
+  function tryInject(){var icons=document.querySelector('#dplayer .dplayer-icons-right');if(icons&&!injected){injected=true;if(ivl){clearInterval(ivl);ivl=null;}var ex=icons.querySelector('.dp-epg-btn');if(ex)ex.remove();icons.insertBefore(createEpgBtn(),icons.firstChild);}}
+  ivl=setInterval(tryInject,500);
+  document.addEventListener('dplayer:reinit',function(){injected=false;setTimeout(function(){ivl=setInterval(tryInject,500);},1000);});
+  loadEPG();
+})();
+</script>
 </body>
 </html>
