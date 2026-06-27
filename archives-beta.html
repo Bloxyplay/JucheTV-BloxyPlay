@@ -413,6 +413,23 @@
   </style>
 </head>
 <body>
+  <!-- ── SECURITY GUARD ── -->
+  <script>
+    (function() {
+      const TOKEN_KEY = 'jtv_token';
+      const urlAuth = new URLSearchParams(window.location.search).get('auth');
+      const stored = sessionStorage.getItem(TOKEN_KEY);
+      const valid = stored && ((urlAuth && urlAuth === stored) || document.referrer.includes(location.hostname));
+      if (!valid) {
+        // Preserve the ?v= video deep-link so it survives verification
+        const vParam = new URLSearchParams(window.location.search).get('v');
+        const pagePart = 'archives-beta.html' + (vParam ? '?v=' + encodeURIComponent(vParam) : '');
+        window.location.replace('verify.html?next=' + encodeURIComponent(pagePart));
+      }
+    })();
+  </script>
+  <!-- ── END SECURITY GUARD ── -->
+
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="logo">
@@ -591,7 +608,7 @@
 
     function buildShareUrl(filePath) {
       const url = new URL(window.location.href.split('?')[0]);
-      url.searchParams.set('token', pathToToken(filePath));
+      url.searchParams.set('v', pathToToken(filePath));
       return url.toString();
     }
 
@@ -691,8 +708,8 @@
         allDates = Object.keys(dateMap).sort((a,b) => b.localeCompare(a));
         if (!allDates.length) { showEmpty(); return; }
 
-        // Deep-link: ?token=202606191430
-        const token = new URLSearchParams(window.location.search).get('token');
+        // Deep-link: ?v=202606191430
+        const token = new URLSearchParams(window.location.search).get('v');
         if (token) {
           const rec = tokenToFile(token);
           if (rec) {

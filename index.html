@@ -421,6 +421,24 @@
 </head>
 <body>
 
+  <!-- ── SECURITY GUARD ── -->
+  <div id="forbidden-screen" style="display:none;position:fixed;inset:0;background:#fff;z-index:99999;font-family:monospace;padding:20px;">
+    <p style="color:#000;">403 Forbidden</p>
+  </div>
+
+  <script>
+    (function() {
+      const TOKEN_KEY = 'jtv_token';
+      const urlToken = new URLSearchParams(window.location.search).get('auth');
+      const storedToken = sessionStorage.getItem(TOKEN_KEY);
+      const valid = urlToken && storedToken && urlToken === storedToken;
+      if (!valid) {
+        window.location.replace('verify.html');
+      }
+    })();
+  </script>
+  <!-- ── END SECURITY GUARD ── -->
+
   <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner">
