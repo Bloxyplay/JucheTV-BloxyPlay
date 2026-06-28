@@ -528,9 +528,15 @@
     <div class="channel-group">
       <div class="section-label fade-in d5">Radio</div>
 
-      <div class="channel-card unavailable fade-in d5">
-        <div class="channel-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--secondary)">
+      <a href="KCBS.html" class="channel-card fade-in d5">
+        <div class="channel-icon" style="background:linear-gradient(135deg,#0a1a2e,#1a0a0a);border-color:rgba(255,45,85,0.2);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#kcbsGrad)" stroke-width="1.6" stroke-linecap="round">
+            <defs>
+              <linearGradient id="kcbsGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FF2D55"/>
+                <stop offset="100%" stop-color="#FF6B35"/>
+              </linearGradient>
+            </defs>
             <rect x="2" y="8" width="20" height="13" rx="3"/>
             <path d="M7 8V6a1 1 0 0 1 .7-.95L16.5 2"/>
             <circle cx="8" cy="14.5" r="2.5"/>
@@ -543,12 +549,14 @@
           <h3>Korean Central Broadcasting</h3>
           <p>State radio of the DPRK. News, music &amp; cultural programming.</p>
           <div class="badge-row">
-            <span class="badge badge-unavailable">Unavailable</span>
+            <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
+            <span class="badge badge-hd" style="background:rgba(255,45,85,0.12);color:var(--tint);border-color:rgba(255,45,85,0.25);">Radio</span>
           </div>
         </div>
-      </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
 
-      <div class="channel-card unavailable fade-in d6">
+      <a href="VOK.html" class="channel-card fade-in d6">
         <div class="channel-icon">
           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Voice_of_Korea_Korean_Service_Logo.png" alt="Voice of Korea" loading="lazy" style="border-radius:4px;max-width:34px;max-height:34px;object-fit:contain">
         </div>
@@ -556,10 +564,12 @@
           <h3>Voice of Korea</h3>
           <p>International broadcasting of the DPRK. Shortwave &amp; internet radio in multiple languages.</p>
           <div class="badge-row">
-            <span class="badge badge-unavailable">Unavailable</span>
+            <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
+            <span class="badge badge-hd" style="background:rgba(10,132,255,0.12);color:var(--blue);border-color:rgba(10,132,255,0.25);">Radio</span>
           </div>
         </div>
-      </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
     </div>
 
     <!-- Magazines -->
