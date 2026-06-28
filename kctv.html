@@ -22,12 +22,7 @@
       --shlg:0 16px 56px rgba(0,0,0,.72);
       --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
     }
-    :root.light {
-      --bg:#f0f0f5; --surf:#fff; --surf2:#f5f5fa; --surf3:#eaeaf2;
-      --brd:rgba(0,0,0,.07); --brd2:rgba(0,0,0,.13);
-      --tx:#0a0a1a; --tx2:#5a5a7a; --tx3:#aaaac0;
-      --shsm:0 1px 4px rgba(0,0,0,.07); --shmd:0 4px 24px rgba(0,0,0,.10); --shlg:0 16px 56px rgba(0,0,0,.14);
-    }
+
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{scroll-behavior:smooth}
     body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
@@ -35,7 +30,7 @@
 
     /* NAV */
     .nav{position:sticky;top:0;z-index:200;background:rgba(10,10,15,.84);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid var(--brd)}
-    :root.light .nav{background:rgba(240,240,245,.9)}
+
     .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;gap:16px}
     .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
     .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px var(--glow)}
@@ -47,15 +42,6 @@
     .nav-ibtn{width:36px;height:36px;border:none;cursor:pointer;background:transparent;color:var(--tx2);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s;flex-shrink:0}
     .nav-ibtn:hover{background:var(--surf2);color:var(--tx)}
     .nav-ibtn svg{width:18px;height:18px}
-    .lang-wrap{position:relative}
-    .lang-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:7px 11px;border-radius:8px;border:1px solid var(--brd2);background:var(--surf2);color:var(--tx2);cursor:pointer;transition:all .2s;font-family:var(--font)}
-    .lang-btn svg{width:12px;height:12px}
-    .lang-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:160px;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rmd);box-shadow:var(--shlg);z-index:400;overflow:hidden}
-    .lang-menu.show{display:block}
-    .lang-opt{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:13px;cursor:pointer;transition:background .12s;color:var(--tx)}
-    .lang-opt:hover{background:var(--surf2)}
-    .lang-opt.active{font-weight:700;color:var(--acc)}
-    .lang-opt.active::after{content:'✓';font-size:12px}
 
     /* PAGE */
     .page{flex:1;max-width:1160px;width:100%;margin:0 auto;padding:24px 20px 60px}
@@ -219,6 +205,17 @@
     .ss-edit-input{width:100%;padding:10px 14px;font-size:13px;font-family:var(--font);font-weight:600;background:var(--surf2);border:1px solid var(--brd2);border-radius:var(--rmd);color:var(--tx);outline:none;transition:border-color .2s}
     .ss-edit-input:focus{border-color:var(--acc)}
     .ss-edit-input::placeholder{color:var(--tx3);font-weight:500}
+    .ss-section-lbl{padding:14px 22px 6px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);border-top:1px solid var(--brd)}
+    .ss-font-row{padding:0 22px 12px;display:flex;flex-direction:column;gap:8px}
+    .ss-font-presets{display:flex;flex-wrap:wrap;gap:6px}
+    .ss-font-preset{padding:6px 14px;border-radius:100px;border:1px solid var(--brd2);background:var(--surf2);color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;font-family:var(--font)}
+    .ss-font-preset:hover{background:var(--surf3);color:var(--tx)}
+    .ss-font-preset.active{background:var(--acc);border-color:transparent;color:#fff}
+    .ss-font-custom-row{padding:0 22px 14px;display:flex;flex-direction:column;gap:4px}
+    .ss-font-custom-lbl{font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:4px}
+    .ss-font-url-wrap{display:flex;flex-direction:column;gap:6px}
+    .ss-font-apply-btn{align-self:flex-start;padding:7px 16px;border-radius:100px;border:1px solid rgba(232,23,58,.3);background:rgba(232,23,58,.10);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:background .18s}
+    .ss-font-apply-btn:hover{background:rgba(232,23,58,.2)}
 
     /* EPG OVERLAY */
     .epg-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.90);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
@@ -284,20 +281,7 @@
     </a>
     <div class="nav-r">
       <a href="index.html" class="nav-lnk" data-i18n="channels">Channels</a>
-      <div class="lang-wrap">
-        <button class="lang-btn" id="langBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span id="langLabel">EN</span>
-        </button>
-        <div class="lang-menu" id="langMenu">
-          <div class="lang-opt active" data-lang="en">English</div>
-          <div class="lang-opt" data-lang="zh">&#x4E2D;&#x6587; (Chinese)</div>
-        </div>
-      </div>
-      <button class="nav-ibtn" id="themeToggle" title="Toggle theme">
-        <svg id="moonI" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Z"/></svg>
-        <svg id="sunI" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </button>
+
     </div>
   </div>
 </nav>
@@ -312,8 +296,8 @@
   <div class="ch-hdr">
     <div class="ch-logo"><img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV"></div>
     <div class="ch-info">
-      <div class="ch-name" data-i18n="kctvTitle">Korean Central Television</div>
-      <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK · 조선중앙텔레비죤</div>
+      <div class="ch-name" data-i18n="kctvTitle"><img src="https://i.postimg.cc/X7LgvSqS/KCTV-title-svg.png" alt="Korean Central Television" style="height:1.15em;width:auto;vertical-align:middle;display:inline-block;max-width:100%"></div>
+      <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK · Korean Central Television.</div>
     </div>
     <div class="live-pill"><span class="dot"></span><span data-i18n="live">LIVE</span></div>
   </div>
@@ -458,12 +442,42 @@
       <div class="ss-edit-input-wrap" id="ssEditInputWrap" style="display:none">
         <input type="text" id="ssCustomText" class="ss-edit-input" placeholder="e.g. KCTV · Special Broadcast" maxlength="120">
       </div>
+
+      <!-- FONT SETTINGS -->
+      <div class="ss-section-lbl">🔤 Watermark Font</div>
+      <div class="ss-font-row">
+        <div class="ss-font-presets" id="ssFontPresets">
+          <button class="ss-font-preset active" data-font="Inter,sans-serif" type="button">Inter</button>
+          <button class="ss-font-preset" data-font="Georgia,serif" type="button">Georgia</button>
+          <button class="ss-font-preset" data-font="'Courier New',monospace" type="button">Mono</button>
+          <button class="ss-font-preset" data-font="'Times New Roman',serif" type="button">Times</button>
+          <button class="ss-font-preset" data-font="Impact,sans-serif" type="button">Impact</button>
+        </div>
+      </div>
+      <div class="ss-font-custom-row">
+        <div class="ss-font-custom-lbl">Custom Google Font URL</div>
+        <div class="ss-font-url-wrap">
+          <input type="text" id="ssFontUrl" class="ss-edit-input" placeholder="https://fonts.googleapis.com/css2?family=Roboto…" style="margin-bottom:6px">
+          <input type="text" id="ssFontName" class="ss-edit-input" placeholder="Font name, e.g. Roboto">
+          <button class="ss-font-apply-btn" id="ssFontApplyBtn" type="button">Apply Font</button>
+        </div>
+      </div>
+
       <div class="ss-acts">
+        <a class="btn" id="screenshotViewAll" href="Screenshots.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          My Screenshots
+        </a>
+        <button class="btn" id="screenshotSave" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save
+        </button>
         <a class="btn pri" id="screenshotDownload" download="kctv-screenshot.png">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download
         </a>
       </div>
+      <div id="ssSaveMsg" style="display:none;text-align:center;padding:0 22px 14px;font-size:12px;color:var(--grn);font-weight:600">✓ Saved to your Screenshots gallery!</div>
     </div>
   </div>
 </div>
@@ -586,23 +600,7 @@
   window._kctvInitPlayer=initPlayer;window._kctvActiveServer=function(){return activeServer;};window._kctvHls=function(){return hlsInstance;};
 
   /* I18N */
-  var T={
-    en:{brand:'Juche TV',channels:'Channels',backToChannels:'Back to Channels',kctvTitle:'Korean Central Television',liveFrom:'Live from Pyongyang, DPRK',live:'LIVE',archives:'Archives Recording',about:'About KCTV',kctvDesc:"Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.",footer:'Juche TV. Not affiliated with any broadcasting entity.'},
-    zh:{brand:'\u4e3b\u4f53\u7535\u89c6',channels:'\u9891\u9053',backToChannels:'\u8fd4\u56de\u9891\u9053\u5217\u8868',kctvTitle:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0',liveFrom:'\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u5e73\u58e4\u76f4\u64ad',live:'\u76f4\u64ad',archives:'\u5f55\u50cf\u5f52\u6863',about:'\u5173\u4e8e\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0',kctvDesc:'\u671d\u9c9c\u4e2d\u592e\u7535\u89c6\u53f0\uff08KCTV\uff09\u662f\u671d\u9c9c\u6c11\u4e3b\u4e3b\u4e49\u4eba\u6c11\u5171\u548c\u56fd\u7684\u56fd\u5bb6\u7535\u89c6\u5e7f\u64ad\u516c\u53f8\u3002\u5b83\u4ece\u5e73\u58e4\u64ad\u51fa\u65b0\u95fb\u3001\u6587\u5316\u8282\u76ee\u3001\u7eaa\u5f55\u7247\u548c\u5a31\u4e50\u5185\u5bb9\u3002',footer:'\u4e3b\u4f53\u7535\u89c6\u3002\u4e0e\u4efb\u4f55\u5e7f\u64ad\u5b9e\u4f53\u65e0\u5173\u3002'}
-  };
-  var curLang=localStorage.getItem('lang')||'en';
-  function applyLang(lang){curLang=lang;localStorage.setItem('lang',lang);var t=T[lang]||T.en;document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(t[k])el.textContent=t[k];});document.getElementById('langLabel').textContent=lang==='zh'?'中文':'EN';document.querySelectorAll('.lang-opt').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});}
-  document.getElementById('langBtn').addEventListener('click',function(){document.getElementById('langMenu').classList.toggle('show');});
-  document.querySelectorAll('.lang-opt').forEach(function(o){o.addEventListener('click',function(){applyLang(o.dataset.lang);document.getElementById('langMenu').classList.remove('show');});});
-  document.addEventListener('click',function(e){if(!e.target.closest('.lang-wrap'))document.getElementById('langMenu').classList.remove('show');});
-  applyLang(curLang);
 
-  /* THEME */
-  var moon=document.getElementById('moonI'),sun=document.getElementById('sunI');
-  function applyTheme(dark){document.documentElement.classList.toggle('light',!dark);moon.style.display=dark?'':'none';sun.style.display=dark?'none':'';}
-  var saved=localStorage.getItem('theme'),prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
-  var isDark=saved?saved==='dark':prefersDark;applyTheme(isDark);
-  document.getElementById('themeToggle').addEventListener('click',function(){isDark=!isDark;localStorage.setItem('theme',isDark?'dark':'light');applyTheme(isDark);});
 
   /* SCREENSHOT */
   (function(){
@@ -615,15 +613,60 @@
     var editRow=document.getElementById('ssEditTextRow');
     var editWrap=document.getElementById('ssEditInputWrap');
     var customInput=document.getElementById('ssCustomText');
-    var FONT='-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif',SK='kctv_ss_prog';
+    var saveBtn=document.getElementById('screenshotSave');
+    var saveMsg=document.getElementById('ssSaveMsg');
+    var SK='kctv_ss_prog';
     var pickedProgram=null,customText=null;
+
+    /* FONT SYSTEM */
+    var FONT='Inter,sans-serif';
+    var fontPresets=document.getElementById('ssFontPresets');
+    var fontUrlInput=document.getElementById('ssFontUrl');
+    var fontNameInput=document.getElementById('ssFontName');
+    var fontApplyBtn=document.getElementById('ssFontApplyBtn');
+    fontPresets.addEventListener('click',function(e){
+      var b=e.target.closest('.ss-font-preset');if(!b)return;
+      fontPresets.querySelectorAll('.ss-font-preset').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      FONT=b.dataset.font;
+      renderSS();
+    });
+    fontApplyBtn.addEventListener('click',function(){
+      var url=fontUrlInput.value.trim(),name=fontNameInput.value.trim();
+      if(!url||!name){alert('Please enter both a Google Fonts URL and the font name.');return;}
+      /* Inject link if not already */
+      var existing=document.getElementById('ss-custom-font-link');
+      if(existing)existing.remove();
+      var lnk=document.createElement('link');lnk.id='ss-custom-font-link';lnk.rel='stylesheet';lnk.href=url;
+      document.head.appendChild(lnk);
+      /* Deactivate presets */
+      fontPresets.querySelectorAll('.ss-font-preset').forEach(function(x){x.classList.remove('active');});
+      FONT='"'+name+'",sans-serif';
+      /* Wait for font to load */
+      lnk.onload=function(){renderSS();};
+      setTimeout(function(){renderSS();},800);
+    });
+
     try{tog.checked=localStorage.getItem(SK)==='1';}catch(e){}
-    function wDate(){var n=new Date(),k=new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);return k.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][k.getMonth()]+' '+k.getFullYear();}
+
+    /* Pyongyang time helpers */
+    function getPT(){var n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);}
+    function fmt2(n){return String(n).padStart(2,'0');}
+    function fmtKST(d){return fmt2(d.getHours())+':'+fmt2(d.getMinutes());}
+    function wDate(){var k=getPT();return k.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][k.getMonth()]+' '+k.getFullYear();}
+    function getEpgSlot(){
+      /* Try to get current EPG start/end */
+      if(typeof window._kctvGetCurrentProgram==='function'){
+        var p=window._kctvGetCurrentProgram();if(p)return p;
+      }
+      return null;
+    }
     function curProg(){
       if(pickedProgram)return pickedProgram;
-      if(typeof window._kctvGetCurrentProgram==='function'){var n=window._kctvGetCurrentProgram();if(n)return n;}
+      var ep=getEpgSlot();if(ep)return ep;
       return 'Korean Central Television';
     }
+
     function rrp(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
     function fitSz(ctx,txt,maxW,start,min){var sz=start;while(sz>min){ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),aw=Math.max(3,Math.round(sz*0.16));if(tw+px*2+aw+Math.round(sz*0.35)<=maxW)break;sz--;}return sz;}
     function getWMText(){
@@ -639,11 +682,69 @@
       ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#e8173a';ctx.fillRect(pX,pY,aw,ph);ctx.restore();
       ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#fff';ctx.font='700 '+sz+'px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(txt,pX+aw+px,pY+ph/2+Math.round(sz*0.04));ctx.restore();ctx.restore();
     }
-    var lastFrame=null;
-    function renderSS(){if(!lastFrame)return;var c=document.createElement('canvas');c.width=lastFrame.width;c.height=lastFrame.height;var ctx=c.getContext('2d');ctx.drawImage(lastFrame,0,0);drawWM(ctx,c.width,c.height);var url=c.toDataURL('image/png');img.src=url;dl.href=url;}
-    function openSS(){ov.classList.add('show');}function closeSS(){ov.classList.remove('show');}
-    ovc.addEventListener('click',closeSS);ov.addEventListener('click',function(e){if(e.target===this)closeSS();});
+
+    var lastFrame=null,currentDataUrl=null;
+    function renderSS(){
+      if(!lastFrame)return;
+      var c=document.createElement('canvas');c.width=lastFrame.width;c.height=lastFrame.height;
+      var ctx=c.getContext('2d');ctx.drawImage(lastFrame,0,0);
+      drawWM(ctx,c.width,c.height);
+      currentDataUrl=c.toDataURL('image/png');
+      img.src=currentDataUrl;dl.href=currentDataUrl;
+      saveMsg.style.display='none';
+    }
+
+    /* SAVE TO LOCALSTORAGE */
+    saveBtn.addEventListener('click',function(){
+      if(!currentDataUrl)return;
+      var now=new Date();
+      var kst=getPT();
+      /* Get EPG info */
+      var epgProgram=null,epgTime=null;
+      if(typeof window._kctvGetCurrentProgram==='function')epgProgram=window._kctvGetCurrentProgram();
+      /* Try get EPG time slot */
+      if(window._epgData&&window._epgData.programs){
+        for(var i=0;i<window._epgData.programs.length;i++){
+          var p=window._epgData.programs[i];
+          if(epgProgram&&(typeof p.title==='object'?p.title.en:p.title)===epgProgram){
+            epgTime=p.start+' – '+p.end+' KST';break;
+          }
+        }
+      }
+      /* Timezone info */
+      var userTZ='';try{userTZ=Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}
+      var userCountry='';try{var lc=Intl.DateTimeFormat().resolvedOptions().locale;userCountry=lc;}catch(e){}
+
+      var entry={
+        id:'ss_'+Date.now(),
+        dataUrl:currentDataUrl,
+        capturedAt:now.toISOString(),
+        userLocalTime:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' '+now.toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}),
+        userTimezone:userTZ,
+        userLocale:userCountry,
+        pyongyangTime:fmt2(kst.getHours())+':'+fmt2(kst.getMinutes())+' KST',
+        pyongyangDate:kst.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][kst.getMonth()]+' '+kst.getFullYear(),
+        epgProgram:pickedProgram||epgProgram||'—',
+        epgTimeSlot:epgTime||'—',
+        watermarkText:getWMText(),
+        font:FONT
+      };
+      /* Load existing, prepend, save */
+      var arr=[];try{var raw=localStorage.getItem('kctv_screenshots');if(raw)arr=JSON.parse(raw);}catch(e){}
+      arr.unshift(entry);
+      /* Keep max 50 */
+      if(arr.length>50)arr=arr.slice(0,50);
+      try{localStorage.setItem('kctv_screenshots',JSON.stringify(arr));}catch(e){alert('Storage full — please delete some screenshots from the gallery.');}
+      saveMsg.style.display='';
+      setTimeout(function(){saveMsg.style.display='none';},3000);
+    });
+
+    function openSS(){ov.classList.add('show');}
+    function closeSS(){ov.classList.remove('show');}
+    ovc.addEventListener('click',closeSS);
+    ov.addEventListener('click',function(e){if(e.target===this)closeSS();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('show'))closeSS();});
+
     tog.addEventListener('change',function(){
       try{localStorage.setItem(SK,tog.checked?'1':'0');}catch(e){}
       if(tog.checked){pickedProgram=null;pickBtn.textContent='Browse Guide';}
@@ -652,14 +753,11 @@
 
     /* Pick programme — open EPG overlay, intercept selection */
     pickBtn.addEventListener('click',function(){
-      /* Open EPG overlay */
       if(typeof window._epgOpenOverlay==='function')window._epgOpenOverlay();
-      /* Listen for a click on an EPG row */
       var epgBody=document.getElementById('epgOverlayBody');
       if(!epgBody)return;
       function onRowClick(e){
-        var row=e.target.closest('.epg-fr');
-        if(!row)return;
+        var row=e.target.closest('.epg-fr');if(!row)return;
         var titleEl=row.querySelector('.epg-ftitle');
         if(titleEl){
           pickedProgram=titleEl.textContent.trim();
@@ -668,7 +766,6 @@
           try{localStorage.setItem(SK,'0');}catch(e){}
         }
         epgBody.removeEventListener('click',onRowClick);
-        /* Close EPG overlay */
         var closeBtn=document.getElementById('epgOverlayClose');
         if(closeBtn)closeBtn.click();
         renderSS();
@@ -682,11 +779,8 @@
       if(!editToggle.checked){customText=null;customInput.value='';}
       renderSS();
     });
-    customInput.addEventListener('input',function(){
-      customText=customInput.value;
-      renderSS();
-    });
-    /* Show edit row once screenshot popup opens */
+    customInput.addEventListener('input',function(){customText=customInput.value;renderSS();});
+
     function showEditRow(){editRow.style.display='';}
 
     btn.addEventListener('click',function(){
