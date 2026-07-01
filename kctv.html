@@ -80,6 +80,7 @@
     .dp-epg-btn:hover{opacity:1}
     .dp-epg-btn svg{width:22px;height:22px}
 
+
     /* STREAM BAR */
     .stream-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 20px;background:var(--surf);border:1px solid var(--brd);border-top:none;border-radius:0 0 var(--rxl) var(--rxl);margin-top:-1px;position:relative;z-index:5;opacity:0;transition:opacity .4s}
     .stream-bar.on{opacity:1}
@@ -532,6 +533,112 @@
   var SERVERS={za:{id:'za',name:'South Africa',url:_d(),tag:'primary'}};
   var activeServer='za',hlsInstance=null,lastPingMs=0;
 
+  /* ===== RECORDINGS FALLBACK ===== */
+  var REC_API='https://kctv.koryofront.org/recordings';
+  var REC_BASE='https://kctv.koryofront.org';
+  var recIndex=[],recIndexLoaded=false;
+  var isArchiveMode=false,fallbackTriggered=false;
+  var netErrCount=0,lastFragTime=0,stallCheckTimer=null;
+
+  function getPT(){var n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);}
+  function fmt2(n){return String(n).padStart(2,'0');}
+  function todayStr(){var d=getPT();return d.getFullYear()+'-'+fmt2(d.getMonth()+1)+'-'+fmt2(d.getDate());}
+  function parseHour(name){
+    var m=name.match(/@\s+(\d+)(AM|PM)/i);if(!m)return null;
+    var h=parseInt(m[1],10);if(m[2].toUpperCase()==='PM'&&h!==12)h+=12;if(m[2].toUpperCase()==='AM'&&h===12)h=0;
+    return h;
+  }
+  function parseRecDate(filename){var m=filename.match(/(\d{4}-\d{2}-\d{2})/);return m?m[1]:null;}
+
+  function loadRecordings(cb){
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',REC_API,true);xhr.timeout=10000;
+    xhr.onload=function(){
+      if(xhr.status===200){
+        try{
+          var dirs=JSON.parse(xhr.responseText);
+          recIndex=[];
+          dirs.forEach(function(d){var h=parseHour(d.name);if(h===null)return;recIndex.push({hour:h,name:d.name,path:d.path});});
+          recIndexLoaded=true;
+        }catch(e){}
+      }
+      if(cb)cb();
+    };
+    xhr.onerror=xhr.ontimeout=function(){if(cb)cb();};
+    xhr.send();
+  }
+
+  function loadArchiveFolder(entry,cb){
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',REC_BASE+entry.path,true);xhr.timeout=10000;
+    xhr.onload=function(){
+      if(xhr.status===200){
+        try{
+          var files=JSON.parse(xhr.responseText);
+          var t=todayStr(),match=null;
+          files.forEach(function(f){if(parseRecDate(f.name)===t)match=f;});
+          if(!match&&files.length>0){files.sort(function(a,b){return b.name.localeCompare(a.name);});match=files[0];}
+          if(match)cb(REC_BASE+match.path,match.name);else cb(null,null);
+        }catch(e){cb(null,null);}
+      }else cb(null,null);
+    };
+    xhr.onerror=xhr.ontimeout=function(){cb(null,null);};
+    xhr.send();
+  }
+
+  function findLastArchive(cb){
+    function search(){
+      var curH=getPT().getHours();
+      var order=[];for(var i=0;i<24;i++)order.push((curH-i+24)%24);
+      var idx=0;
+      function tryNext(){
+        if(idx>=order.length){cb(null,null);return;}
+        var hour=order[idx++];
+        var entry=recIndex.find(function(r){return r.hour===hour;});
+        if(!entry){tryNext();return;}
+        loadArchiveFolder(entry,function(url,name){if(url)cb(url,name);else tryNext();});
+      }
+      tryNext();
+    }
+    if(recIndexLoaded)search();else loadRecordings(search);
+  }
+
+  function playArchiveUrl(url){
+    isArchiveMode=true;
+    if(stallCheckTimer){clearInterval(stallCheckTimer);stallCheckTimer=null;}
+    if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
+    if(hlsInstance){try{hlsInstance.destroy();}catch(e){}hlsInstance=null;}
+    var c=document.getElementById('dplayer');if(c)c.innerHTML='';
+    var isM3u8=/\.m3u8(\?|$)/i.test(url);
+    var dp=new DPlayer({
+      container:document.getElementById('dplayer'),live:false,autoplay:true,screenshot:false,
+      theme:'#e8173a',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
+      video:isM3u8?{url:url,type:'customHls',
+        pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',
+        customType:{customHls:function(video){
+          hlsInstance=new Hls({enableWorker:true});
+          hlsInstance.loadSource(video.src);hlsInstance.attachMedia(video);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED,function(){video.play().catch(function(){});});
+        }}
+      }:{url:url,type:'auto',pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png'},
+      contextmenu:[{text:'Juche TV',link:window.location.href},{text:'KCTV Live Stream',link:window.location.href}]
+    });
+    window._dpInstance=dp;
+    document.dispatchEvent(new CustomEvent('dplayer:reinit'));
+  }
+
+  function switchToArchive(){
+    if(fallbackTriggered||isArchiveMode)return;
+    fallbackTriggered=true;
+    findLastArchive(function(url){if(url)playArchiveUrl(url);});
+  }
+
+  function goLive(){
+    if(!isArchiveMode)return;
+    isArchiveMode=false;fallbackTriggered=false;netErrCount=0;
+    initPlayer(activeServer);
+  }
+
   function updateInfoBar(sid,ms){
     var chip=document.getElementById('infoChipLatency'),val=document.getElementById('infoChipLatencyValue'),dot=document.getElementById('latencyDot');
     if(ms&&ms>0){lastPingMs=ms;chip.style.display='inline-flex';val.textContent=ms+' ms';if(dot)dot.className='chip-dot '+(ms<300?'good':ms<700?'medium':'bad');}
@@ -541,6 +648,8 @@
 
   function initPlayer(sid){
     activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
+    isArchiveMode=false;fallbackTriggered=false;netErrCount=0;
+    if(stallCheckTimer){clearInterval(stallCheckTimer);stallCheckTimer=null;}
     showInfoBar();
     if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
     if(hlsInstance){try{hlsInstance.destroy();}catch(e){}hlsInstance=null;}
@@ -551,16 +660,31 @@
       video:{url:s.url,type:'customHls',
         pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',
         customType:{customHls:function(video){
+          lastFragTime=Date.now();
           hlsInstance=new Hls({lowLatencyMode:false,maxBufferLength:30,maxMaxBufferLength:60,maxBufferSize:30*1000*1000,stretchShortVideoTrack:false,accurateSegmentIncrement:false,enableWorker:true});
           hlsInstance.loadSource(video.src);hlsInstance.attachMedia(video);
           hlsInstance.on(Hls.Events.MANIFEST_PARSED,function(){video.play().catch(function(){});});
+          hlsInstance.on(Hls.Events.FRAG_LOADED,function(){lastFragTime=Date.now();netErrCount=0;});
           hlsInstance.on(Hls.Events.ERROR,function(ev,data){
-            if(data.fatal){switch(data.type){
-              case Hls.ErrorTypes.NETWORK_ERROR:hlsInstance.startLoad();break;
-              case Hls.ErrorTypes.MEDIA_ERROR:hlsInstance.recoverMediaError();break;
-              default:hlsInstance.destroy();setTimeout(function(){if(video.src){hlsInstance=new Hls({enableWorker:true});hlsInstance.loadSource(video.src);hlsInstance.attachMedia(video);}},5000);
-            }}
+            if(data.fatal){
+              var is404=data.response&&(data.response.code===404||data.response.code===0);
+              switch(data.type){
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  netErrCount++;
+                  if(is404||netErrCount>=2){switchToArchive();break;}
+                  hlsInstance.startLoad();break;
+                case Hls.ErrorTypes.MEDIA_ERROR:hlsInstance.recoverMediaError();break;
+                default:
+                  hlsInstance.destroy();
+                  switchToArchive();
+              }
+            }
           });
+          /* Watchdog: if the manifest never loads or no ts segments arrive within 5s, fall back to the last archive recording */
+          stallCheckTimer=setInterval(function(){
+            if(isArchiveMode)return;
+            if(Date.now()-lastFragTime>5000)switchToArchive();
+          },1000);
         }}
       },
       contextmenu:[{text:'Juche TV',link:window.location.href},{text:'KCTV Live Stream',link:window.location.href}]
@@ -589,6 +713,10 @@
     startPing(sid);
     document.dispatchEvent(new CustomEvent('dplayer:reinit'));
   }
+
+  window._kctvGoLive=goLive;
+  loadRecordings();
+  setInterval(loadRecordings,300000);
 
   function startPing(sid){
     function ping(){var s=SERVERS[sid];if(!s||!s.url)return;var t=performance.now(),xhr=new XMLHttpRequest();xhr.open('GET',s.url+(s.url.indexOf('?')>=0?'&':'?')+'_t='+Date.now(),true);xhr.timeout=5000;xhr.onload=function(){updateInfoBar(sid,Math.round(performance.now()-t));};xhr.onerror=xhr.ontimeout=function(){updateInfoBar(sid,lastPingMs||0);};try{xhr.send();}catch(e){}}
