@@ -1,0 +1,63 @@
+name: Process, Watermark, and Stream KCTV
+
+on:
+  workflow_dispatch:
+
+jobs:
+  broadcast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        # Retrieves the repository so FFmpeg can access Juchetv-watermark.png
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download Video 1 (9 PM Broadcast)
+        run: |
+          wget -O video1.mp4 "https://kctv.koryofront.org/recordings/Korean%20Central%20Television%20(KCTV)%20%40%209PM/Korean%20Central%20Television%20(KCTV)%20%40%209PM%202026-07-02%202026-07-02-2100.mp4"
+
+      - name: Download Video 2 (10 PM Broadcast)
+        run: |
+          wget -O video2.mp4 "https://kctv.koryofront.org/recordings/Korean%20Central%20Television%20(KCTV)%20%40%2010PM/Korean%20Central%20Television%20(KCTV)%20%40%2010PM%202026-07-02%202026-07-02-2200.mp4"
+
+      - name: Process Video 1 (Start at 24:30)
+        run: |
+          # Extract original video bitrate to prevent further compression
+          BITRATE=$(ffprobe -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 video1.mp4)
+          if [ -z "$BITRATE" ] || [ "$BITRATE" == "N/A" ]; then BITRATE=3000k; fi
+          
+          # Fast seek to 24:30, burn watermark, keep original bitrate
+          ffmpeg -ss 00:24:30 -i video1.mp4 -i Juchetv-watermark.png \
+          -filter_complex "[1:v]scale=280:-1,format=rgba,colorchannelmixer=aa=0.5[wm];[0:v][wm]overlay=W-w-40:40[outv]" \
+          -map "[outv]" -map 0:a \
+          -c:v libx264 -preset medium -b:v $BITRATE -c:a copy \
+          video1_ready.mp4
+
+      - name: Process Video 2 (Start 00:21, End 28:25)
+        run: |
+          # Extract original video bitrate
+          BITRATE=$(ffprobe -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 video2.mp4)
+          if [ -z "$BITRATE" ] || [ "$BITRATE" == "N/A" ]; then BITRATE=3000k; fi
+          
+          # Trim from 00:21 to 28:25, burn watermark, keep original bitrate
+          ffmpeg -ss 00:00:21 -to 00:28:25 -i video2.mp4 -i Juchetv-watermark.png \
+          -filter_complex "[1:v]scale=280:-1,format=rgba,colorchannelmixer=aa=0.5[wm];[0:v][wm]overlay=W-w-40:40[outv]" \
+          -map "[outv]" -map 0:a \
+          -c:v libx264 -preset medium -b:v $BITRATE -c:a copy \
+          video2_ready.mp4
+
+      - name: Stream Processed Videos to YouTube
+        run: |
+          # Create a concat playlist
+          echo "file 'video1_ready.mp4'" > playlist.txt
+          echo "file 'video2_ready.mp4'" >> playlist.txt
+          
+          # -re sends the stream at native framerate (real-time)
+          # Removed -stream_loop so it plays only once and terminates
+          ffmpeg -re -f concat -safe 0 -i playlist.txt \
+          -c copy -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_EGGY }}"
