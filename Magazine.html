@@ -6,6 +6,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0D0D0F">
   <title>Juche TV - Magazines</title>
+  <meta name="description" content="Step inside North Korea's press — browse and download official DPRK newspapers &amp; periodicals as free PDFs, viewable internationally. Note: local laws may restrict access in some countries.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Juche TV">
+  <meta property="og:title" content="Juche TV - Magazines">
+  <meta property="og:description" content="Step inside North Korea's press — browse and download official DPRK newspapers &amp; periodicals as free PDFs, viewable internationally. Note: local laws may restrict access in some countries.">
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Juche TV - Magazines">
+  <meta name="twitter:description" content="Step inside North Korea's press — browse and download official DPRK newspapers &amp; periodicals as free PDFs, viewable internationally. Note: local laws may restrict access in some countries.">
+  <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -423,6 +433,23 @@
       box-shadow: 0 0 6px rgba(255,214,10,0.7);
     }
 
+    .tab-beta-badge {
+      position: absolute;
+      top: -9px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 6.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      color: #16161a;
+      background: var(--tint);
+      padding: 1.5px 4px;
+      border-radius: 4px;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(255,45,85,0.5);
+    }
+    .tab-recodings:hover { color: var(--tint); }
+    .tab-recodings.active { color: var(--tint); }
+
     .fade-in { opacity: 0; transform: translateY(14px); animation: fadeUp 0.55s cubic-bezier(0.4,0,0.2,1) forwards; }
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
     .d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
@@ -511,6 +538,16 @@
           <span class="tab-new-dot"></span>
         </span>
         Magazines
+      </a>
+      <a href="Recodings.html" class="tab-item tab-recodings">
+        <span class="tab-mag-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span class="tab-beta-badge">BETA</span>
+        </span>
+        Recodings
       </a>
     </div>
   </div>
