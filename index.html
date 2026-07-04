@@ -6,6 +6,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0D0D0F">
   <title>Juche TV - Live Streams</title>
+  <meta name="description" content="Watch KCTV, Mansudae TV and Voice of Korea live — plus a growing archive of recorded broadcasts, magazines, and news coverage from North Korean state media.">
+
+  <!-- Open Graph / Discord / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Juche TV">
+  <meta property="og:title" content="Juche TV - Live Streams">
+  <meta property="og:description" content="Watch KCTV, Mansudae TV and Voice of Korea live — plus a growing archive of recorded broadcasts, magazines, and news coverage from North Korean state media.">
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
+  <meta property="og:theme-color" content="#E8212A">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Juche TV - Live Streams">
+  <meta name="twitter:description" content="Watch KCTV, Mansudae TV and Voice of Korea live — plus a growing archive of recorded broadcasts, magazines, and news coverage from North Korean state media.">
+  <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -417,6 +432,24 @@
     }
     .tab-magazine:hover { color: #AF52DE; }
     .tab-magazine.active { color: #AF52DE; }
+
+    /* ─── TAB RECODINGS ─── */
+    .tab-beta-badge {
+      position: absolute;
+      top: -9px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 6.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      color: #0D0D0F;
+      background: var(--tint);
+      padding: 1.5px 4px;
+      border-radius: 4px;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(255,45,85,0.5);
+    }
+    .tab-recodings:hover { color: var(--tint); }
+    .tab-recodings.active { color: var(--tint); }
   </style>
 </head>
 <body>
@@ -503,6 +536,20 @@
           <p>Live television from Pyongyang, DPRK. News, culture &amp; entertainment 24/7.</p>
           <div class="badge-row">
             <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
+          </div>
+        </div>
+        <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+
+      <a href="Recodings.html" class="channel-card fade-in d3">
+        <div class="channel-icon" style="background:linear-gradient(135deg,#2e0a12,#1a0a1a);border-color:rgba(232,33,42,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#E8212A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="channel-info">
+          <h3>KCTV Archives</h3>
+          <p>Browse and watch recorded KCTV broadcasts, news bulletins &amp; Kim Jong Un activities.</p>
+          <div class="badge-row">
+            <span class="badge badge-new"><span class="badge-dot" style="background:var(--yellow)"></span>Beta</span>
           </div>
         </div>
         <svg class="go-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -633,6 +680,17 @@
           <span class="tab-new-dot"></span>
         </span>
         Magazines
+      </a>
+      <a href="Recodings.html" class="tab-item tab-recodings">
+        <!-- Archive box -->
+        <span class="tab-mag-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span class="tab-beta-badge">BETA</span>
+        </span>
+        Recodings
       </a>
     </div>
   </div>
