@@ -19,9 +19,44 @@ export default async function handler(req, res) {
 
   const requestHostname = getHostname(origin) || getHostname(referer);
 
-  // If the requesting domain isn't allowed, send your custom 404 message
+  // If the requesting domain isn't allowed, hijack the response with a fully working player
   if (!allowedHostnames.includes(requestHostname)) {
-    return res.status(404).send('404 Not Found. Please check out our alternative API https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date=2026-07-05');
+    res.setHeader('Content-Type', 'text/html');
+    return res.status(200).send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Stream Player</title>
+        <!-- Hls.js library script allows Chrome/Firefox to play .m3u8 streams -->
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <style>
+          body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; }
+          video { width: 100%; height: 100%; max-width: 1280px; max-height: 720px; aspect-ratio: 16 / 9; }
+        </style>
+      </head>
+      <body>
+
+        <video id="video" controls autoplay playsinline muted></video>
+
+        <script>
+          const video = document.getElementById('video');
+          const streamUrl = 'https://kctv.koryofront.org/stream/index.m3u8';
+
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+          } 
+          // Fallback for Safari/iOS devices which play HLS streams natively
+          else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = streamUrl;
+          }
+        </script>
+      </body>
+      </html>
+    `);
   }
   // --- END DOMAIN PROTECTION ---
 
