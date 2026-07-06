@@ -19,73 +19,9 @@ export default async function handler(req, res) {
 
   const requestHostname = getHostname(origin) || getHostname(referer);
 
-  // If unauthorized, serve the completely responsive and scalable HLS player
+  // If the requesting domain isn't allowed, send your custom 404 message
   if (!allowedHostnames.includes(requestHostname)) {
-    res.setHeader('Content-Type', 'text/html');
-    return res.status(200).send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Live Stream</title>
-        <!-- Using a locked, highly reliable build of Hls.js -->
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.11/dist/hls.min.js"></script>
-        <style>
-          * { box-sizing: border-box; }
-          body, html { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          /* This makes the video scale perfectly inside any iframe container */
-          video { 
-            width: 100vw; 
-            height: 100vh; 
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; 
-          }
-        </style>
-      </head>
-      <body>
-
-        <video id="video" controls autoplay playsinline muted></video>
-
-        <script>
-          const video = document.getElementById('video');
-          const streamUrl = 'https://kctv.koryofront.org/stream/index.m3u8';
-
-          if (Hls.isSupported()) {
-            const hls = new Hls({
-              enableWorker: true,
-              lowLatencyMode: true
-            });
-            hls.loadSource(streamUrl);
-            hls.attachMedia(video);
-            
-            // Explicitly trigger play once the stream manifest parses successfully
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-              video.play().catch(err => console.log("Autoplay blocked, waiting for user interaction."));
-            });
-          } 
-          // Native fallback (Safari / iOS)
-          else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = streamUrl;
-            video.addEventListener('loadedmetadata', function() {
-              video.play().catch(err => console.log("Autoplay blocked."));
-            });
-          }
-        </script>
-      </body>
-      </html>
-    `);
+    return res.status(404).send('404 Not Found.');
   }
   // --- END DOMAIN PROTECTION ---
 
