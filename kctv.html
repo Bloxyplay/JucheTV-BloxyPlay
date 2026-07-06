@@ -63,9 +63,6 @@
     .ch-info{flex:1;min-width:0}
     .ch-name{font-size:26px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.15}
     .ch-sub{font-size:13px;color:var(--tx2);margin-top:4px;font-weight:500}
-    .live-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.6px;color:#fff;background:var(--acc);padding:7px 14px;border-radius:100px;box-shadow:0 0 24px var(--glow);flex-shrink:0;animation:livePulse 3s ease infinite}
-    @keyframes livePulse{0%,100%{box-shadow:0 0 24px var(--glow)}50%{box-shadow:0 0 40px rgba(226,71,43,.5)}}
-    .live-pill .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.4s ease infinite}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
     /* PLAYER */
@@ -84,13 +81,6 @@
     .dp-epg-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;opacity:.8;transition:opacity .2s}
     .dp-epg-btn:hover{opacity:1}
     .dp-epg-btn svg{width:22px;height:22px}
-
-    /* NOW-PLAYING OVERLAY + LIVE BADGE ON PLAYER */
-    .pw-now{position:absolute;left:18px;right:16px;bottom:56px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .3s}
-    .pw-now.show{opacity:1}
-    .pw-now-cat{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc2);text-shadow:0 1px 6px rgba(0,0,0,.85)}
-    .pw-now-ttl{font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .player-wrap.ctrl-hidden .pw-now{opacity:0}
 
     /* ACTIONS */
     .action-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
@@ -270,7 +260,6 @@
       .btn{justify-content:center}
       .sched-list{max-height:280px}
       .pt-clock-digits{font-size:34px}
-      .pw-now{right:16px}
       .epg-ov,.ss-ov{padding:8px}
       .epg-ov-inn,.ss-inn{max-height:96vh}
       .page{padding:16px 12px 48px}
@@ -307,17 +296,12 @@
       <div class="ch-name" data-i18n="kctvTitle"><img src="https://i.postimg.cc/X7LgvSqS/KCTV-title-svg.png" alt="Korean Central Television" style="height:1.15em;width:auto;vertical-align:middle;display:inline-block;max-width:100%"></div>
       <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK · Korean Central Television.</div>
     </div>
-    <div class="live-pill"><span class="dot"></span><span data-i18n="live">LIVE</span></div>
   </div>
 
   <!-- PLAYER -->
   <div class="player-wrap" id="playerWrap">
     <div class="ss-flash" id="ssFlash"></div>
     <div id="dplayer"></div>
-    <div class="pw-now" id="pwNowOverlay">
-      <div class="pw-now-cat" id="pwNowCat"></div>
-      <div class="pw-now-ttl" id="pwNowTitle"></div>
-    </div>
   </div>
 
   <!-- ACTIONS -->
@@ -844,22 +828,9 @@
     };
   }
 
-  function updateNowOverlay(cur){
-    var wrap=document.getElementById('pwNowOverlay'),catEl=document.getElementById('pwNowCat'),ttlEl=document.getElementById('pwNowTitle');
-    if(!wrap)return;
-    if(cur){
-      catEl.textContent=cur.category||'';
-      ttlEl.textContent=titleEn(cur);
-      wrap.classList.add('show');
-    } else {
-      wrap.classList.remove('show');
-    }
-  }
-
   function renderEPG(data){
     epgData=data;var progs=data.programs,curIdx=-1;
     progs.forEach(function(p,i){if(isCur(p.start,p.end))curIdx=i;});
-    updateNowOverlay(curIdx>=0?progs[curIdx]:null);
 
     var list=document.getElementById('epgSchedule');list.innerHTML='';
     var from=Math.max(0,curIdx-2);
@@ -952,24 +923,6 @@
   ivl=setInterval(tryInject,500);
   document.addEventListener('dplayer:reinit',function(){injected=false;setTimeout(function(){ivl=setInterval(tryInject,500);},1000);});
   loadEPG();
-
-  /* Fade the now-playing overlay + LIVE badge together with DPlayer's own controls */
-  (function(){
-    var ctrlObserver=null,ctrlIvl=null;
-    function attach(){
-      var dp=document.querySelector('#dplayer .dplayer'),wrap=document.getElementById('playerWrap');
-      if(!dp||!wrap)return false;
-      if(ctrlObserver)ctrlObserver.disconnect();
-      function sync(){wrap.classList.toggle('ctrl-hidden',dp.classList.contains('dplayer-hide-controller'));}
-      sync();
-      ctrlObserver=new MutationObserver(sync);
-      ctrlObserver.observe(dp,{attributes:true,attributeFilter:['class']});
-      return true;
-    }
-    function tryAttach(){if(attach()&&ctrlIvl){clearInterval(ctrlIvl);ctrlIvl=null;}}
-    ctrlIvl=setInterval(tryAttach,500);
-    document.addEventListener('dplayer:reinit',function(){if(ctrlIvl)clearInterval(ctrlIvl);ctrlIvl=setInterval(tryAttach,500);});
-  })();
 })();
 </script>
 </body>
