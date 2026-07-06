@@ -14,59 +14,57 @@
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.css">
   <style>
     :root {
-      --bg:#0a0a0f; --surf:#13131a; --surf2:#1c1c27; --surf3:#242434;
+      --bg:#120e0b; --surf:#1a1512; --surf2:#221b16; --surf3:#2c231c;
       --brd:rgba(255,255,255,0.07); --brd2:rgba(255,255,255,0.13);
-      --tx:#f0f0f8; --tx2:#8888a8; --tx3:#44445a;
-      --acc:#e8173a; --acc2:#ff6b35; --glow:rgba(232,23,58,0.28);
-      --tint:#4a90e2; --grn:#30d158; --gld:#f0b429;
-      --rsm:8px; --rmd:12px; --rlg:16px; --rxl:22px;
+      --tx:#f2ece2; --tx2:#8f8577; --tx3:#5a5145;
+      --acc:#e2472b; --acc2:#ff7a45; --glow:rgba(226,71,43,0.28);
+      --tint:#c98a4b; --grn:#30d158; --gld:#d9a441;
+      --rsm:7px; --rmd:10px; --rlg:14px; --rxl:16px;
       --shsm:0 1px 4px rgba(0,0,0,.45);
       --shmd:0 4px 24px rgba(0,0,0,.55);
       --shlg:0 16px 56px rgba(0,0,0,.72);
       --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      --mono:'IBM Plex Mono',ui-monospace,'SF Mono',monospace;
     }
 
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{scroll-behavior:smooth}
     body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
-    body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 90% 55% at 10% 0%,rgba(232,23,58,.07) 0%,transparent 65%),radial-gradient(ellipse 60% 40% at 90% 5%,rgba(74,144,226,.05) 0%,transparent 65%)}
+    body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 90% 55% at 10% 0%,rgba(226,71,43,.08) 0%,transparent 65%),radial-gradient(ellipse 60% 40% at 90% 5%,rgba(201,138,75,.05) 0%,transparent 65%)}
 
     /* NAV */
-    .nav{position:sticky;top:0;z-index:200;background:rgba(10,10,15,.84);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid var(--brd)}
+    .nav{position:sticky;top:0;z-index:200;background:rgba(18,14,11,.86);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid var(--brd)}
 
-    .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;gap:16px}
+    .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;gap:16px}
     .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-    .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px var(--glow)}
+    .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px var(--glow)}
     .logo-mark svg{width:15px;height:15px;fill:#fff}
-    .logo-text{font-size:16px;font-weight:800;color:var(--tx);letter-spacing:-.4px}
-    .nav-r{display:flex;align-items:center;gap:6px}
+    .logo-text{font-size:17px;font-weight:800;color:var(--tx);letter-spacing:.2px;text-transform:uppercase}
+    .nav-r{display:flex;align-items:center;gap:8px}
     .nav-lnk{font-size:13px;font-weight:600;color:var(--tx2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .2s;white-space:nowrap}
     .nav-lnk:hover{color:var(--tx);background:var(--surf2)}
-    .nav-ibtn{width:36px;height:36px;border:none;cursor:pointer;background:transparent;color:var(--tx2);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s;flex-shrink:0}
-    .nav-ibtn:hover{background:var(--surf2);color:var(--tx)}
-    .nav-ibtn svg{width:18px;height:18px}
 
     /* PAGE */
-    .page{flex:1;max-width:1160px;width:100%;margin:0 auto;padding:24px 20px 60px}
+    .page{flex:1;max-width:1160px;width:100%;margin:0 auto;padding:24px 20px 60px;position:relative}
 
     /* BACK */
-    .back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--tx2);text-decoration:none;margin-bottom:20px;padding:6px 10px 6px 6px;border-radius:8px;transition:all .2s}
-    .back:hover{color:var(--tx);background:var(--surf2)}
-    .back svg{width:16px;height:16px}
+    .back{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx2);text-decoration:none;margin-bottom:20px;padding:9px 16px 9px 12px;border-radius:100px;border:1px solid var(--brd2);background:var(--surf);transition:all .2s}
+    .back:hover{color:var(--tx);background:var(--surf2);border-color:var(--brd2)}
+    .back svg{width:15px;height:15px}
 
     /* CHANNEL HEADER */
-    .ch-hdr{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-    .ch-logo{width:56px;height:56px;flex-shrink:0;background:var(--surf);border:1px solid var(--brd2);border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center}
+    .ch-hdr{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--brd)}
+    .ch-logo{width:56px;height:56px;flex-shrink:0;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rmd);padding:8px;display:flex;align-items:center;justify-content:center}
     .ch-logo img{width:100%;height:100%;object-fit:contain}
     .ch-info{flex:1;min-width:0}
-    .ch-name{font-size:22px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.15}
-    .ch-sub{font-size:13px;color:var(--tx2);margin-top:3px;font-weight:500}
+    .ch-name{font-size:26px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.15}
+    .ch-sub{font-size:13px;color:var(--tx2);margin-top:4px;font-weight:500}
     .live-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.6px;color:#fff;background:var(--acc);padding:7px 14px;border-radius:100px;box-shadow:0 0 24px var(--glow);flex-shrink:0;animation:livePulse 3s ease infinite}
-    @keyframes livePulse{0%,100%{box-shadow:0 0 24px var(--glow)}50%{box-shadow:0 0 40px rgba(232,23,58,.5)}}
+    @keyframes livePulse{0%,100%{box-shadow:0 0 24px var(--glow)}50%{box-shadow:0 0 40px rgba(226,71,43,.5)}}
     .live-pill .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.4s ease infinite}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
@@ -80,21 +78,19 @@
     #dplayer .dplayer-bar-wrap .dplayer-bar{background:rgba(255,255,255,.18)}
     #dplayer .dplayer-bar-wrap .dplayer-played{background:var(--acc)}
     #dplayer .dplayer-bar-wrap .dplayer-loaded{background:rgba(255,255,255,.3)}
-    #dplayer .dplayer-bar-wrap .dplayer-thumb{background:var(--acc);box-shadow:0 0 10px rgba(232,23,58,.5)}
+    #dplayer .dplayer-bar-wrap .dplayer-thumb{background:var(--acc);box-shadow:0 0 10px rgba(226,71,43,.5)}
     #dplayer.dplayer-pause .dplayer-video-wrap{filter:brightness(.6);transition:filter .3s}
     #dplayer .dplayer-video-wrap{transition:filter .3s}
     .dp-epg-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;opacity:.8;transition:opacity .2s}
     .dp-epg-btn:hover{opacity:1}
     .dp-epg-btn svg{width:22px;height:22px}
 
-    /* STREAM BAR */
-    .stream-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 20px;background:var(--surf);border:1px solid var(--brd);border-top:none;border-radius:0 0 var(--rxl) var(--rxl);margin-top:-1px;position:relative;z-index:5;opacity:0;transition:opacity .4s}
-    .stream-bar.on{opacity:1}
-    .s-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;background:var(--surf2);color:var(--tx2);border:1px solid var(--brd)}
-    .chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-    .chip-dot.good{background:var(--grn)}.chip-dot.medium{background:var(--gld)}.chip-dot.bad{background:var(--acc)}.chip-dot.pinging{background:var(--tint);animation:blink 1.2s ease infinite}
-    .chip-val{font-weight:700;color:var(--tx)}
-    .s-hint{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.3px}
+    /* NOW-PLAYING OVERLAY + LIVE BADGE ON PLAYER */
+    .pw-now{position:absolute;left:18px;right:16px;bottom:56px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .3s}
+    .pw-now.show{opacity:1}
+    .pw-now-cat{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc2);text-shadow:0 1px 6px rgba(0,0,0,.85)}
+    .pw-now-ttl{font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .player-wrap.ctrl-hidden .pw-now{opacity:0}
 
     /* ACTIONS */
     .action-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
@@ -102,9 +98,9 @@
     .btn svg{width:15px;height:15px;color:var(--tx2);flex-shrink:0}
     .btn:hover{background:var(--surf2);transform:translateY(-1px);box-shadow:var(--shsm)}
     .btn:active{transform:none}
-    .btn.pri{background:var(--acc);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(232,23,58,.22)}
+    .btn.pri{background:var(--acc);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(226,71,43,.22)}
     .btn.pri svg{color:rgba(255,255,255,.7)}
-    .btn.pri:hover{background:#c81030;box-shadow:0 0 28px rgba(232,23,58,.42)}
+    .btn.pri:hover{background:#a8341f;box-shadow:0 0 28px rgba(226,71,43,.42)}
 
     /* EPG SECTION */
     .epg-sec{margin-top:28px}
@@ -116,59 +112,66 @@
     .kst-clk svg{width:12px;height:12px;flex-shrink:0}
     .kst-t{font-variant-numeric:tabular-nums}
 
-    /* NOW PLAYING CARD */
-    .now-card{position:relative;overflow:hidden;background:var(--surf);border:1px solid var(--brd2);border-left:3px solid var(--acc);border-radius:var(--rxl);padding:24px 24px 20px;margin-bottom:12px;box-shadow:var(--shmd),-4px 0 28px rgba(232,23,58,.10);transition:box-shadow .3s}
-    .now-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--acc) 0%,var(--acc2) 40%,transparent 100%)}
-    .now-card:hover{box-shadow:var(--shmd),-4px 0 36px rgba(232,23,58,.18)}
-    .np-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-    .np-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--acc)}
-    .np-bdot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 1.4s ease infinite}
-    .np-cat{font-size:11px;font-weight:600;color:var(--tx2);background:var(--surf2);border:1px solid var(--brd);padding:2px 9px;border-radius:100px}
-    .np-title{font-size:22px;font-weight:900;letter-spacing:-.6px;color:var(--tx);line-height:1.2;margin-bottom:5px}
-    .np-sub{font-size:13px;color:var(--tx2);font-weight:500;margin-bottom:16px;line-height:1.5}
-    .np-sub:empty{margin-bottom:10px}
-    .np-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-    .np-tchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--tx);background:var(--surf2);border:1px solid var(--brd);padding:4px 11px;border-radius:100px}
-    .np-tchip svg{width:11px;height:11px;color:var(--tx2)}
-    .np-rem{font-size:12px;font-weight:600;color:var(--tx2)}
-    .np-track{height:4px;background:var(--surf3);border-radius:100px;overflow:hidden}
-    .np-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc) 0%,var(--acc2) 100%);transition:width 1s linear}
-
     /* SCHEDULE CARD */
     .sched-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);overflow:hidden}
-    .sched-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--brd)}
-    .sched-hdr-ttl{font-size:13px;font-weight:700;color:var(--tx2);display:flex;align-items:center;gap:7px}
-    .sched-hdr-ttl svg{width:13px;height:13px}
-    .sched-all{font-size:12px;font-weight:700;color:var(--acc);cursor:pointer;background:none;border:none;font-family:var(--font);transition:opacity .2s}
-    .sched-all:hover{opacity:.7}
-    .sched-list{max-height:300px;overflow-y:auto}
+    .sched-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--brd)}
+    .sched-hdr-ttl{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--tx);display:flex;align-items:center;gap:8px}
+    .sched-hdr-ttl svg{width:14px;height:14px;color:var(--tx2)}
+    .sched-hdr-kst{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--tx3);font-family:var(--mono)}
+    .sched-list{max-height:420px;overflow-y:auto}
     .sched-list::-webkit-scrollbar{width:4px}
     .sched-list::-webkit-scrollbar-track{background:transparent}
     .sched-list::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
-    .sched-row{display:flex;align-items:flex-start;gap:14px;padding:12px 20px;border-bottom:1px solid var(--brd);transition:background .15s}
+    .sched-row{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--brd);transition:background .15s;position:relative}
     .sched-row:last-child{border-bottom:none}
     .sched-row.past{opacity:.35}
-    .sched-row.cur{background:linear-gradient(90deg,rgba(232,23,58,.06) 0%,transparent 100%)}
     .sched-row:hover{background:var(--surf2)}
-    .sched-row.cur:hover{background:linear-gradient(90deg,rgba(232,23,58,.10) 0%,rgba(255,255,255,.015) 100%)}
-    .sched-time{flex-shrink:0;width:44px;font-size:11px;font-weight:700;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
-    .sched-row.cur .sched-time{color:var(--acc)}
-    .sched-dot{flex-shrink:0;margin-top:6px;width:7px;height:7px;border-radius:50%;background:var(--surf3)}
-    .sched-row.cur .sched-dot{background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 2s ease infinite}
-    .sched-body{flex:1;min-width:0}
-    .sched-ttl{font-size:13px;font-weight:600;color:var(--tx);line-height:1.4;margin-bottom:2px}
+    .sched-row.onair{background:linear-gradient(90deg,rgba(226,71,43,.08) 0%,transparent 65%)}
+    .sched-row.onair::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc);box-shadow:0 0 10px var(--glow)}
+    .sched-time-col{flex-shrink:0;width:76px;padding:14px 0 14px 20px}
+    .sched-time{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--tx3);letter-spacing:.3px}
+    .sched-row.onair .sched-time{color:var(--acc);font-size:14px}
+    .sched-body{flex:1;min-width:0;padding:14px 20px 14px 0}
+    .onair-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+    .onair-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:blink 1.6s ease infinite}
+    .sched-cat{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx2);margin-bottom:4px}
+    .sched-row.onair .sched-cat{color:var(--tx2)}
+    .sched-ttl{font-size:14px;font-weight:600;color:var(--tx);line-height:1.4}
     .sched-row.past .sched-ttl{color:var(--tx2)}
-    .sched-row.cur .sched-ttl{font-weight:700}
-    .sched-sub{font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .sched-sub:empty{display:none}
-    .sched-end{flex-shrink:0;font-size:11px;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
+    .sched-row.onair .sched-ttl{font-weight:700;font-size:15px}
+    .sched-sub{font-size:12px;color:var(--tx3);margin-top:3px;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sched-rem{font-size:11px;color:var(--tx2);margin-top:6px;font-weight:600}
+    .sched-foot{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 20px;border-top:1px solid var(--brd);background:none;border-left:none;border-right:none;border-bottom:none;width:100%;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tx2);cursor:pointer;font-family:var(--font);transition:color .2s}
+    .sched-foot:hover{color:var(--acc)}
+    .sched-foot svg{width:13px;height:13px}
+
+    /* PYONGYANG TIME HERO CLOCK */
+    .pt-clock{margin-top:12px;background:var(--surf);border:1px solid var(--brd2);border-left:3px solid var(--acc);border-radius:var(--rxl);padding:20px 24px}
+    .pt-clock-lbl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx2);margin-bottom:10px}
+    .pt-clock-sq{width:8px;height:8px;background:var(--acc);border-radius:2px;flex-shrink:0}
+    .pt-clock-digits{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--tx);letter-spacing:1px;line-height:1;font-variant-numeric:tabular-nums}
+    .pt-clock-tz{font-size:12px;color:var(--tx3);margin-top:8px;font-family:var(--mono);letter-spacing:.5px}
 
     /* EPG STATES */
     .epg-sw{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);padding:44px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
     .epg-si{font-size:34px}
     .epg-sm{font-size:13px;color:var(--tx2)}
-    .epg-retry{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(232,23,58,.10);border:1px solid rgba(232,23,58,.22);padding:7px 16px;border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s}
-    .epg-retry:hover{background:rgba(232,23,58,.18)}
+    .epg-retry{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(226,71,43,.10);border:1px solid rgba(226,71,43,.22);padding:7px 16px;border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s}
+    .epg-retry:hover{background:rgba(226,71,43,.18)}
+
+    /* SKELETON LOADING STATE */
+    @keyframes skelShimmer{0%{background-position:-260px 0}100%{background-position:calc(260px + 100%) 0}}
+    .skel-block{background:linear-gradient(90deg,var(--surf3) 25%,var(--surf2) 37%,var(--surf3) 63%);background-size:420px 100%;background-repeat:no-repeat;border-radius:5px;animation:skelShimmer 1.6s ease-in-out infinite}
+    .sched-row.skel-row{pointer-events:none}
+    .sched-row.skel-row.skel-onair::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--surf3)}
+    .skel-badge{width:56px;height:9px;margin-bottom:7px}
+    .skel-cat{width:74px;height:9px;margin-bottom:7px}
+    .skel-ttl{height:13px;margin-bottom:6px}
+    .skel-sub{height:10px}
+    .skel-foot{height:11px;width:130px;margin:14px auto}
+    .skel-clock-lbl{width:120px;height:10px;margin-bottom:14px}
+    .skel-clock-digits{width:230px;height:38px;margin-bottom:9px}
+    .skel-clock-tz{width:54px;height:10px}
 
     /* ABOUT */
     .about{margin-top:28px;background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);padding:22px 24px}
@@ -206,8 +209,8 @@
     .ios-sw input:checked+.ios-trk::before{transform:translateX(18px)}
     .ss-acts{display:flex;gap:8px;padding:16px 22px}
     .ss-acts .btn{flex:1;justify-content:center}
-    .ss-pick-btn{flex-shrink:0;padding:6px 14px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(232,23,58,.10);border:1px solid rgba(232,23,58,.25);border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s,transform .15s;white-space:nowrap}
-    .ss-pick-btn:hover{background:rgba(232,23,58,.18);transform:translateY(-1px)}
+    .ss-pick-btn{flex-shrink:0;padding:6px 14px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(226,71,43,.10);border:1px solid rgba(226,71,43,.25);border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s,transform .15s;white-space:nowrap}
+    .ss-pick-btn:hover{background:rgba(226,71,43,.18);transform:translateY(-1px)}
     .ss-edit-input-wrap{padding:0 22px 14px}
     .ss-edit-input{width:100%;padding:10px 14px;font-size:13px;font-family:var(--font);font-weight:600;background:var(--surf2);border:1px solid var(--brd2);border-radius:var(--rmd);color:var(--tx);outline:none;transition:border-color .2s}
     .ss-edit-input:focus{border-color:var(--acc)}
@@ -221,8 +224,8 @@
     .ss-font-custom-row{padding:0 22px 14px;display:flex;flex-direction:column;gap:4px}
     .ss-font-custom-lbl{font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:4px}
     .ss-font-url-wrap{display:flex;flex-direction:column;gap:6px}
-    .ss-font-apply-btn{align-self:flex-start;padding:7px 16px;border-radius:100px;border:1px solid rgba(232,23,58,.3);background:rgba(232,23,58,.10);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:background .18s}
-    .ss-font-apply-btn:hover{background:rgba(232,23,58,.2)}
+    .ss-font-apply-btn{align-self:flex-start;padding:7px 16px;border-radius:100px;border:1px solid rgba(226,71,43,.3);background:rgba(226,71,43,.10);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:background .18s}
+    .ss-font-apply-btn:hover{background:rgba(226,71,43,.2)}
 
     /* EPG OVERLAY */
     .epg-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.90);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
@@ -241,7 +244,7 @@
     .epg-fr{display:flex;align-items:flex-start;gap:14px;padding:13px 22px;border-bottom:1px solid var(--brd);transition:background .15s;cursor:pointer}
     .epg-fr:last-child{border-bottom:none}
     .epg-fr.epg-past{opacity:.35}
-    .epg-fr.epg-cur{background:linear-gradient(90deg,rgba(232,23,58,.07) 0%,transparent 100%)}
+    .epg-fr.epg-cur{background:linear-gradient(90deg,rgba(226,71,43,.07) 0%,transparent 100%)}
     .epg-fr:hover{background:var(--surf2)}
     .epg-ft{flex-shrink:0;width:52px;font-size:12px;font-weight:700;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
     .epg-fr.epg-cur .epg-ft{color:var(--acc)}
@@ -251,7 +254,7 @@
     .epg-ftitle{font-size:14px;font-weight:700;color:var(--tx);line-height:1.4;margin-bottom:3px}
     .epg-fr.epg-past .epg-ftitle{color:var(--tx2)}
     .epg-ftags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-    .epg-fcat{font-size:11px;font-weight:600;color:var(--tint);background:rgba(74,144,226,.12);padding:2px 8px;border-radius:100px}
+    .epg-fcat{font-size:11px;font-weight:600;color:var(--tint);background:rgba(201,138,75,.12);padding:2px 8px;border-radius:100px}
     .epg-fsub{font-size:12px;color:var(--tx3);line-height:1.4;margin-top:2px;margin-bottom:5px}
     .epg-fsub:empty{display:none;margin:0}
     .epg-fend{flex-shrink:0;font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px;text-align:right}
@@ -262,13 +265,12 @@
     .dplayer:fullscreen .epg-ov,.dplayer:-webkit-full-screen .epg-ov{position:fixed;inset:0;z-index:999999}
 
     @media(max-width:640px){
-      .ch-name{font-size:18px}
+      .ch-name{font-size:20px}
       .action-row{flex-direction:column}
       .btn{justify-content:center}
-      .stream-bar{flex-direction:column;align-items:flex-start}
-      .now-card{padding:18px 16px 16px}
-      .np-title{font-size:17px}
-      .sched-list{max-height:240px}
+      .sched-list{max-height:280px}
+      .pt-clock-digits{font-size:34px}
+      .pw-now{right:16px}
       .epg-ov,.ss-ov{padding:8px}
       .epg-ov-inn,.ss-inn{max-height:96vh}
       .page{padding:16px 12px 48px}
@@ -288,7 +290,6 @@
     </a>
     <div class="nav-r">
       <a href="index.html" class="nav-lnk" data-i18n="channels">Channels</a>
-
     </div>
   </div>
 </nav>
@@ -313,17 +314,10 @@
   <div class="player-wrap" id="playerWrap">
     <div class="ss-flash" id="ssFlash"></div>
     <div id="dplayer"></div>
-  </div>
-
-  <!-- STREAM BAR -->
-  <div class="stream-bar" id="streamInfoBar">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <div class="s-chip" id="infoChipLatency" style="display:none">
-        <span class="chip-dot pinging" id="latencyDot"></span>
-        <span class="chip-val" id="infoChipLatencyValue">— ms</span>
-      </div>
+    <div class="pw-now" id="pwNowOverlay">
+      <div class="pw-now-cat" id="pwNowCat"></div>
+      <div class="pw-now-ttl" id="pwNowTitle"></div>
     </div>
-    <span class="s-hint">-Watch Korean TV-</span>
   </div>
 
   <!-- ACTIONS -->
@@ -336,23 +330,53 @@
 
   <!-- EPG -->
   <div class="epg-sec">
-    <div class="epg-sec-hdr">
-      <div class="epg-sec-ttl">
-        <span class="epg-pill">EPG</span>
-        <span class="epg-sec-name">Programme Guide</span>
-      </div>
-      <div class="kst-clk">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="epgDateVal">—</span>
-        <span style="color:var(--brd2)">·</span>
-        <span class="kst-t" id="epgClockVal">--:--:--</span>
-        <span style="color:var(--tx3);font-weight:600">KST</span>
-      </div>
-    </div>
 
     <!-- Loading -->
     <div id="epgLoading">
-      <div class="epg-sw"><div class="epg-si">📺</div><div class="epg-sm">Loading programme guide…</div></div>
+      <div class="sched-card">
+        <div class="sched-hdr">
+          <div class="skel-block" style="width:150px;height:13px"></div>
+          <div class="skel-block" style="width:92px;height:11px"></div>
+        </div>
+        <div class="sched-list">
+          <div class="sched-row skel-row skel-onair">
+            <div class="sched-time-col"><div class="skel-block" style="width:46px;height:14px"></div></div>
+            <div class="sched-body">
+              <div class="skel-block skel-badge"></div>
+              <div class="skel-block skel-cat" style="width:60px"></div>
+              <div class="skel-block skel-ttl" style="width:78%"></div>
+              <div class="skel-block skel-sub" style="width:40%"></div>
+            </div>
+          </div>
+          <div class="sched-row skel-row">
+            <div class="sched-time-col"><div class="skel-block" style="width:40px;height:13px"></div></div>
+            <div class="sched-body">
+              <div class="skel-block skel-cat"></div>
+              <div class="skel-block skel-ttl" style="width:55%"></div>
+            </div>
+          </div>
+          <div class="sched-row skel-row">
+            <div class="sched-time-col"><div class="skel-block" style="width:40px;height:13px"></div></div>
+            <div class="sched-body">
+              <div class="skel-block skel-cat" style="width:88px"></div>
+              <div class="skel-block skel-ttl" style="width:65%"></div>
+            </div>
+          </div>
+          <div class="sched-row skel-row">
+            <div class="sched-time-col"><div class="skel-block" style="width:40px;height:13px"></div></div>
+            <div class="sched-body">
+              <div class="skel-block skel-cat" style="width:70px"></div>
+              <div class="skel-block skel-ttl" style="width:48%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="skel-block skel-foot"></div>
+      </div>
+      <div class="pt-clock">
+        <div class="skel-block skel-clock-lbl"></div>
+        <div class="skel-block skel-clock-digits"></div>
+        <div class="skel-block skel-clock-tz"></div>
+      </div>
     </div>
 
     <!-- Error -->
@@ -370,34 +394,27 @@
     <!-- Live content -->
     <div id="epgContent" style="display:none">
 
-      <!-- ★ NOW PLAYING CARD ★ -->
-      <div class="now-card">
-        <div class="np-eyebrow">
-          <div class="np-badge"><span class="np-bdot"></span>Now Playing!</div>
-          <span class="np-cat" id="epgNowCat"></span>
-        </div>
-        <div class="np-title" id="epgNowTitle">—</div>
-        <div class="np-sub" id="epgNowTitleSub"></div>
-        <div class="np-meta">
-          <div class="np-tchip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span id="epgNowTime">—</span>
-          </div>
-          <span class="np-rem" id="epgRemaining"></span>
-        </div>
-        <div class="np-track"><div class="np-fill" id="epgProgressFill" style="width:0%"></div></div>
-      </div>
-
       <!-- Schedule -->
       <div class="sched-card">
         <div class="sched-hdr">
           <div class="sched-hdr-ttl">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Today's Schedule
+            Programme Schedule
           </div>
-          <button class="sched-all" id="epgViewAllBtn">View Full Guide →</button>
+          <div class="sched-hdr-kst"><span id="epgDateVal">—</span> · <span id="epgClockVal">--:--:--</span> KST</div>
         </div>
         <div class="sched-list" id="epgSchedule"></div>
+        <button class="sched-foot" id="epgViewAllBtn">
+          Open Full Schedule
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+
+      <!-- Pyongyang time hero clock -->
+      <div class="pt-clock">
+        <div class="pt-clock-lbl"><span class="pt-clock-sq"></span>Pyongyang Time</div>
+        <div class="pt-clock-digits" id="epgHeroClock">--:--:--</div>
+        <div class="pt-clock-tz">UTC+9</div>
       </div>
 
     </div>
@@ -535,22 +552,14 @@
   var SERVERS={za:{id:'za',name:'South Africa',url:_d(),tag:'primary'}};
   var activeServer='za',hlsInstance=null,lastPingMs=0;
 
-  function updateInfoBar(sid,ms){
-    var chip=document.getElementById('infoChipLatency'),val=document.getElementById('infoChipLatencyValue'),dot=document.getElementById('latencyDot');
-    if(ms&&ms>0){lastPingMs=ms;chip.style.display='inline-flex';val.textContent=ms+' ms';if(dot)dot.className='chip-dot '+(ms<300?'good':ms<700?'medium':'bad');}
-    else chip.style.display='none';
-  }
-  function showInfoBar(){document.getElementById('streamInfoBar').classList.add('on');}
-
   function initPlayer(sid){
     activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
-    showInfoBar();
     if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
     if(hlsInstance){try{hlsInstance.destroy();}catch(e){}hlsInstance=null;}
     var c=document.getElementById('dplayer');if(c)c.innerHTML='';
     var dp=new DPlayer({
       container:document.getElementById('dplayer'),live:true,autoplay:true,screenshot:false,
-      theme:'#e8173a',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
+      theme:'#e2472b',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
       video:{url:s.url,type:'customHls',
         pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',
         customType:{customHls:function(video){
@@ -589,13 +598,7 @@
         video.addEventListener('contextmenu',function(e){e.stopPropagation();e.preventDefault();},{passive:false,capture:true});
       },1000);
     })();
-    startPing(sid);
     document.dispatchEvent(new CustomEvent('dplayer:reinit'));
-  }
-
-  function startPing(sid){
-    function ping(){var s=SERVERS[sid];if(!s||!s.url)return;var t=performance.now(),xhr=new XMLHttpRequest();xhr.open('GET',s.url+(s.url.indexOf('?')>=0?'&':'?')+'_t='+Date.now(),true);xhr.timeout=5000;xhr.onload=function(){updateInfoBar(sid,Math.round(performance.now()-t));};xhr.onerror=xhr.ontimeout=function(){updateInfoBar(sid,lastPingMs||0);};try{xhr.send();}catch(e){}}
-    ping();setInterval(ping,15000);
   }
 
   function _init(){initPlayer('za');}
@@ -682,7 +685,7 @@
       var mg=Math.max(16,Math.round(w*0.018)),maxPW=w-mg*2,sz=fitSz(ctx,txt,maxPW,Math.max(13,Math.round(w*0.019)),10);
       ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),py=Math.round(sz*0.62),aw=Math.max(3,Math.round(sz*0.16)),gap=Math.round(sz*0.35),r=Math.round(sz*0.5),ph=sz+py*2,pw=Math.min(tw+px*2+aw+gap,maxPW),pX=mg,pY=h-mg-ph;
       ctx.save();ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=Math.round(sz*0.6);ctx.shadowOffsetY=Math.round(sz*0.15);ctx.fillStyle='rgba(18,18,22,.82)';rrp(ctx,pX,pY,pw,ph,r);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#e8173a';ctx.fillRect(pX,pY,aw,ph);ctx.restore();
+      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#e2472b';ctx.fillRect(pX,pY,aw,ph);ctx.restore();
       ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#fff';ctx.font='700 '+sz+'px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(txt,pX+aw+px,pY+ph/2+Math.round(sz*0.04));ctx.restore();ctx.restore();
     }
 
@@ -808,7 +811,7 @@
   function getUrl(){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+epgDS(getPT());}
   var epgData=null,lastDS='';
 
-  function tick(){var now=getPT(),t=fmtTime(now);['epgClockVal','epgOverlayClock'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t;});var ds=fmtDate(now);if(ds!==lastDS){lastDS=ds;['epgDateVal','epgOverlayDateVal'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=ds;});}}
+  function tick(){var now=getPT(),t=fmtTime(now);['epgClockVal','epgOverlayClock','epgHeroClock'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t;});var ds=fmtDate(now);if(ds!==lastDS){lastDS=ds;['epgDateVal','epgOverlayDateVal'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=ds;});}}
   setInterval(tick,1000);tick();
 
   function parseKST(hhmm){var p=hhmm.split(':'),d=new Date(getPT());d.setHours(+p[0],+p[1],0,0);return d;}
@@ -821,29 +824,56 @@
   function titleEn(p){if(!p||!p.title)return'';return typeof p.title==='object'?(p.title.en||''):p.title;}
   function titleSub(p){if(!p||!p.title||typeof p.title!=='object')return'';var r=[];if(p.title.ko)r.push(p.title.ko);if(p.title.zh)r.push(p.title.zh);return r.join('  ·  ');}
 
+  /* The primary EPG API returns each program's start time only — no end time.
+     Derive any missing end as the next program's start (last one runs to sign-off, 24:00). */
+  function withEnds(progs){
+    for(var i=0;i<progs.length;i++){
+      if(!progs[i].end)progs[i].end=progs[i+1]?progs[i+1].start:'24:00';
+    }
+    return progs;
+  }
+
+  /* Maps the fallback API's event shape (startUtc/endUtc ISO strings, flat title/titleEn/category fields)
+     onto the same {start,end,title:{en,ko},category} shape the renderer expects. */
+  function mapFallbackEvent(ev){
+    return {
+      start:ev.startUtc?ev.startUtc.slice(11,16):'',
+      end:ev.endUtc?ev.endUtc.slice(11,16):null,
+      title:{en:ev.titleEn||ev.title||'',ko:ev.title||''},
+      category:ev.category||ev.categoryKo||''
+    };
+  }
+
+  function updateNowOverlay(cur){
+    var wrap=document.getElementById('pwNowOverlay'),catEl=document.getElementById('pwNowCat'),ttlEl=document.getElementById('pwNowTitle');
+    if(!wrap)return;
+    if(cur){
+      catEl.textContent=cur.category||'';
+      ttlEl.textContent=titleEn(cur);
+      wrap.classList.add('show');
+    } else {
+      wrap.classList.remove('show');
+    }
+  }
+
   function renderEPG(data){
     epgData=data;var progs=data.programs,curIdx=-1;
     progs.forEach(function(p,i){if(isCur(p.start,p.end))curIdx=i;});
-    var cur=curIdx>=0?progs[curIdx]:null;
-    if(cur){
-      document.getElementById('epgNowTitle').textContent=titleEn(cur);
-      document.getElementById('epgNowTitleSub').textContent=titleSub(cur);
-      document.getElementById('epgNowCat').textContent=cur.category;
-      document.getElementById('epgNowTime').textContent=cur.start+' – '+cur.end;
-      document.getElementById('epgProgressFill').style.width=getPct(cur.start,cur.end).toFixed(1)+'%';
-      document.getElementById('epgRemaining').textContent=getMinsLeft(cur.end)+' min left';
-    } else {
-      document.getElementById('epgNowTitle').textContent='Off Air';
-      ['epgNowTitleSub','epgNowCat','epgNowTime','epgRemaining'].forEach(function(id){document.getElementById(id).textContent='';});
-      document.getElementById('epgProgressFill').style.width='0%';
-    }
+    updateNowOverlay(curIdx>=0?progs[curIdx]:null);
+
     var list=document.getElementById('epgSchedule');list.innerHTML='';
     var from=Math.max(0,curIdx-2);
     progs.slice(from).forEach(function(p){
       var past=isPast(p.end),curr=isCur(p.start,p.end);
       var row=document.createElement('div');
-      row.className='sched-row'+(past?' past':'')+(curr?' cur':'');
-      row.innerHTML='<div class="sched-time">'+esc(p.start)+'</div><div class="sched-dot"></div><div class="sched-body"><div class="sched-ttl">'+esc(titleEn(p))+'</div><div class="sched-sub">'+esc(titleSub(p))+'</div></div><div class="sched-end">'+esc(p.end)+'</div>';
+      row.className='sched-row'+(past?' past':'')+(curr?' onair':'');
+      var badgeHtml=curr?'<div class="onair-badge"><span class="onair-dot"></span>On Air</div>':'';
+      var subHtml=titleSub(p)?'<div class="sched-sub">'+esc(titleSub(p))+'</div>':'';
+      var remHtml=curr?'<div class="sched-rem">'+getMinsLeft(p.end)+' min left</div>':'';
+      row.innerHTML=
+        '<div class="sched-time-col"><div class="sched-time">'+esc(p.start)+'</div></div>'+
+        '<div class="sched-body">'+badgeHtml+'<div class="sched-cat">'+esc(p.category||'')+'</div>'+
+        '<div class="sched-ttl">'+esc(titleEn(p))+'</div>'+subHtml+remHtml+'</div>';
       list.appendChild(row);
       if(curr)setTimeout(function(){row.scrollIntoView({block:'nearest'});},100);
     });
@@ -865,11 +895,40 @@
     });
   }
 
+  var FALLBACK_URL='https://juche-tv.vercel.app/api/juche-tv';
+
+  function loadFallbackEPG(targetDate){
+    var xhr=new XMLHttpRequest();xhr.open('GET',FALLBACK_URL,true);xhr.timeout=8000;
+    xhr.onload=function(){
+      if(xhr.status===200){
+        try{
+          var d=JSON.parse(xhr.responseText);
+          var evs=(d.events||[]).filter(function(e){return e.channel==='kctv'&&e.startUtc&&e.startUtc.slice(0,10)===targetDate;});
+          if(!evs.length){showErr('No programme data available for this date.');return;}
+          evs.sort(function(a,b){return a.startUtc<b.startUtc?-1:(a.startUtc>b.startUtc?1:0);});
+          renderEPG({programs:withEnds(evs.map(mapFallbackEvent))});
+        }catch(e){showErr('No programme data available for this date.');}
+      } else showErr('No programme data available for this date.');
+    };
+    xhr.onerror=function(){showErr('No programme data available for this date.');};
+    xhr.ontimeout=function(){showErr('No programme data available for this date.');};
+    xhr.send();
+  }
+
   function loadEPG(){
     document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';
+    var targetDate=epgDS(getPT());
     var xhr=new XMLHttpRequest();xhr.open('GET',getUrl(),true);xhr.timeout=8000;
-    xhr.onload=function(){if(xhr.status===200){try{renderEPG(JSON.parse(xhr.responseText));}catch(e){showErr('Invalid EPG data.');}}else showErr('Server error '+xhr.status+'.');};
-    xhr.onerror=function(){showErr('Network error.');};xhr.ontimeout=function(){showErr('Timed out.');};xhr.send();
+    xhr.onload=function(){
+      if(xhr.status===200){
+        try{
+          var d=JSON.parse(xhr.responseText),progs=withEnds(d.programs||[]);
+          if(progs.length){d.programs=progs;renderEPG(d);}
+          else loadFallbackEPG(targetDate);
+        }catch(e){loadFallbackEPG(targetDate);}
+      } else loadFallbackEPG(targetDate);
+    };
+    xhr.onerror=function(){loadFallbackEPG(targetDate);};xhr.ontimeout=function(){loadFallbackEPG(targetDate);};xhr.send();
   }
   function showErr(msg){document.getElementById('epgLoading').style.display='none';document.getElementById('epgErrorMsg').textContent=msg;document.getElementById('epgError').style.display='';document.getElementById('epgContent').style.display='none';}
   document.getElementById('epgRetryBtn').addEventListener('click',loadEPG);
@@ -893,6 +952,24 @@
   ivl=setInterval(tryInject,500);
   document.addEventListener('dplayer:reinit',function(){injected=false;setTimeout(function(){ivl=setInterval(tryInject,500);},1000);});
   loadEPG();
+
+  /* Fade the now-playing overlay + LIVE badge together with DPlayer's own controls */
+  (function(){
+    var ctrlObserver=null,ctrlIvl=null;
+    function attach(){
+      var dp=document.querySelector('#dplayer .dplayer'),wrap=document.getElementById('playerWrap');
+      if(!dp||!wrap)return false;
+      if(ctrlObserver)ctrlObserver.disconnect();
+      function sync(){wrap.classList.toggle('ctrl-hidden',dp.classList.contains('dplayer-hide-controller'));}
+      sync();
+      ctrlObserver=new MutationObserver(sync);
+      ctrlObserver.observe(dp,{attributes:true,attributeFilter:['class']});
+      return true;
+    }
+    function tryAttach(){if(attach()&&ctrlIvl){clearInterval(ctrlIvl);ctrlIvl=null;}}
+    ctrlIvl=setInterval(tryAttach,500);
+    document.addEventListener('dplayer:reinit',function(){if(ctrlIvl)clearInterval(ctrlIvl);ctrlIvl=setInterval(tryAttach,500);});
+  })();
 })();
 </script>
 </body>
