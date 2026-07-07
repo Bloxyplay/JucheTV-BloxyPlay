@@ -98,6 +98,18 @@
     .epg-sec-ttl{display:flex;align-items:center;gap:10px}
     .epg-pill{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:3px 9px;border-radius:100px}
     .epg-sec-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
+
+    /* EPG CONTROLS — language & source */
+    .epg-ctrl-bar{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+    .epg-ctrl-grp{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}
+    .epg-ctrl-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--tx2)}
+    .epg-select-wrap{position:relative}
+    .epg-select{appearance:none;-webkit-appearance:none;-moz-appearance:none;width:100%;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rmd);padding:10px 34px 10px 13px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--tx);cursor:pointer;transition:border-color .2s,background .2s}
+    .epg-select:hover{border-color:var(--acc);background:var(--surf2)}
+    .epg-select:focus{outline:none;border-color:var(--acc)}
+    .epg-select-wrap::after{content:'';position:absolute;right:13px;top:50%;width:8px;height:8px;border-right:2px solid var(--tx2);border-bottom:2px solid var(--tx2);transform:translateY(-65%) rotate(45deg);pointer-events:none}
+    .epg-src-note{font-size:11.5px;line-height:1.55;color:var(--tx3);margin:-2px 0 18px;padding:9px 13px;background:var(--surf);border:1px solid var(--brd);border-radius:var(--rsm)}
+    .epg-src-note strong{color:var(--tx2);font-weight:700}
     .kst-clk{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tx2);background:var(--surf);border:1px solid var(--brd);padding:5px 12px;border-radius:100px}
     .kst-clk svg{width:12px;height:12px;flex-shrink:0}
     .kst-t{font-variant-numeric:tabular-nums}
@@ -314,6 +326,27 @@
 
   <!-- EPG -->
   <div class="epg-sec">
+
+    <!-- Language & Source controls -->
+    <div class="epg-ctrl-bar">
+      <div class="epg-ctrl-grp">
+        <label class="epg-ctrl-lbl" for="epgLangSelect">Language</label>
+        <div class="epg-select-wrap">
+          <select class="epg-select" id="epgLangSelect"></select>
+        </div>
+      </div>
+      <div class="epg-ctrl-grp">
+        <label class="epg-ctrl-lbl" for="epgSourceSelect">EPG Source</label>
+        <div class="epg-select-wrap">
+          <select class="epg-select" id="epgSourceSelect">
+            <option value="juche">Juche TV (Default Multilingual!)</option>
+            <option value="koryofront">KoryoFront</option>
+            <option value="koryotv">KoryoTV</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <p class="epg-src-note">Choose your EPG source for better accuracy — only <strong>English</strong> and <strong>Korean</strong> are available in the KoryoFront and KoryoTV APIs.</p>
 
     <!-- Loading -->
     <div id="epgLoading">
@@ -696,7 +729,8 @@
       if(window._epgData&&window._epgData.programs){
         for(var i=0;i<window._epgData.programs.length;i++){
           var p=window._epgData.programs[i];
-          if(epgProgram&&(typeof p.title==='object'?p.title.en:p.title)===epgProgram){
+          var pTitle=(typeof window._kctvTitleFor==='function')?window._kctvTitleFor(p):(typeof p.title==='object'?p.title.en:p.title);
+          if(epgProgram&&pTitle===epgProgram){
             epgTime=p.start+' – '+p.end+' KST';break;
           }
         }
@@ -792,8 +826,109 @@
   var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(d){return DOW[d.getDay()]+', '+d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear();}
   function epgDS(d){return d.getFullYear()+'-'+fmt2(d.getMonth()+1)+'-'+fmt2(d.getDate());}
-  function getUrl(){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+epgDS(getPT());}
   var epgData=null,lastDS='';
+
+  /* ---- EPG sources ---- */
+  /* KoryoTV endpoint isn't public yet — fill in the real URL below once available.
+     Until then, selecting KoryoTV will show a friendly "not available" message. */
+  var KORYOTV_URL='';
+  var EPG_SOURCES={
+    juche:{url:function(ds){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+ds;}},
+    koryofront:{url:function(ds){return 'https://juche-tv.vercel.app/api/KoryoFront?date='+ds;}},
+    koryotv:{url:function(ds){return KORYOTV_URL?(KORYOTV_URL+(KORYOTV_URL.indexOf('?')>-1?'&':'?')+'date='+ds):null;}}
+  };
+  function getUrl(){return EPG_SOURCES[currentSource].url(epgDS(getPT()));}
+
+  /* ---- Language selection ---- */
+  var LANG_ORDER=['en','ko','zh','zh_hk','ja','ru','es','fr','de','my','ug','bo','mn','za','kk'];
+  var LANG_NAMES={
+    en:'English',ko:'한국어 · Korean',zh:'中文 · Chinese',zh_hk:'廣東話 · Cantonese',ja:'日本語 · Japanese',
+    ru:'Русский · Russian',es:'Español · Spanish',fr:'Français · French',de:'Deutsch · German',
+    my:'မြန်မာ · Burmese',ug:'ئۇيغۇرچە · Uyghur',bo:'བོད་ · Tibetan',mn:'Монгол · Mongolian',
+    za:'Vahcuengh · Zhuang',kk:'Қазақша · Kazakh',vi:'Tiếng Việt · Vietnamese',th:'ไทย · Thai',
+    id:'Bahasa Indonesia',ms:'Bahasa Melayu',hi:'हिन्दी · Hindi',ar:'العربية · Arabic',fa:'فارسی · Persian',
+    tr:'Türkçe · Turkish',it:'Italiano · Italian',pt:'Português · Portuguese',nl:'Nederlands · Dutch',
+    pl:'Polski · Polish',uk:'Українська · Ukrainian',cs:'Čeština · Czech',sv:'Svenska · Swedish',
+    fi:'Suomi · Finnish',da:'Dansk · Danish',no:'Norsk · Norwegian',el:'Ελληνικά · Greek',he:'עברית · Hebrew',
+    ro:'Română · Romanian',hu:'Magyar · Hungarian',bg:'Български · Bulgarian',sr:'Српски · Serbian',
+    hr:'Hrvatski · Croatian',sk:'Slovenčina · Slovak',ka:'ქართული · Georgian',hy:'Հայերեն · Armenian',
+    az:'Azərbaycan · Azerbaijani',uz:'Oʻzbekcha · Uzbek',ky:'Кыргызча · Kyrgyz',tg:'Тоҷикӣ · Tajik',
+    km:'ខ្មែរ · Khmer',lo:'ລາວ · Lao',ne:'नेपाली · Nepali',si:'සිංහල · Sinhala',ta:'தமிழ் · Tamil',
+    bn:'বাংলা · Bengali',ur:'اردو · Urdu',sw:'Kiswahili · Swahili'
+  };
+  var LANG_FLAGS={
+    en:'🇬🇧',ko:'🇰🇵',zh:'🇨🇳',zh_hk:'🇭🇰',ja:'🇯🇵',ru:'🇷🇺',es:'🇪🇸',fr:'🇫🇷',de:'🇩🇪',
+    my:'🇲🇲',ug:'🇨🇳',bo:'🇨🇳',mn:'🇲🇳',za:'🇨🇳',kk:'🇰🇿',vi:'🇻🇳',th:'🇹🇭',id:'🇮🇩',ms:'🇲🇾',
+    hi:'🇮🇳',ar:'🇸🇦',fa:'🇮🇷',tr:'🇹🇷',it:'🇮🇹',pt:'🇵🇹',nl:'🇳🇱',pl:'🇵🇱',uk:'🇺🇦',cs:'🇨🇿',
+    sv:'🇸🇪',fi:'🇫🇮',da:'🇩🇰',no:'🇳🇴',el:'🇬🇷',he:'🇮🇱',ro:'🇷🇴',hu:'🇭🇺',bg:'🇧🇬',sr:'🇷🇸',
+    hr:'🇭🇷',sk:'🇸🇰',ka:'🇬🇪',hy:'🇦🇲',az:'🇦🇿',uz:'🇺🇿',ky:'🇰🇬',tg:'🇹🇯',km:'🇰🇭',lo:'🇱🇦',
+    ne:'🇳🇵',si:'🇱🇰',ta:'🇮🇳',bn:'🇧🇩',ur:'🇵🇰',sw:'🇰🇪'
+  };
+  function langName(c){return LANG_NAMES[c]||c.toUpperCase();}
+  function langFlag(c){return LANG_FLAGS[c]||'🌐';}
+
+  var currentSource='juche',currentLang='en';
+  try{currentSource=sessionStorage.getItem('kctvEpgSource')||'juche';}catch(e){}
+  try{currentLang=sessionStorage.getItem('kctvEpgLang')||'en';}catch(e){}
+
+  var langSelectEl=document.getElementById('epgLangSelect'),srcSelectEl=document.getElementById('epgSourceSelect');
+  if(srcSelectEl)srcSelectEl.value=currentSource;
+
+  /* Scans every program's title object and returns the union of language codes
+     actually present in this feed, ordered by LANG_ORDER then alphabetically. */
+  function collectLangs(data){
+    var set={};
+    (data.programs||[]).forEach(function(p){
+      if(p&&p.title&&typeof p.title==='object')Object.keys(p.title).forEach(function(k){set[k]=true;});
+    });
+    var codes=Object.keys(set);
+    if(!codes.length)codes=['en'];
+    codes.sort(function(a,b){
+      var ia=LANG_ORDER.indexOf(a),ib=LANG_ORDER.indexOf(b);
+      if(ia===-1&&ib===-1)return a.localeCompare(b);
+      if(ia===-1)return 1;if(ib===-1)return -1;
+      return ia-ib;
+    });
+    return codes;
+  }
+
+  function populateLangSelect(data){
+    if(!langSelectEl)return;
+    var codes;
+    if(currentSource!=='juche'){
+      /* KoryoFront/KoryoTV only ever carry English & Korean — enforce that regardless of feed contents */
+      var avail=collectLangs(data);
+      codes=['en','ko'].filter(function(c){return avail.indexOf(c)!==-1;});
+      if(!codes.length)codes=['en','ko'];
+    } else {
+      codes=collectLangs(data);
+    }
+    var prev=currentLang;
+    langSelectEl.innerHTML='';
+    codes.forEach(function(c){
+      var opt=document.createElement('option');
+      opt.value=c;opt.textContent=langFlag(c)+' '+langName(c);
+      langSelectEl.appendChild(opt);
+    });
+    if(codes.indexOf(prev)!==-1){currentLang=prev;}
+    else{currentLang=codes.indexOf('en')!==-1?'en':codes[0];}
+    langSelectEl.value=currentLang;
+  }
+
+  /* Instantly narrows the dropdown to English/Korean the moment a restricted source
+     is selected, without waiting on the fetch to complete. */
+  function forceEnKoLangSelect(){
+    if(!langSelectEl)return;
+    var codes=['en','ko'],prev=currentLang;
+    langSelectEl.innerHTML='';
+    codes.forEach(function(c){
+      var opt=document.createElement('option');
+      opt.value=c;opt.textContent=langFlag(c)+' '+langName(c);
+      langSelectEl.appendChild(opt);
+    });
+    currentLang=(prev==='en'||prev==='ko')?prev:'en';
+    langSelectEl.value=currentLang;
+  }
 
   function tick(){var now=getPT(),t=fmtTime(now);['epgClockVal','epgOverlayClock','epgHeroClock'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t;});var ds=fmtDate(now);if(ds!==lastDS){lastDS=ds;['epgDateVal','epgOverlayDateVal'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=ds;});}}
   setInterval(tick,1000);tick();
@@ -805,8 +940,24 @@
   function isPast(e){return getPT()>parseKST(e);}
   function isCur(s,e){var n=getPT();return n>=parseKST(s)&&n<parseKST(e);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function titleEn(p){if(!p||!p.title)return'';return typeof p.title==='object'?(p.title.en||''):p.title;}
-  function titleSub(p){if(!p||!p.title||typeof p.title!=='object')return'';var r=[];if(p.title.ko)r.push(p.title.ko);if(p.title.zh)r.push(p.title.zh);return r.join('  ·  ');}
+  /* Title in the currently selected language, falling back to English, then Korean,
+     then whatever's first in the object. */
+  function titleFor(p){
+    if(!p||!p.title)return'';
+    if(typeof p.title!=='object')return p.title;
+    if(p.title[currentLang])return p.title[currentLang];
+    if(p.title.en)return p.title.en;
+    if(p.title.ko)return p.title.ko;
+    var keys=Object.keys(p.title);return keys.length?p.title[keys[0]]:'';
+  }
+  /* Secondary reference line — shows the Korean original alongside a translation,
+     or the English title when Korean itself is the selected language. */
+  function titleSubFor(p){
+    if(!p||!p.title||typeof p.title!=='object')return'';
+    if(currentLang==='ko')return p.title.en||'';
+    return p.title.ko||'';
+  }
+  window._kctvTitleFor=titleFor;
 
   /* The primary EPG API returns each program's start time only — no end time.
      Derive any missing end as the next program's start (last one runs to sign-off, 24:00). */
@@ -829,7 +980,7 @@
   }
 
   function renderEPG(data){
-    epgData=data;var progs=data.programs,curIdx=-1;
+    epgData=data;window._epgData=data;var progs=data.programs,curIdx=-1;
     progs.forEach(function(p,i){if(isCur(p.start,p.end))curIdx=i;});
 
     var list=document.getElementById('epgSchedule');list.innerHTML='';
@@ -839,12 +990,12 @@
       var row=document.createElement('div');
       row.className='sched-row'+(past?' past':'')+(curr?' onair':'');
       var badgeHtml=curr?'<div class="onair-badge"><span class="onair-dot"></span>On Air</div>':'';
-      var subHtml=titleSub(p)?'<div class="sched-sub">'+esc(titleSub(p))+'</div>':'';
+      var subHtml=titleSubFor(p)?'<div class="sched-sub">'+esc(titleSubFor(p))+'</div>':'';
       var remHtml=curr?'<div class="sched-rem">'+getMinsLeft(p.end)+' min left</div>':'';
       row.innerHTML=
         '<div class="sched-time-col"><div class="sched-time">'+esc(p.start)+'</div></div>'+
         '<div class="sched-body">'+badgeHtml+'<div class="sched-cat">'+esc(p.category||'')+'</div>'+
-        '<div class="sched-ttl">'+esc(titleEn(p))+'</div>'+subHtml+remHtml+'</div>';
+        '<div class="sched-ttl">'+esc(titleFor(p))+'</div>'+subHtml+remHtml+'</div>';
       list.appendChild(row);
       if(curr)setTimeout(function(){row.scrollIntoView({block:'nearest'});},100);
     });
@@ -860,7 +1011,7 @@
       var past=isPast(p.end),curr=isCur(p.start,p.end),dur=getDur(p.start,p.end);
       var row=document.createElement('div');
       row.className='epg-fr'+(past?' epg-past':'')+(curr?' epg-cur':'');
-      row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleEn(p))+'</div><div class="epg-fsub">'+esc(titleSub(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(p.category)+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
+      row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleFor(p))+'</div><div class="epg-fsub">'+esc(titleSubFor(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(p.category)+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
       body.appendChild(row);
       if(curr)setTimeout(function(){row.scrollIntoView({block:'center'});},80);
     });
@@ -877,7 +1028,8 @@
           var evs=(d.events||[]).filter(function(e){return e.channel==='kctv'&&e.startUtc&&e.startUtc.slice(0,10)===targetDate;});
           if(!evs.length){showErr('No programme data available for this date.');return;}
           evs.sort(function(a,b){return a.startUtc<b.startUtc?-1:(a.startUtc>b.startUtc?1:0);});
-          renderEPG({programs:withEnds(evs.map(mapFallbackEvent))});
+          var fb={programs:withEnds(evs.map(mapFallbackEvent))};
+          populateLangSelect(fb);renderEPG(fb);
         }catch(e){showErr('No programme data available for this date.');}
       } else showErr('No programme data available for this date.');
     };
@@ -889,17 +1041,34 @@
   function loadEPG(){
     document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';
     var targetDate=epgDS(getPT());
-    var xhr=new XMLHttpRequest();xhr.open('GET',getUrl(),true);xhr.timeout=8000;
+    var url=getUrl();
+    if(!url){showErr('This EPG source isn\u2019t available yet — try Juche TV instead.');return;}
+    var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.timeout=8000;
     xhr.onload=function(){
       if(xhr.status===200){
         try{
           var d=JSON.parse(xhr.responseText),progs=withEnds(d.programs||[]);
-          if(progs.length){d.programs=progs;renderEPG(d);}
-          else loadFallbackEPG(targetDate);
-        }catch(e){loadFallbackEPG(targetDate);}
-      } else loadFallbackEPG(targetDate);
+          if(progs.length){d.programs=progs;populateLangSelect(d);renderEPG(d);}
+          else if(currentSource==='juche')loadFallbackEPG(targetDate);
+          else showErr('No programme data available from this source for today.');
+        }catch(e){
+          if(currentSource==='juche')loadFallbackEPG(targetDate);
+          else showErr('No programme data available from this source for today.');
+        }
+      } else {
+        if(currentSource==='juche')loadFallbackEPG(targetDate);
+        else showErr('Could not reach this EPG source right now.');
+      }
     };
-    xhr.onerror=function(){loadFallbackEPG(targetDate);};xhr.ontimeout=function(){loadFallbackEPG(targetDate);};xhr.send();
+    xhr.onerror=function(){
+      if(currentSource==='juche')loadFallbackEPG(targetDate);
+      else showErr('Could not reach this EPG source right now.');
+    };
+    xhr.ontimeout=function(){
+      if(currentSource==='juche')loadFallbackEPG(targetDate);
+      else showErr('This EPG source timed out.');
+    };
+    xhr.send();
   }
   function showErr(msg){document.getElementById('epgLoading').style.display='none';document.getElementById('epgErrorMsg').textContent=msg;document.getElementById('epgError').style.display='';document.getElementById('epgContent').style.display='none';}
   document.getElementById('epgRetryBtn').addEventListener('click',loadEPG);
@@ -915,13 +1084,29 @@
   document.addEventListener('fullscreenchange',onFSC);document.addEventListener('webkitfullscreenchange',onFSC);
   window._epgOpenOverlay=openOv;
 
-  window._kctvGetCurrentProgram=function(){if(!epgData||!epgData.programs)return null;for(var i=0;i<epgData.programs.length;i++){var p=epgData.programs[i];if(isCur(p.start,p.end))return titleEn(p);}return null;};
+  window._kctvGetCurrentProgram=function(){if(!epgData||!epgData.programs)return null;for(var i=0;i<epgData.programs.length;i++){var p=epgData.programs[i];if(isCur(p.start,p.end))return titleFor(p);}return null;};
+
+  /* Language dropdown — re-render in place, no refetch needed */
+  if(langSelectEl)langSelectEl.addEventListener('change',function(){
+    currentLang=this.value;
+    try{sessionStorage.setItem('kctvEpgLang',currentLang);}catch(e){}
+    if(epgData){renderEPG(epgData);if(isOvOpen)renderOv(epgData);}
+  });
+
+  /* EPG Source dropdown — switching source re-fetches from the new feed */
+  if(srcSelectEl)srcSelectEl.addEventListener('change',function(){
+    currentSource=this.value;
+    try{sessionStorage.setItem('kctvEpgSource',currentSource);}catch(e){}
+    if(currentSource!=='juche')forceEnKoLangSelect();
+    loadEPG();
+  });
 
   var injected=false,ivl=null;
   function createEpgBtn(){var b=document.createElement('div');b.className='dplayer-icon dp-epg-btn';b.title='Programme Guide (E)';b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>';b.addEventListener('click',function(e){e.stopPropagation();openOv();});return b;}
   function tryInject(){var icons=document.querySelector('#dplayer .dplayer-icons-right');if(icons&&!injected){injected=true;if(ivl){clearInterval(ivl);ivl=null;}var ex=icons.querySelector('.dp-epg-btn');if(ex)ex.remove();icons.insertBefore(createEpgBtn(),icons.firstChild);}}
   ivl=setInterval(tryInject,500);
   document.addEventListener('dplayer:reinit',function(){injected=false;setTimeout(function(){ivl=setInterval(tryInject,500);},1000);});
+  if(currentSource!=='juche')forceEnKoLangSelect();
   loadEPG();
 })();
 </script>
