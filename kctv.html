@@ -350,6 +350,7 @@
 
     <!-- Loading -->
     <div id="epgLoading">
+      <p id="epgRetryNote" style="display:none;font-size:12px;opacity:.65;margin:0 0 8px">Retrying…</p>
       <div class="sched-card">
         <div class="sched-hdr">
           <div class="skel-block" style="width:150px;height:13px"></div>
@@ -829,15 +830,16 @@
   var epgData=null,lastDS='';
 
   /* ---- EPG sources ---- */
-  /* KoryoTV endpoint isn't public yet — fill in the real URL below once available.
-     Until then, selecting KoryoTV will show a friendly "not available" message. */
-  var KORYOTV_URL='';
+  /* KoryoTV doesn't have its own public EPG endpoint, so it's backed by the same
+     juche-tv.vercel.app feed used as the 'juche' fallback below. That feed returns
+     a flat {events:[...]} list (not the {programs:[...]} shape the other sources
+     use), so it's fetched/mapped separately in loadEPG() via fetchEventsShapeEPG(). */
+  var KORYOTV_URL='https://juche-tv.vercel.app/api/juche-tv';
   var EPG_SOURCES={
     juche:{url:function(ds){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+ds;}},
-    koryofront:{url:function(ds){return 'https://juche-tv.vercel.app/api/KoryoFront?date='+ds;}},
-    koryotv:{url:function(ds){return KORYOTV_URL?(KORYOTV_URL+(KORYOTV_URL.indexOf('?')>-1?'&':'?')+'date='+ds):null;}}
+    koryofront:{url:function(ds){return 'https://juche-tv.vercel.app/api/KoryoFront?date='+ds;}}
   };
-  function getUrl(){return EPG_SOURCES[currentSource].url(epgDS(getPT()));}
+  function getUrl(){var s=EPG_SOURCES[currentSource];return s?s.url(epgDS(getPT())):null;}
 
   /* ---- Language selection ---- */
   var LANG_ORDER=['en','ko','zh','zh_hk','ja','ru','es','fr','de','my','ug','bo','mn','za','kk'];
@@ -1019,28 +1021,71 @@
 
   var FALLBACK_URL='https://juche-tv.vercel.app/api/juche-tv';
 
-  function loadFallbackEPG(targetDate){
-    var xhr=new XMLHttpRequest();xhr.open('GET',FALLBACK_URL,true);xhr.timeout=8000;
+  /* Shared fetcher for feeds shaped like {events:[{channel,startUtc,endUtc,title,titleEn,category,...}]}
+     — used both by the 'juche' fallback and by the 'koryotv' source, which is backed
+     by the same feed. Filters to KCTV events on the target date, maps to the
+     {programs:[{start,end,title:{en,ko},category}]} shape the renderer expects.
+     onFail(reason) — reason is 'empty' (feed reached fine, just nothing for this date,
+     not worth retrying) or 'error' (network/timeout/bad response — worth retrying). */
+  function fetchEventsShapeEPG(url,targetDate,onSuccess,onFail){
+    var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.timeout=8000;
     xhr.onload=function(){
       if(xhr.status===200){
         try{
           var d=JSON.parse(xhr.responseText);
           var evs=(d.events||[]).filter(function(e){return e.channel==='kctv'&&e.startUtc&&e.startUtc.slice(0,10)===targetDate;});
-          if(!evs.length){showErr('No programme data available for this date.');return;}
+          if(!evs.length){onFail('empty');return;}
           evs.sort(function(a,b){return a.startUtc<b.startUtc?-1:(a.startUtc>b.startUtc?1:0);});
-          var fb={programs:withEnds(evs.map(mapFallbackEvent))};
-          populateLangSelect(fb);renderEPG(fb);
-        }catch(e){showErr('No programme data available for this date.');}
-      } else showErr('No programme data available for this date.');
+          onSuccess({programs:withEnds(evs.map(mapFallbackEvent))});
+        }catch(e){onFail('error');}
+      } else onFail('error');
     };
-    xhr.onerror=function(){showErr('No programme data available for this date.');};
-    xhr.ontimeout=function(){showErr('No programme data available for this date.');};
+    xhr.onerror=function(){onFail('error');};
+    xhr.ontimeout=function(){onFail('error');};
     xhr.send();
   }
 
+  /* Auto-retry wrapper for KoryoTV: the feed occasionally flakes (timeouts/5xx) rather
+     than being genuinely down, so retry transient ('error') failures a few times with
+     exponential backoff before giving up. 'empty' (no data for this date) never retries —
+     more attempts won't change what the feed has. */
+  var KORYOTV_MAX_RETRIES=3, KORYOTV_RETRY_BASE_MS=1200;
+  function fetchEventsShapeEPGWithRetry(url,targetDate,onSuccess,onFail,attempt){
+    attempt=attempt||0;
+    fetchEventsShapeEPG(url,targetDate,onSuccess,function(reason){
+      if(reason==='error'&&attempt<KORYOTV_MAX_RETRIES){
+        var note=document.getElementById('epgRetryNote');
+        note.textContent='Retrying\u2026 (attempt '+(attempt+2)+' of '+(KORYOTV_MAX_RETRIES+1)+')';
+        note.style.display='';
+        setTimeout(function(){
+          fetchEventsShapeEPGWithRetry(url,targetDate,onSuccess,onFail,attempt+1);
+        },KORYOTV_RETRY_BASE_MS*Math.pow(2,attempt));
+      } else {
+        onFail(reason);
+      }
+    });
+  }
+
+  function loadFallbackEPG(targetDate){
+    fetchEventsShapeEPG(FALLBACK_URL,targetDate,function(fb){
+      populateLangSelect(fb);renderEPG(fb);
+    },function(){showErr('No programme data available for this date.');});
+  }
+
   function loadEPG(){
-    document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';
+    document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';document.getElementById('epgRetryNote').style.display='none';
     var targetDate=epgDS(getPT());
+
+    if(currentSource==='koryotv'){
+      if(!KORYOTV_URL){showErr('This EPG source isn\u2019t available yet — try Juche TV instead.');return;}
+      fetchEventsShapeEPGWithRetry(KORYOTV_URL,targetDate,function(d){
+        populateLangSelect(d);renderEPG(d);
+      },function(reason){
+        showErr(reason==='empty'?'No programme data available from this source for today.':'Could not reach this EPG source right now — tried '+(KORYOTV_MAX_RETRIES+1)+' times.');
+      });
+      return;
+    }
+
     var url=getUrl();
     if(!url){showErr('This EPG source isn\u2019t available yet — try Juche TV instead.');return;}
     var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.timeout=8000;
@@ -1070,7 +1115,7 @@
     };
     xhr.send();
   }
-  function showErr(msg){document.getElementById('epgLoading').style.display='none';document.getElementById('epgErrorMsg').textContent=msg;document.getElementById('epgError').style.display='';document.getElementById('epgContent').style.display='none';}
+  function showErr(msg){document.getElementById('epgLoading').style.display='none';document.getElementById('epgRetryNote').style.display='none';document.getElementById('epgErrorMsg').textContent=msg;document.getElementById('epgError').style.display='';document.getElementById('epgContent').style.display='none';}
   document.getElementById('epgRetryBtn').addEventListener('click',loadEPG);
 
   var ov=document.getElementById('epgOverlay'),origP=ov.parentNode,isOvOpen=false;
