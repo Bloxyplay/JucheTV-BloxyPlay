@@ -327,6 +327,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      gap: 10px;
       text-align: center;
       padding: 0 16px;
       font-size: 14px;
@@ -338,6 +340,21 @@
       transition: opacity 0.2s ease;
       pointer-events: none;
     }
+    .preview-play-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.14);
+      border: 1.5px solid rgba(255,255,255,0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      transform: scale(0.85);
+      transition: transform 0.2s ease;
+    }
+    .preview-play-icon svg { width: 20px; height: 20px; margin-left: 3px; }
+    .channel-card-preview:hover .preview-play-icon { transform: scale(1); }
     .channel-card-preview:hover .preview-hover-label { opacity: 1; }
     .channel-card-preview:hover .card-preview-wrap.preview-error .preview-hover-label { opacity: 0; }
     .channel-card-row {
@@ -367,6 +384,49 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+
+    /* ─── EPG (Now / Next) ─── */
+    .epg-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 9px;
+    }
+    .epg-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+    }
+    .epg-tag {
+      flex-shrink: 0;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      text-transform: uppercase;
+    }
+    .epg-tag-now {
+      background: rgba(48,209,88,0.16);
+      color: var(--green);
+      border: 0.5px solid rgba(48,209,88,0.3);
+    }
+    .epg-tag-next {
+      background: rgba(255,255,255,0.06);
+      color: var(--secondary);
+      border: 0.5px solid var(--border-bright);
+    }
+    .epg-title {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .epg-row .epg-title { color: var(--secondary); }
+    .epg-row.epg-now .epg-title { color: var(--primary); }
 
     /* ─── BADGES ─── */
     .badge-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
@@ -494,6 +554,41 @@
     .tab-magazine:hover { color: #AF52DE; }
     .tab-magazine.active { color: #AF52DE; }
 
+    /* ─── NOTICE BANNER ─── */
+    .notice-banner {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(255,59,48,0.14), rgba(255,59,48,0.06));
+      border: 0.5px solid rgba(255,59,48,0.35);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 20px rgba(255,59,48,0.12);
+    }
+    .notice-banner.show { display: flex; }
+    .notice-icon {
+      width: 22px; height: 22px;
+      flex-shrink: 0;
+      color: var(--red);
+      margin-top: 1px;
+    }
+    .notice-icon svg { width: 100%; height: 100%; }
+    .notice-body { flex: 1; min-width: 0; }
+    .notice-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 3px;
+    }
+    .notice-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--primary);
+    }
+
     /* ─── TAB RECODINGS ─── */
     .tab-beta-badge {
       position: absolute;
@@ -541,6 +636,21 @@
 
   <!-- Main -->
   <main class="main">
+
+    <!-- Notice Banner -->
+    <div class="notice-banner" id="noticeBanner">
+      <div class="notice-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="notice-body">
+        <div class="notice-title">Notice</div>
+        <div class="notice-text" id="noticeText">We are currently experiencing technical issues at the reception site. Live broadcasts will be restored shortly. Thank you for your patience.</div>
+      </div>
+    </div>
 
     <!-- Hero -->
     <div class="hero fade-in d1">
@@ -590,12 +700,17 @@
 
       <a href="kctv.html" class="channel-card channel-card-preview fade-in d3">
         <div class="card-preview-wrap">
-          <video class="card-preview-video" src="kctvpreview.mp4" autoplay muted loop playsinline disablepictureinpicture onerror="this.closest('.card-preview-wrap').classList.add('preview-error')"></video>
+          <video class="card-preview-video" id="kctvPreviewVideo" muted loop playsinline disablepictureinpicture></video>
           <div class="preview-error-msg">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span>Preview unavailable</span>
           </div>
-          <div class="preview-hover-label">Watch Korean Central Television</div>
+          <div class="preview-hover-label">
+            <div class="preview-play-icon">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <span>Watch Korean Central Television</span>
+          </div>
         </div>
         <div class="channel-card-row">
           <div class="channel-icon">
@@ -603,7 +718,16 @@
           </div>
           <div class="channel-info">
             <h3>Korean Central Television</h3>
-            <p>Live television from Pyongyang, DPRK. News, culture &amp; entertainment 24/7.</p>
+            <div class="epg-info" id="epgInfo">
+              <div class="epg-row epg-now">
+                <span class="epg-tag epg-tag-now">Now</span>
+                <span class="epg-title" id="epgNowTitle">Loading schedule…</span>
+              </div>
+              <div class="epg-row epg-next">
+                <span class="epg-tag epg-tag-next">Next</span>
+                <span class="epg-title" id="epgNextTitle">Loading schedule…</span>
+              </div>
+            </div>
             <div class="badge-row">
               <span class="badge badge-live"><span class="badge-dot"></span>Live</span>
             </div>
@@ -766,6 +890,9 @@
     </div>
   </div>
 
+  <!-- HLS.js for m3u8 preview -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
+
   <script>
     // Clock in status bar (if present)
     function updateTime() {
@@ -776,6 +903,188 @@
     }
     updateTime();
     setInterval(updateTime, 10000);
+  </script>
+
+  <!-- KCTV live preview: m3u8 with mp4 fallback -->
+  <script>
+    (function () {
+      const HLS_URL = 'https://kctv.koryofront.org/stream/index.m3u8';
+      const FALLBACK_MP4 = 'kctvpreview.mp4';
+      const video = document.getElementById('kctvPreviewVideo');
+      if (!video) return;
+      const wrap = video.closest('.card-preview-wrap');
+      let usingFallback = false;
+
+      function markBroken() {
+        if (wrap) wrap.classList.add('preview-error');
+      }
+
+      function playFallback() {
+        if (usingFallback) { markBroken(); return; }
+        usingFallback = true;
+        if (video._hls) { try { video._hls.destroy(); } catch (e) {} video._hls = null; }
+        video.removeAttribute('src');
+        video.setAttribute('loop', '');
+        video.src = FALLBACK_MP4;
+        video.load();
+        video.play().catch(function () {});
+      }
+
+      video.addEventListener('error', function () {
+        if (usingFallback) { markBroken(); }
+        else { playFallback(); }
+      });
+
+      try {
+        if (window.Hls && Hls.isSupported()) {
+          const hls = new Hls({ maxBufferLength: 15 });
+          video._hls = hls;
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data && data.fatal) {
+              hls.destroy();
+              video._hls = null;
+              playFallback();
+            }
+          });
+          hls.loadSource(HLS_URL);
+          hls.attachMedia(video);
+          video.addEventListener('loadedmetadata', function () {
+            video.play().catch(function () {});
+          });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = HLS_URL;
+          video.addEventListener('loadedmetadata', function () {
+            video.play().catch(function () {});
+          });
+        } else {
+          playFallback();
+        }
+      } catch (e) {
+        playFallback();
+      }
+    })();
+  </script>
+
+  <!-- Site-wide notice banner, driven by notice.json -->
+  <script>
+    (function () {
+      const NOTICE_URL = 'notice.json';
+      const banner = document.getElementById('noticeBanner');
+      const textEl = document.getElementById('noticeText');
+      if (!banner) return;
+
+      const DEFAULT_MESSAGE = 'We are currently experiencing technical issues at the reception site. Live broadcasts will be restored shortly. Thank you for your patience.';
+
+      async function loadNotice() {
+        try {
+          const res = await fetch(NOTICE_URL + '?t=' + Date.now(), { cache: 'no-store' });
+          if (!res.ok) throw new Error('notice.json fetch failed');
+          const data = await res.json();
+
+          if (data && data.notice === true) {
+            if (textEl) textEl.textContent = (typeof data.message === 'string' && data.message.trim()) ? data.message : DEFAULT_MESSAGE;
+            banner.classList.add('show');
+          } else {
+            banner.classList.remove('show');
+          }
+        } catch (e) {
+          // If notice.json is missing/unreachable, fail quietly and keep banner hidden.
+          banner.classList.remove('show');
+        }
+      }
+
+      loadNotice();
+      setInterval(loadNotice, 60 * 1000);
+    })();
+  </script>
+
+  <!-- KCTV EPG: Now / Next, based on Pyongyang time -->
+  <script>
+    (function () {
+      const EPG_BASE = 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv';
+      const nowEl = document.getElementById('epgNowTitle');
+      const nextEl = document.getElementById('epgNextTitle');
+      const epgWrap = document.getElementById('epgInfo');
+      if (!nowEl || !nextEl) return;
+
+      function pyongyangParts(date) {
+        const fmt = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Asia/Pyongyang',
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit', hour12: false
+        });
+        const parts = {};
+        fmt.formatToParts(date).forEach(function (p) { parts[p.type] = p.value; });
+        const hour = parts.hour === '24' ? 0 : parseInt(parts.hour, 10);
+        return {
+          dateStr: parts.year + '-' + parts.month + '-' + parts.day,
+          minutes: hour * 60 + parseInt(parts.minute, 10)
+        };
+      }
+
+      function toMinutes(hhmm) {
+        const bits = hhmm.split(':');
+        return parseInt(bits[0], 10) * 60 + parseInt(bits[1], 10);
+      }
+
+      function fetchEpg(dateStr) {
+        return fetch(EPG_BASE + '?ch=KCTV&date=' + dateStr).then(function (res) {
+          if (!res.ok) throw new Error('EPG fetch failed');
+          return res.json();
+        });
+      }
+
+      function titleOf(program) {
+        if (!program || !program.title) return null;
+        return program.title.en || program.title.ko || 'Programming';
+      }
+
+      async function loadEpg() {
+        try {
+          const nowParts = pyongyangParts(new Date());
+          const data = await fetchEpg(nowParts.dateStr);
+          const programs = (data && data.programs) || [];
+
+          let current = null;
+          let next = null;
+
+          for (let i = 0; i < programs.length; i++) {
+            const p = programs[i];
+            const start = toMinutes(p.start);
+            let end = toMinutes(p.end);
+            if (end <= start) end += 24 * 60;
+            if (nowParts.minutes >= start && nowParts.minutes < end) {
+              current = p;
+              next = programs[i + 1] || null;
+              break;
+            }
+          }
+
+          if (!current && programs.length && nowParts.minutes < toMinutes(programs[0].start)) {
+            next = programs[0];
+          }
+
+          if (!next) {
+            try {
+              const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+              const tParts = pyongyangParts(tomorrow);
+              const dataNext = await fetchEpg(tParts.dateStr);
+              if (dataNext && dataNext.programs && dataNext.programs.length) {
+                next = dataNext.programs[0];
+              }
+            } catch (e) { /* ignore, next stays null */ }
+          }
+
+          nowEl.textContent = titleOf(current) || 'Off air';
+          nextEl.textContent = titleOf(next) || 'TBA';
+        } catch (e) {
+          if (epgWrap) epgWrap.style.display = 'none';
+        }
+      }
+
+      loadEpg();
+      setInterval(loadEpg, 5 * 60 * 1000);
+    })();
   </script>
 </body>
 </html>
