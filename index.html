@@ -589,6 +589,15 @@
       color: var(--primary);
     }
 
+    /* ─── NOTICE BANNER: SUCCESS / ONLINE VARIANT ─── */
+    .notice-banner.notice-success {
+      background: linear-gradient(135deg, rgba(48,209,88,0.14), rgba(48,209,88,0.06));
+      border-color: rgba(48,209,88,0.35);
+      box-shadow: 0 4px 20px rgba(48,209,88,0.12);
+    }
+    .notice-banner.notice-success .notice-icon { color: var(--green); }
+    .notice-banner.notice-success .notice-title { color: var(--green); }
+
     /* ─── TAB RECODINGS ─── */
     .tab-beta-badge {
       position: absolute;
@@ -649,6 +658,20 @@
       <div class="notice-body">
         <div class="notice-title">Notice</div>
         <div class="notice-text" id="noticeText">We are currently experiencing technical issues at the reception site. Live broadcasts will be restored shortly. Thank you for your patience.</div>
+      </div>
+    </div>
+
+    <!-- Online / Restored Banner -->
+    <div class="notice-banner notice-success" id="onlineBanner">
+      <div class="notice-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="8 12.5 10.8 15.3 16 9.3"/>
+        </svg>
+      </div>
+      <div class="notice-body">
+        <div class="notice-title">Restored</div>
+        <div class="notice-text" id="onlineText">Service has been restored. We experienced a power outage at the reception site, and live broadcasts are back to normal. We apologize for the inconvenience.</div>
       </div>
     </div>
 
@@ -971,9 +994,12 @@
       const NOTICE_URL = 'notice.json';
       const banner = document.getElementById('noticeBanner');
       const textEl = document.getElementById('noticeText');
+      const onlineBanner = document.getElementById('onlineBanner');
+      const onlineTextEl = document.getElementById('onlineText');
       if (!banner) return;
 
       const DEFAULT_MESSAGE = 'We are currently experiencing technical issues at the reception site. Live broadcasts will be restored shortly. Thank you for your patience.';
+      const DEFAULT_ONLINE_MESSAGE = 'Service has been restored. We experienced a power outage at the reception site, and live broadcasts are back to normal. We apologize for the inconvenience.';
 
       async function loadNotice() {
         try {
@@ -981,15 +1007,30 @@
           if (!res.ok) throw new Error('notice.json fetch failed');
           const data = await res.json();
 
-          if (data && data.notice === true) {
+          const isNotice = !!(data && data.notice === true);
+          const isOnline = !!(data && data['status-online'] === true);
+
+          if (isNotice) {
             if (textEl) textEl.textContent = (typeof data.message === 'string' && data.message.trim()) ? data.message : DEFAULT_MESSAGE;
             banner.classList.add('show');
           } else {
             banner.classList.remove('show');
           }
+
+          // The "restored" banner only shows once the outage notice has been
+          // cleared (notice: false) and status-online is explicitly true.
+          if (onlineBanner) {
+            if (!isNotice && isOnline) {
+              if (onlineTextEl) onlineTextEl.textContent = (typeof data['status-online-message'] === 'string' && data['status-online-message'].trim()) ? data['status-online-message'] : DEFAULT_ONLINE_MESSAGE;
+              onlineBanner.classList.add('show');
+            } else {
+              onlineBanner.classList.remove('show');
+            }
+          }
         } catch (e) {
-          // If notice.json is missing/unreachable, fail quietly and keep banner hidden.
+          // If notice.json is missing/unreachable, fail quietly and keep banners hidden.
           banner.classList.remove('show');
+          if (onlineBanner) onlineBanner.classList.remove('show');
         }
       }
 
