@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0a0a0f">
-  <title>KCTV — Korean Central Television · Juche TV</title>
-  <meta name="description" content="Watch KCTV, North Korea's state broadcaster, live — plus browse the archive of recorded broadcasts on Juche TV.">
+  <title>KCTV &mdash; Korean Central Television &middot; Juche TV</title>
+  <meta name="description" content="Watch KCTV, North Korea's state broadcaster, live &mdash; plus browse the archive of recorded broadcasts on Juche TV.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Juche TV">
-  <meta property="og:title" content="KCTV — Korean Central Television · Juche TV">
-  <meta property="og:description" content="Watch KCTV, North Korea's state broadcaster, live — plus browse the archive of recorded broadcasts on Juche TV.">
+  <meta property="og:title" content="KCTV &mdash; Korean Central Television &middot; Juche TV">
+  <meta property="og:description" content="Watch KCTV, North Korea's state broadcaster, live &mdash; plus browse the archive of recorded broadcasts on Juche TV.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,6 +92,42 @@
     .btn.pri svg{color:rgba(255,255,255,.7)}
     .btn.pri:hover{background:#a8341f;box-shadow:0 0 28px rgba(226,71,43,.42)}
 
+    /* REWIND SECTION */
+    .rw-sec{margin-top:28px}
+    .rw-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+    .rw-ttl{display:flex;align-items:center;gap:10px}
+    .rw-pill{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--gld),var(--tint));color:#fff;padding:3px 9px;border-radius:100px}
+    .rw-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
+    .rw-sub{font-size:12px;color:var(--tx3);margin-top:2px}
+
+    /* Date tabs */
+    .rw-dates{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:none}
+    .rw-dates::-webkit-scrollbar{display:none}
+    .rw-date-btn{flex-shrink:0;padding:8px 16px;border-radius:var(--rmd);border:1px solid var(--brd);background:var(--surf);color:var(--tx2);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .rw-date-btn:hover{background:var(--surf2);color:var(--tx);border-color:var(--brd2)}
+    .rw-date-btn.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent;box-shadow:0 0 14px rgba(226,71,43,.25)}
+
+    /* Hour grid */
+    .rw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+    .rw-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rmd);padding:10px 10px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+    .rw-thumb{width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,var(--surf2),var(--surf));margin-bottom:10px;position:relative}
+    .rw-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .25s}
+    .rw-thumb img.loaded{opacity:1}
+    .rw-card.live .rw-thumb{box-shadow:0 0 0 2px var(--grn) inset}
+    .rw-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(226,71,43,.06),transparent 60%);opacity:0;transition:opacity .2s}
+    .rw-card:hover{background:var(--surf2);transform:translateY(-2px);box-shadow:var(--shsm);border-color:var(--brd2)}
+    .rw-card:hover::before{opacity:1}
+    .rw-card:active{transform:translateY(0)}
+    .rw-card.playing{border-color:var(--acc);background:linear-gradient(135deg,rgba(226,71,43,.08),var(--surf2));box-shadow:0 0 20px rgba(226,71,43,.15)}
+    .rw-card.playing::before{opacity:1}
+    .rw-card .rw-time{font-size:15px;font-weight:800;color:var(--tx);position:relative;z-index:1}
+    .rw-card .rw-status{font-size:10px;font-weight:700;color:var(--grn);margin-top:6px;text-transform:uppercase;letter-spacing:.6px;position:relative;z-index:1}
+
+    /* Rewind states */
+    .rw-sw{background:var(--surf);border:1px solid var(--brd);border-radius:var(--rxl);padding:44px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .rw-sw .epg-si{font-size:34px}
+    .rw-sw .epg-sm{font-size:13px;color:var(--tx2)}
+
     /* EPG SECTION */
     .epg-sec{margin-top:28px}
     .epg-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
@@ -99,7 +135,7 @@
     .epg-pill{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:3px 9px;border-radius:100px}
     .epg-sec-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
 
-    /* EPG CONTROLS — language & source */
+    /* EPG CONTROLS */
     .epg-ctrl-bar{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
     .epg-ctrl-grp{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}
     .epg-ctrl-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--tx2)}
@@ -276,6 +312,8 @@
       .epg-ov-inn,.ss-inn{max-height:96vh}
       .page{padding:16px 12px 48px}
       .nav-lnk{display:none}
+      .rw-grid{grid-template-columns:repeat(3,1fr)}
+      .rw-date-btn{padding:7px 12px;font-size:11px}
     }
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
@@ -306,7 +344,7 @@
     <div class="ch-logo"><img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="KCTV"></div>
     <div class="ch-info">
       <div class="ch-name" data-i18n="kctvTitle"><img src="https://i.postimg.cc/X7LgvSqS/KCTV-title-svg.png" alt="Korean Central Television" style="height:1.15em;width:auto;vertical-align:middle;display:inline-block;max-width:100%"></div>
-      <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK · Korean Central Television.</div>
+      <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK &middot; Korean Central Television.</div>
     </div>
   </div>
 
@@ -322,6 +360,67 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       <span>Take Screenshot</span>
     </button>
+  </div>
+
+  <!-- REWIND SECTION -->
+  <div class="rw-sec" id="rwSection">
+    <div class="rw-hdr">
+      <div class="rw-ttl">
+        <span class="rw-pill">Archive</span>
+        <span class="rw-name">Hour to Hour Rewind</span>
+      </div>
+    </div>
+    <p class="epg-src-note">Browse recordings by date and hour slot. Click any available hour to watch that recording instantly.</p>
+
+    <!-- Loading -->
+    <div id="rwLoading">
+      <div class="sched-card">
+        <div class="sched-hdr">
+          <div class="skel-block" style="width:180px;height:13px"></div>
+          <div class="skel-block" style="width:92px;height:11px"></div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="skel-block" style="width:200px;height:28px;margin-bottom:14px;border-radius:100px"></div>
+          <div class="rw-grid">
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+            <div class="skel-block" style="height:60px;border-radius:10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="rwError" style="display:none">
+      <div class="rw-sw">
+        <div class="epg-si">&#x26A0;&#xFE0F;</div>
+        <div class="epg-sm" id="rwErrorMsg">Failed to load recordings.</div>
+        <button class="epg-retry" id="rwRetryBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Retry
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div id="rwContent" style="display:none">
+      <div class="sched-card">
+        <div class="sched-hdr">
+          <div class="sched-hdr-ttl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="rwCardTitle">Recordings</span>
+          </div>
+          <div class="sched-hdr-kst" id="rwTotalCount">0 recordings</div>
+        </div>
+        <div style="padding:16px 20px 20px">
+          <div class="rw-dates" id="rwDateTabs"></div>
+          <div class="rw-grid" id="rwGrid"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- EPG -->
@@ -341,16 +440,15 @@
           <select class="epg-select" id="epgSourceSelect">
             <option value="juche">Juche TV (Default Multilingual!)</option>
             <option value="koryofront">KoryoFront</option>
-            <option value="koryotv">KoryoTV</option>
           </select>
         </div>
       </div>
     </div>
-    <p class="epg-src-note">Choose your EPG source for better accuracy — only <strong>English</strong> and <strong>Korean</strong> are available in the KoryoFront and KoryoTV APIs.</p>
+    <p class="epg-src-note">Choose your EPG source for better accuracy &mdash; only <strong>English</strong> and <strong>Korean</strong> are available in the KoryoFront API.</p>
 
     <!-- Loading -->
     <div id="epgLoading">
-      <p id="epgRetryNote" style="display:none;font-size:12px;opacity:.65;margin:0 0 8px">Retrying…</p>
+      <p id="epgRetryNote" style="display:none;font-size:12px;opacity:.65;margin:0 0 8px">Retrying&hellip;</p>
       <div class="sched-card">
         <div class="sched-hdr">
           <div class="skel-block" style="width:150px;height:13px"></div>
@@ -400,7 +498,7 @@
     <!-- Error -->
     <div id="epgError" style="display:none">
       <div class="epg-sw">
-        <div class="epg-si">⚠️</div>
+        <div class="epg-si">&#x26A0;&#xFE0F;</div>
         <div class="epg-sm" id="epgErrorMsg">Failed to load programme guide.</div>
         <button class="epg-retry" id="epgRetryBtn">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
@@ -419,7 +517,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Programme Schedule
           </div>
-          <div class="sched-hdr-kst"><span id="epgDateVal">—</span> · <span id="epgClockVal">--:--:--</span> KST</div>
+          <div class="sched-hdr-kst"><span id="epgDateVal">&mdash;</span> &middot; <span id="epgClockVal">--:--:--</span> KST</div>
         </div>
         <div class="sched-list" id="epgSchedule"></div>
         <button class="sched-foot" id="epgViewAllBtn">
@@ -465,24 +563,24 @@
       </div>
       <div class="ss-tog-row">
         <div class="ss-tog-text">
-          <div class="ss-tog-lbl">🎯 Pick the programme yourself</div>
-          <div class="ss-tog-desc">Choose exactly what's showing — browse the full schedule and stamp it on your screenshot</div>
+          <div class="ss-tog-lbl">&#x1F3AF; Pick the programme yourself</div>
+          <div class="ss-tog-desc">Choose exactly what's showing &mdash; browse the full schedule and stamp it on your screenshot</div>
         </div>
         <button class="ss-pick-btn" id="screenshotPickProgBtn" type="button">Browse Guide</button>
       </div>
       <div class="ss-tog-row" id="ssEditTextRow" style="display:none">
         <div class="ss-tog-text">
-          <div class="ss-tog-lbl">✏️ Make it yours — edit the caption</div>
+          <div class="ss-tog-lbl">&#x270F;&#xFE0F; Make it yours &mdash; edit the caption</div>
           <div class="ss-tog-desc">Type anything you want on the watermark strip</div>
         </div>
         <label class="ios-sw"><input type="checkbox" id="screenshotEditTextToggle"><span class="ios-trk"></span></label>
       </div>
       <div class="ss-edit-input-wrap" id="ssEditInputWrap" style="display:none">
-        <input type="text" id="ssCustomText" class="ss-edit-input" placeholder="e.g. KCTV · Special Broadcast" maxlength="120">
+        <input type="text" id="ssCustomText" class="ss-edit-input" placeholder="e.g. KCTV &middot; Special Broadcast" maxlength="120">
       </div>
 
       <!-- FONT SETTINGS -->
-      <div class="ss-section-lbl">🔤 Watermark Font</div>
+      <div class="ss-section-lbl">&#x1F524; Watermark Font</div>
       <div class="ss-font-row">
         <div class="ss-font-presets" id="ssFontPresets">
           <button class="ss-font-preset active" data-font="Inter,sans-serif" type="button">Inter</button>
@@ -495,7 +593,7 @@
       <div class="ss-font-custom-row">
         <div class="ss-font-custom-lbl">Custom Google Font URL</div>
         <div class="ss-font-url-wrap">
-          <input type="text" id="ssFontUrl" class="ss-edit-input" placeholder="https://fonts.googleapis.com/css2?family=Roboto…" style="margin-bottom:6px">
+          <input type="text" id="ssFontUrl" class="ss-edit-input" placeholder="https://fonts.googleapis.com/css2?family=Roboto&hellip;" style="margin-bottom:6px">
           <input type="text" id="ssFontName" class="ss-edit-input" placeholder="Font name, e.g. Roboto">
           <button class="ss-font-apply-btn" id="ssFontApplyBtn" type="button">Apply Font</button>
         </div>
@@ -515,7 +613,7 @@
           Download
         </a>
       </div>
-      <div id="ssSaveMsg" style="display:none;text-align:center;padding:0 22px 14px;font-size:12px;color:var(--grn);font-weight:600">✓ Saved to your Screenshots gallery!</div>
+      <div id="ssSaveMsg" style="display:none;text-align:center;padding:0 22px 14px;font-size:12px;color:var(--grn);font-weight:600">&#x2713; Saved to your Screenshots gallery!</div>
     </div>
   </div>
 </div>
@@ -531,8 +629,8 @@
       <div class="epg-ov-meta">
         <div class="kst-clk" style="font-size:11px;padding:4px 10px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="epgOverlayDateVal">—</span>
-          <span style="color:var(--brd2)">·</span>
+          <span id="epgOverlayDateVal">&mdash;</span>
+          <span style="color:var(--brd2)">&middot;</span>
           <span class="kst-t" id="epgOverlayClock">--:--:--</span>
           <span style="color:var(--tx3);font-weight:600">KST</span>
         </div>
@@ -542,10 +640,10 @@
       </div>
     </div>
     <div class="epg-ov-body" id="epgOverlayBody">
-      <div style="padding:40px 20px;text-align:center;color:var(--tx2);font-size:13px">Loading…</div>
+      <div style="padding:40px 20px;text-align:center;color:var(--tx2);font-size:13px">Loading&hellip;</div>
     </div>
     <div class="epg-kbd">
-      <span class="kbd-hint"><span class="kbd">Esc</span> to close &nbsp;·&nbsp; <span class="kbd">E</span> to open</span>
+      <span class="kbd-hint"><span class="kbd">Esc</span> to close &nbsp;&middot;&nbsp; <span class="kbd">E</span> to open</span>
     </div>
   </div>
 </div>
@@ -569,12 +667,19 @@
   function _d(){try{return atob(_pad(_x(_e1,_k)))+atob(_pad(_x(_e2,_k)))+atob(_pad(_x(_e3,_k)));}catch(e){return null;}}
   var SERVERS={za:{id:'za',name:'South Africa',url:_d(),tag:'primary'}};
   var activeServer='za',hlsInstance=null,lastPingMs=0;
+  var isLiveMode=true;
 
-  function initPlayer(sid){
-    activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
+  function destroyPlayer(){
     if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
     if(hlsInstance){try{hlsInstance.destroy();}catch(e){}hlsInstance=null;}
     var c=document.getElementById('dplayer');if(c)c.innerHTML='';
+  }
+
+  function initPlayer(sid){
+    activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
+    destroyPlayer();
+    var c=document.getElementById('dplayer');if(c)c.innerHTML='';
+    isLiveMode=true;
     var dp=new DPlayer({
       container:document.getElementById('dplayer'),live:true,autoplay:true,screenshot:false,
       theme:'#e2472b',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
@@ -605,26 +710,44 @@
         _lpt=setTimeout(function(){},99999);
       },{passive:true});
       wrap.addEventListener('contextmenu',function(e){e.preventDefault();},{passive:false});
-      /* Patch DPlayer internals to suppress long-press */
-      var origAEL=wrap.addEventListener.bind(wrap);
-      /* Also suppress the DPlayer long-press by removing the touch events it adds */
       setTimeout(function(){
         var video=wrap.querySelector('video');
         if(!video)return;
         var clone=video.cloneNode(false);
-        /* We only need to block contextmenu on video */
         video.addEventListener('contextmenu',function(e){e.stopPropagation();e.preventDefault();},{passive:false,capture:true});
       },1000);
     })();
     document.dispatchEvent(new CustomEvent('dplayer:reinit'));
   }
 
+  /* Play a recorded MP4 in non-live mode */
+  function playRecording(url,label){
+    destroyPlayer();
+    isLiveMode=false;
+    var dp=new DPlayer({
+      container:document.getElementById('dplayer'),live:false,autoplay:true,screenshot:false,
+      theme:'#e2472b',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
+      video:{url:url,type:'auto',
+        pic:'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png'
+      },
+      contextmenu:[{text:'Juche TV',link:window.location.href},{text:'KCTV Recording',link:window.location.href}]
+    });
+    window._dpInstance=dp;
+    document.dispatchEvent(new CustomEvent('dplayer:reinit'));
+  }
+  window._playRecording=playRecording;
+  window._kctvIsLive=function(){return isLiveMode;};
+
+  function backToLive(){
+    initPlayer('za');
+    /* Clear playing state on rewind cards */
+    document.querySelectorAll('.rw-card.playing').forEach(function(c){c.classList.remove('playing');});
+  }
+  window._backToLive=backToLive;
+
   function _init(){initPlayer('za');}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_init);else _init();
   window._kctvInitPlayer=initPlayer;window._kctvActiveServer=function(){return activeServer;};window._kctvHls=function(){return hlsInstance;};
-
-  /* I18N */
-
 
   /* SCREENSHOT */
   (function(){
@@ -658,15 +781,12 @@
     fontApplyBtn.addEventListener('click',function(){
       var url=fontUrlInput.value.trim(),name=fontNameInput.value.trim();
       if(!url||!name){alert('Please enter both a Google Fonts URL and the font name.');return;}
-      /* Inject link if not already */
       var existing=document.getElementById('ss-custom-font-link');
       if(existing)existing.remove();
       var lnk=document.createElement('link');lnk.id='ss-custom-font-link';lnk.rel='stylesheet';lnk.href=url;
       document.head.appendChild(lnk);
-      /* Deactivate presets */
       fontPresets.querySelectorAll('.ss-font-preset').forEach(function(x){x.classList.remove('active');});
       FONT='"'+name+'",sans-serif';
-      /* Wait for font to load */
       lnk.onload=function(){renderSS();};
       setTimeout(function(){renderSS();},800);
     });
@@ -679,7 +799,6 @@
     function fmtKST(d){return fmt2(d.getHours())+':'+fmt2(d.getMinutes());}
     function wDate(){var k=getPT();return k.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][k.getMonth()]+' '+k.getFullYear();}
     function getEpgSlot(){
-      /* Try to get current EPG start/end */
       if(typeof window._kctvGetCurrentProgram==='function'){
         var p=window._kctvGetCurrentProgram();if(p)return p;
       }
@@ -723,20 +842,17 @@
       if(!currentDataUrl)return;
       var now=new Date();
       var kst=getPT();
-      /* Get EPG info */
       var epgProgram=null,epgTime=null;
       if(typeof window._kctvGetCurrentProgram==='function')epgProgram=window._kctvGetCurrentProgram();
-      /* Try get EPG time slot */
       if(window._epgData&&window._epgData.programs){
         for(var i=0;i<window._epgData.programs.length;i++){
           var p=window._epgData.programs[i];
           var pTitle=(typeof window._kctvTitleFor==='function')?window._kctvTitleFor(p):(typeof p.title==='object'?p.title.en:p.title);
           if(epgProgram&&pTitle===epgProgram){
-            epgTime=p.start+' – '+p.end+' KST';break;
+            epgTime=p.start+' \u2013 '+p.end+' KST';break;
           }
         }
       }
-      /* Timezone info */
       var userTZ='';try{userTZ=Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}
       var userCountry='';try{var lc=Intl.DateTimeFormat().resolvedOptions().locale;userCountry=lc;}catch(e){}
 
@@ -749,17 +865,15 @@
         userLocale:userCountry,
         pyongyangTime:fmt2(kst.getHours())+':'+fmt2(kst.getMinutes())+' KST',
         pyongyangDate:kst.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][kst.getMonth()]+' '+kst.getFullYear(),
-        epgProgram:pickedProgram||epgProgram||'—',
-        epgTimeSlot:epgTime||'—',
+        epgProgram:pickedProgram||epgProgram||'\u2014',
+        epgTimeSlot:epgTime||'\u2014',
         watermarkText:getWMText(),
         font:FONT
       };
-      /* Load existing, prepend, save */
       var arr=[];try{var raw=localStorage.getItem('kctv_screenshots');if(raw)arr=JSON.parse(raw);}catch(e){}
       arr.unshift(entry);
-      /* Keep max 50 */
       if(arr.length>50)arr=arr.slice(0,50);
-      try{localStorage.setItem('kctv_screenshots',JSON.stringify(arr));}catch(e){alert('Storage full — please delete some screenshots from the gallery.');}
+      try{localStorage.setItem('kctv_screenshots',JSON.stringify(arr));}catch(e){alert('Storage full \u2014 please delete some screenshots from the gallery.');}
       saveMsg.style.display='';
       setTimeout(function(){saveMsg.style.display='none';},3000);
     });
@@ -776,7 +890,7 @@
       renderSS();
     });
 
-    /* Pick programme — open EPG overlay, intercept selection */
+    /* Pick programme */
     pickBtn.addEventListener('click',function(){
       if(typeof window._epgOpenOverlay==='function')window._epgOpenOverlay();
       var epgBody=document.getElementById('epgOverlayBody');
@@ -818,6 +932,216 @@
 })();
 </script>
 
+
+<script>
+/* HOUR TO HOUR REWIND SYSTEM */
+(function(){
+  var RECORDINGS_API='https://kctv.koryofront.org/recordings';
+  var BASE_URL='https://kctv.koryofront.org';
+  var HOUR_ORDER=['8AM','9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM','11PM'];
+  var HOUR_LABELS={
+    '8AM':'8:00 AM','9AM':'9:00 AM','10AM':'10:00 AM','11AM':'11:00 AM',
+    '12PM':'12:00 PM','1PM':'1:00 PM','2PM':'2:00 PM','3PM':'3:00 PM',
+    '4PM':'4:00 PM','5PM':'5:00 PM','6PM':'6:00 PM','7PM':'7:00 PM',
+    '8PM':'8:00 PM','9PM':'9:00 PM','10PM':'10:00 PM','11PM':'11:00 PM'
+  };
+
+  /* Extract hour key from folder name, e.g. "Korean Central Television (KCTV) @ 8PM" -> "8PM" */
+  function extractHour(folderName){
+    var m=folderName.match(/@\s+(\d+[AP]M)/);
+    return m?m[1]:null;
+  }
+  /* Extract date from filename, e.g. "...2026-01-20 2026-01-20-2000.mp4" -> "2026-01-20" */
+  function extractDate(fileName){
+    var m=fileName.match(/(\d{4}-\d{2}-\d{2})\s+\d{4}-\d{2}-\d{2}-\d{4}\.mp4$/);
+    return m?m[1]:null;
+  }
+
+  var allRecordings={}; /* { date: { hourKey: { hourLabel, url, folderName, fileName } } } */
+  var allDates=[];
+  var currentDate='';
+  var dateSet={};
+
+  function sortDatesDesc(dates){
+    return dates.slice().sort(function(a,b){return b.localeCompare(a);});
+  }
+
+  /* Pyongyang Time is UTC+9 (same as KST) */
+  function getPyongyangNow(){
+    var n=new Date();
+    return new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);
+  }
+  function pyongyangDateStr(){
+    var d=getPyongyangNow();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  /* Returns current hour key matching HOUR_ORDER format (e.g. "8AM","12PM","7PM"), or null if outside broadcast hours */
+  function pyongyangHourKey(){
+    var h=getPyongyangNow().getHours();
+    if(h<8||h>23)return null;
+    if(h===12)return '12PM';
+    return h>12?(h-12)+'PM':h+'AM';
+  }
+
+  function parseDateLabel(ds){
+    var p=ds.split('-');
+    var d=new Date(+p[0],+p[1]-1,+p[2]);
+    var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  }
+
+  function showRwLoading(){document.getElementById('rwLoading').style.display='';document.getElementById('rwError').style.display='none';document.getElementById('rwContent').style.display='none';}
+  function showRwError(msg){document.getElementById('rwLoading').style.display='none';document.getElementById('rwError').style.display='';document.getElementById('rwErrorMsg').textContent=msg||'Failed to load recordings.';document.getElementById('rwContent').style.display='none';}
+  function showRwContent(){document.getElementById('rwLoading').style.display='none';document.getElementById('rwError').style.display='none';document.getElementById('rwContent').style.display='';}
+
+  function renderDateTabs(){
+    var container=document.getElementById('rwDateTabs');
+    container.innerHTML='';
+    allDates.forEach(function(ds){
+      var btn=document.createElement('button');
+      btn.className='rw-date-btn'+(ds===currentDate?' on':'');
+      btn.textContent=parseDateLabel(ds);
+      btn.addEventListener('click',function(){currentDate=ds;renderDateTabs();renderGrid();});
+      container.appendChild(btn);
+    });
+  }
+
+  function renderGrid(){
+    var container=document.getElementById('rwGrid');
+    container.innerHTML='';
+    var dayData=allRecordings[currentDate]||{};
+    var liveKey=(currentDate===pyongyangDateStr())?pyongyangHourKey():null;
+
+    /* Only show hours the API actually has, plus the current live hour on today's date */
+    var hoursToShow=HOUR_ORDER.filter(function(h){return dayData[h]||h===liveKey;});
+
+    if(!hoursToShow.length){container.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--tx3);font-size:13px;padding:20px">No recordings for this date.</div>';document.getElementById('rwTotalCount').textContent='0 recordings on '+parseDateLabel(currentDate);return;}
+
+    var total=0;
+    hoursToShow.forEach(function(hour){
+      var rec=dayData[hour];
+      var card=document.createElement('div');
+      card.className='rw-card';
+      var thumbSrc=(hour===liveKey)?TV_COVER:thumbUrlFor(rec&&rec.path);
+      card.innerHTML='<div class="rw-thumb"><img loading="lazy" alt="" onload="this.classList.add(\'loaded\')" onerror="this.remove()" src="'+esc(thumbSrc)+'"></div>'
+        +'<div class="rw-time">'+esc(HOUR_LABELS[hour]||hour)+'</div>';
+      if(hour===liveKey){
+        card.classList.add('available','live');
+        card.innerHTML+='<div class="rw-status">&#9679; LIVE</div>';
+        card.addEventListener('click',function(){if(typeof window._backToLive==='function')window._backToLive();});
+      }else{
+        card.classList.add('available');
+        card.innerHTML+='<div class="rw-status">&#9654; Play</div>';
+        card.addEventListener('click',function(){playRecordingFromCard(rec.url,card,hour);});
+      }
+      total++;
+      container.appendChild(card);
+    });
+    document.getElementById('rwTotalCount').textContent=total+' recording'+(total!==1?'s':'')+' on '+parseDateLabel(currentDate);
+  }
+
+  function playRecordingFromCard(url,cardEl,hourKey){
+    /* Remove playing class from all cards */
+    document.querySelectorAll('.rw-card.playing').forEach(function(c){c.classList.remove('playing');});
+    cardEl.classList.add('playing');
+    var label='Recording &middot; '+parseDateLabel(currentDate)+' &middot; '+(HOUR_LABELS[hourKey]||hourKey);
+    if(typeof window._playRecording==='function')window._playRecording(url,label);
+  }
+
+  var THUMB_API='https://koryofront.org/api/kctv/thumb?path=';
+  var TV_COVER='https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png';
+
+  /* Build the thumbnail API URL from a raw recording path, encoding each segment
+     the same way as the API expects (spaces -> %20, @ -> %40, slashes preserved) */
+  function thumbUrlFor(path){
+    if(!path)return '';
+    var normalized=path;
+    try{if(path.indexOf('%')!==-1)normalized=decodeURIComponent(path);}catch(e){}
+    var encoded=normalized.split('/').map(function(seg){return seg?encodeURIComponent(seg):seg;}).join('/');
+    return THUMB_API+encoded;
+  }
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function fetchFolders(){
+    showRwLoading();
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',RECORDINGS_API,true);
+    xhr.timeout=15000;
+    xhr.onload=function(){
+      if(xhr.status===200){
+        try{
+          var folders=JSON.parse(xhr.responseText);
+          processFolders(folders);
+        }catch(e){showRwError('Invalid data from recordings server.');}
+      }else{showRwError('Recordings server returned status '+xhr.status+'.');}
+    };
+    xhr.onerror=function(){showRwError('Network error — could not reach recordings server.');};
+    xhr.ontimeout=function(){showRwError('Request timed out — recordings server is slow.');};
+    xhr.send();
+  }
+
+  function processFolders(folders){
+    dateSet={};
+    var pending=0;
+    folders.forEach(function(folder){
+      var hour=extractHour(folder.name);
+      if(!hour)return;
+      pending++;
+      var fxhr=new XMLHttpRequest();
+      fxhr.open('GET',BASE_URL+folder.path,true);
+      fxhr.timeout=15000;
+      fxhr.onload=(function(h,fn){
+        return function(){
+          pending--;
+          if(fxhr.status===200){
+            try{
+              var files=JSON.parse(fxhr.responseText);
+              files.forEach(function(f){
+                if(f.type!=='file'||!f.name.endsWith('.mp4'))return;
+                var ds=extractDate(f.name);
+                if(!ds)return;
+                if(!allRecordings[ds])allRecordings[ds]={};
+                dateSet[ds]=true;
+                allRecordings[ds][h]={
+                  hour:h,
+                  hourLabel:HOUR_LABELS[h]||h,
+                  url:BASE_URL+f.path,
+                  path:f.path,
+                  folderName:fn,
+                  fileName:f.name,
+                  date:ds
+                };
+              });
+            }catch(e){}
+          }
+          if(pending<=0)finishLoading();
+        };
+      })(hour,folder.name);
+      fxhr.onerror=function(){pending--;if(pending<=0)finishLoading();};
+      fxhr.ontimeout=function(){pending--;if(pending<=0)finishLoading();};
+      fxhr.send();
+    });
+    if(pending===0)finishLoading();
+  }
+
+  function finishLoading(){
+    allDates=sortDatesDesc(Object.keys(dateSet));
+    if(!allDates.length){showRwError('No recordings found on the server.');return;}
+    /* Pick most recent date */
+    currentDate=allDates[0];
+    document.getElementById('rwCardTitle').textContent='Recordings';
+    renderDateTabs();
+    renderGrid();
+    showRwContent();
+  }
+
+  document.getElementById('rwRetryBtn').addEventListener('click',fetchFolders);
+  fetchFolders();
+})();
+</script>
+
 <script>
 /* EPG SYSTEM */
 (function(){
@@ -830,11 +1154,6 @@
   var epgData=null,lastDS='';
 
   /* ---- EPG sources ---- */
-  /* KoryoTV doesn't have its own public EPG endpoint, so it's backed by the same
-     juche-tv.vercel.app feed used as the 'juche' fallback below. That feed returns
-     a flat {events:[...]} list (not the {programs:[...]} shape the other sources
-     use), so it's fetched/mapped separately in loadEPG() via fetchEventsShapeEPG(). */
-  var KORYOTV_URL='https://juche-tv.vercel.app/api/juche-tv';
   var EPG_SOURCES={
     juche:{url:function(ds){return 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date='+ds;}},
     koryofront:{url:function(ds){return 'https://juche-tv.vercel.app/api/KoryoFront?date='+ds;}}
@@ -844,30 +1163,30 @@
   /* ---- Language selection ---- */
   var LANG_ORDER=['en','ko','zh','zh_hk','ja','ru','es','fr','de','my','ug','bo','mn','za','kk'];
   var LANG_NAMES={
-    en:'English',ko:'한국어 · Korean',zh:'中文 · Chinese',zh_hk:'廣東話 · Cantonese',ja:'日本語 · Japanese',
-    ru:'Русский · Russian',es:'Español · Spanish',fr:'Français · French',de:'Deutsch · German',
-    my:'မြန်မာ · Burmese',ug:'ئۇيغۇرچە · Uyghur',bo:'བོད་ · Tibetan',mn:'Монгол · Mongolian',
-    za:'Vahcuengh · Zhuang',kk:'Қазақша · Kazakh',vi:'Tiếng Việt · Vietnamese',th:'ไทย · Thai',
-    id:'Bahasa Indonesia',ms:'Bahasa Melayu',hi:'हिन्दी · Hindi',ar:'العربية · Arabic',fa:'فارسی · Persian',
-    tr:'Türkçe · Turkish',it:'Italiano · Italian',pt:'Português · Portuguese',nl:'Nederlands · Dutch',
-    pl:'Polski · Polish',uk:'Українська · Ukrainian',cs:'Čeština · Czech',sv:'Svenska · Swedish',
-    fi:'Suomi · Finnish',da:'Dansk · Danish',no:'Norsk · Norwegian',el:'Ελληνικά · Greek',he:'עברית · Hebrew',
-    ro:'Română · Romanian',hu:'Magyar · Hungarian',bg:'Български · Bulgarian',sr:'Српски · Serbian',
-    hr:'Hrvatski · Croatian',sk:'Slovenčina · Slovak',ka:'ქართული · Georgian',hy:'Հայերեն · Armenian',
-    az:'Azərbaycan · Azerbaijani',uz:'Oʻzbekcha · Uzbek',ky:'Кыргызча · Kyrgyz',tg:'Тоҷикӣ · Tajik',
-    km:'ខ្មែរ · Khmer',lo:'ລາວ · Lao',ne:'नेपाली · Nepali',si:'සිංහල · Sinhala',ta:'தமிழ் · Tamil',
-    bn:'বাংলা · Bengali',ur:'اردو · Urdu',sw:'Kiswahili · Swahili'
+    en:'English',ko:'\uD55C\uAD6D\uC5B4 \u00B7 Korean',zh:'\u4E2D\u6587 \u00B7 Chinese',zh_hk:'\u5EE3\u6771\u8A71 \u00B7 Cantonese',ja:'\u65E5\u672C\u8A9E \u00B7 Japanese',
+    ru:'\u0420\u0443\u0441\u0441\u043A\u0438\u0439 \u00B7 Russian',es:'Espa\u00F1ol \u00B7 Spanish',fr:'Fran\u00E7ais \u00B7 French',de:'Deutsch \u00B7 German',
+    my:'\u1019\u103C\u1014\u103A\u1019\u102C \u00B7 Burmese',ug:'\u0626\u06C7\u064A\u063A\u06C7\u0631\u0686\u06D5 \u00B7 Uyghur',bo:'\u0F56\u0F7C\u0F51\u0F0B \u00B7 Tibetan',mn:'\u041C\u043E\u043D\u0433\u043E\u043B \u00B7 Mongolian',
+    za:'Vahcuengh \u00B7 Zhuang',kk:'\u049A\u0430\u0437\u0430\u049B\u0448\u0430 \u00B7 Kazakh',vi:'Ti\u1EBFng Vi\u1EC7t \u00B7 Vietnamese',th:'\u0E44\u0E17\u0E22 \u00B7 Thai',
+    id:'Bahasa Indonesia',ms:'Bahasa Melayu',hi:'\u0939\u093F\u0928\u094D\u0926\u0940 \u00B7 Hindi',ar:'\u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u00B7 Arabic',fa:'\u0641\u0627\u0631\u0633\u06CC \u00B7 Persian',
+    tr:'T\u00FCrk\u00E7e \u00B7 Turkish',it:'Italiano \u00B7 Italian',pt:'Portugu\u00EAs \u00B7 Portuguese',nl:'Nederlands \u00B7 Dutch',
+    pl:'Polski \u00B7 Polish',uk:'\u0423\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0430 \u00B7 Ukrainian',cs:'\u010Ce\u0161tina \u00B7 Czech',sv:'Svenska \u00B7 Swedish',
+    fi:'Suomi \u00B7 Finnish',da:'Dansk \u00B7 Danish',no:'Norsk \u00B7 Norwegian',el:'\u0395\u03BB\u03BB\u03B7\u03BD\u03B9\u03BA\u03AC \u00B7 Greek',he:'\u05E2\u05D1\u05E8\u05D9\u05EA \u00B7 Hebrew',
+    ro:'Rom\u00E2n\u0103 \u00B7 Romanian',hu:'Magyar \u00B7 Hungarian',bg:'\u0411\u044A\u043B\u0433\u0430\u0440\u0441\u043A\u0438 \u00B7 Bulgarian',sr:'\u0421\u0440\u043F\u0441\u043A\u0438 \u00B7 Serbian',
+    hr:'Hrvatski \u00B7 Croatian',sk:'Sloven\u010Dina \u00B7 Slovak',ka:'\u10E5\u10D0\u10E0\u10D7\u10E3\u10DA\u10D8 \u00B7 Georgian',hy:'\u0540\u0561\u0575\u0565\u0580\u0565\u0576 \u00B7 Armenian',
+    az:'Az\u0259rbaycan \u00B7 Azerbaijani',uz:'O\u02BBzbekcha \u00B7 Uzbek',ky:'\u041A\u044B\u0440\u0433\u044B\u0437\u0447\u0430 \u00B7 Kyrgyz',tg:'\u0422\u043E\u04E7\u0438\u043A\u04E3 \u00B7 Tajik',
+    km:'\u1781\u17D2\u1798\u17C2\u179A \u00B7 Khmer',lo:'\u0EA5\u0EB2\u0EA7 \u00B7 Lao',ne:'\u0928\u0947\u092A\u093E\u0932\u0940 \u00B7 Nepali',si:'\u0DC3\u0DD2\u0D82\u0DC4\u0DBD \u00B7 Sinhala',ta:'\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD \u00B7 Tamil',
+    bn:'\u09AC\u09BE\u0982\u09B2\u09BE \u00B7 Bengali',ur:'\u0627\u0631\u062F\u0648 \u00B7 Urdu',sw:'Kiswahili \u00B7 Swahili'
   };
   var LANG_FLAGS={
-    en:'🇬🇧',ko:'🇰🇵',zh:'🇨🇳',zh_hk:'🇭🇰',ja:'🇯🇵',ru:'🇷🇺',es:'🇪🇸',fr:'🇫🇷',de:'🇩🇪',
-    my:'🇲🇲',ug:'🇨🇳',bo:'🇨🇳',mn:'🇲🇳',za:'🇨🇳',kk:'🇰🇿',vi:'🇻🇳',th:'🇹🇭',id:'🇮🇩',ms:'🇲🇾',
-    hi:'🇮🇳',ar:'🇸🇦',fa:'🇮🇷',tr:'🇹🇷',it:'🇮🇹',pt:'🇵🇹',nl:'🇳🇱',pl:'🇵🇱',uk:'🇺🇦',cs:'🇨🇿',
-    sv:'🇸🇪',fi:'🇫🇮',da:'🇩🇰',no:'🇳🇴',el:'🇬🇷',he:'🇮🇱',ro:'🇷🇴',hu:'🇭🇺',bg:'🇧🇬',sr:'🇷🇸',
-    hr:'🇭🇷',sk:'🇸🇰',ka:'🇬🇪',hy:'🇦🇲',az:'🇦🇿',uz:'🇺🇿',ky:'🇰🇬',tg:'🇹🇯',km:'🇰🇭',lo:'🇱🇦',
-    ne:'🇳🇵',si:'🇱🇰',ta:'🇮🇳',bn:'🇧🇩',ur:'🇵🇰',sw:'🇰🇪'
+    en:'\uD83C\uDDEC\uD83C\uDDE7',ko:'\uD83C\uDDF0\uD83C\uDDF5',zh:'\uD83C\uDDE8\uD83C\uDDF3',zh_hk:'\uD83C\uDDED\uD83C\uDDF0',ja:'\uD83C\uDDEF\uD83C\uDDF5',ru:'\uD83C\uDDF7\uD83C\uDDFA',es:'\uD83C\uDDEA\uD83C\uDDF8',fr:'\uD83C\uDDEB\uD83C\uDDF7',de:'\uD83C\uDDE9\uD83C\uDDEA',
+    my:'\uD83C\uDDF2\uD83C\uDDF2',ug:'\uD83C\uDDE8\uD83C\uDDF3',bo:'\uD83C\uDDE8\uD83C\uDDF3',mn:'\uD83C\uDDF2\uD83C\uDDF3',za:'\uD83C\uDDE8\uD83C\uDDF3',kk:'\uD83C\uDDF0\uD83C\uDDFF',vi:'\uD83C\uDDFB\uD83C\uDDF3',th:'\uD83C\uDDF9\uD83C\uDDED',id:'\uD83C\uDDEE\uD83C\uDDE9',ms:'\uD83C\uDDF2\uD83C\uDDFE',
+    hi:'\uD83C\uDDEE\uD83C\uDDF3',ar:'\uD83C\uDDF8\uD83C\uDDE6',fa:'\uD83C\uDDEE\uD83C\uDDF7',tr:'\uD83C\uDDF9\uD83C\uDDF7',it:'\uD83C\uDDEE\uD83C\uDDF9',pt:'\uD83C\uDDF5\uD83C\uDDF9',nl:'\uD83C\uDDF3\uD83C\uDDF1',pl:'\uD83C\uDDF5\uD83C\uDDF1',uk:'\uD83C\uDDFA\uD83C\uDDE6',cs:'\uD83C\uDDE8\uD83C\uDDFF',
+    sv:'\uD83C\uDDF8\uD83C\uDDEA',fi:'\uD83C\uDDEB\uD83C\uDDEE',da:'\uD83C\uDDE9\uD83C\uDDF0',no:'\uD83C\uDDF3\uD83C\uDDF4',el:'\uD83C\uDDEC\uD83C\uDDF7',he:'\uD83C\uDDEE\uD83C\uDDF1',ro:'\uD83C\uDDF7\uD83C\uDDF4',hu:'\uD83C\uDDED\uD83C\uDDFA',bg:'\uD83C\uDDE7\uD83C\uDDEC',sr:'\uD83C\uDDF7\uD83C\uDDF8',
+    hr:'\uD83C\uDDED\uD83C\uDDF7',sk:'\uD83C\uDDF8\uD83C\uDDF0',ka:'\uD83C\uDDEC\uD83C\uDDEA',hy:'\uD83C\uDDE6\uD83C\uDDF2',az:'\uD83C\uDDE6\uD83C\uDDFF',uz:'\uD83C\uDDFA\uD83C\uDDFF',ky:'\uD83C\uDDF0\uD83C\uDDEC',tg:'\uD83C\uDDF9\uD83C\uDDEF',km:'\uD83C\uDDF0\uD83C\uDDED',lo:'\uD83C\uDDF1\uD83C\uDDE6',
+    ne:'\uD83C\uDDF3\uD83C\uDDF5',si:'\uD83C\uDDF1\uD83C\uDDF0',ta:'\uD83C\uDDF2\uD83C\uDDF3',bn:'\uD83C\uDDE7\uD83C\uDDE9',ur:'\uD83C\uDDF5\uD83C\uDDF0',sw:'\uD83C\uDDF0\uD83C\uDDEA'
   };
   function langName(c){return LANG_NAMES[c]||c.toUpperCase();}
-  function langFlag(c){return LANG_FLAGS[c]||'🌐';}
+  function langFlag(c){return LANG_FLAGS[c]||'\uD83C\uDF10';}
 
   var currentSource='juche',currentLang='en';
   try{currentSource=sessionStorage.getItem('kctvEpgSource')||'juche';}catch(e){}
@@ -876,8 +1195,6 @@
   var langSelectEl=document.getElementById('epgLangSelect'),srcSelectEl=document.getElementById('epgSourceSelect');
   if(srcSelectEl)srcSelectEl.value=currentSource;
 
-  /* Scans every program's title object and returns the union of language codes
-     actually present in this feed, ordered by LANG_ORDER then alphabetically. */
   function collectLangs(data){
     var set={};
     (data.programs||[]).forEach(function(p){
@@ -898,7 +1215,6 @@
     if(!langSelectEl)return;
     var codes;
     if(currentSource!=='juche'){
-      /* KoryoFront/KoryoTV only ever carry English & Korean — enforce that regardless of feed contents */
       var avail=collectLangs(data);
       codes=['en','ko'].filter(function(c){return avail.indexOf(c)!==-1;});
       if(!codes.length)codes=['en','ko'];
@@ -917,8 +1233,6 @@
     langSelectEl.value=currentLang;
   }
 
-  /* Instantly narrows the dropdown to English/Korean the moment a restricted source
-     is selected, without waiting on the fetch to complete. */
   function forceEnKoLangSelect(){
     if(!langSelectEl)return;
     var codes=['en','ko'],prev=currentLang;
@@ -942,8 +1256,6 @@
   function isPast(e){return getPT()>parseKST(e);}
   function isCur(s,e){var n=getPT();return n>=parseKST(s)&&n<parseKST(e);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  /* Title in the currently selected language, falling back to English, then Korean,
-     then whatever's first in the object. */
   function titleFor(p){
     if(!p||!p.title)return'';
     if(typeof p.title!=='object')return p.title;
@@ -952,8 +1264,6 @@
     if(p.title.ko)return p.title.ko;
     var keys=Object.keys(p.title);return keys.length?p.title[keys[0]]:'';
   }
-  /* Secondary reference line — shows the Korean original alongside a translation,
-     or the English title when Korean itself is the selected language. */
   function titleSubFor(p){
     if(!p||!p.title||typeof p.title!=='object')return'';
     if(currentLang==='ko')return p.title.en||'';
@@ -961,8 +1271,6 @@
   }
   window._kctvTitleFor=titleFor;
 
-  /* The primary EPG API returns each program's start time only — no end time.
-     Derive any missing end as the next program's start (last one runs to sign-off, 24:00). */
   function withEnds(progs){
     for(var i=0;i<progs.length;i++){
       if(!progs[i].end)progs[i].end=progs[i+1]?progs[i+1].start:'24:00';
@@ -970,8 +1278,6 @@
     return progs;
   }
 
-  /* Maps the fallback API's event shape (startUtc/endUtc ISO strings, flat title/titleEn/category fields)
-     onto the same {start,end,title:{en,ko},category} shape the renderer expects. */
   function mapFallbackEvent(ev){
     return {
       start:ev.startUtc?ev.startUtc.slice(11,16):'',
@@ -999,7 +1305,6 @@
         '<div class="sched-body">'+badgeHtml+'<div class="sched-cat">'+esc(p.category||'')+'</div>'+
         '<div class="sched-ttl">'+esc(titleFor(p))+'</div>'+subHtml+remHtml+'</div>';
       list.appendChild(row);
-      if(curr)setTimeout(function(){row.scrollIntoView({block:'nearest'});},100);
     });
     document.getElementById('epgLoading').style.display='none';
     document.getElementById('epgError').style.display='none';
@@ -1015,18 +1320,11 @@
       row.className='epg-fr'+(past?' epg-past':'')+(curr?' epg-cur':'');
       row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleFor(p))+'</div><div class="epg-fsub">'+esc(titleSubFor(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(p.category)+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
       body.appendChild(row);
-      if(curr)setTimeout(function(){row.scrollIntoView({block:'center'});},80);
     });
   }
 
   var FALLBACK_URL='https://juche-tv.vercel.app/api/juche-tv';
 
-  /* Shared fetcher for feeds shaped like {events:[{channel,startUtc,endUtc,title,titleEn,category,...}]}
-     — used both by the 'juche' fallback and by the 'koryotv' source, which is backed
-     by the same feed. Filters to KCTV events on the target date, maps to the
-     {programs:[{start,end,title:{en,ko},category}]} shape the renderer expects.
-     onFail(reason) — reason is 'empty' (feed reached fine, just nothing for this date,
-     not worth retrying) or 'error' (network/timeout/bad response — worth retrying). */
   function fetchEventsShapeEPG(url,targetDate,onSuccess,onFail){
     var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.timeout=8000;
     xhr.onload=function(){
@@ -1045,27 +1343,6 @@
     xhr.send();
   }
 
-  /* Auto-retry wrapper for KoryoTV: the feed occasionally flakes (timeouts/5xx) rather
-     than being genuinely down, so retry transient ('error') failures a few times with
-     exponential backoff before giving up. 'empty' (no data for this date) never retries —
-     more attempts won't change what the feed has. */
-  var KORYOTV_MAX_RETRIES=3, KORYOTV_RETRY_BASE_MS=1200;
-  function fetchEventsShapeEPGWithRetry(url,targetDate,onSuccess,onFail,attempt){
-    attempt=attempt||0;
-    fetchEventsShapeEPG(url,targetDate,onSuccess,function(reason){
-      if(reason==='error'&&attempt<KORYOTV_MAX_RETRIES){
-        var note=document.getElementById('epgRetryNote');
-        note.textContent='Retrying\u2026 (attempt '+(attempt+2)+' of '+(KORYOTV_MAX_RETRIES+1)+')';
-        note.style.display='';
-        setTimeout(function(){
-          fetchEventsShapeEPGWithRetry(url,targetDate,onSuccess,onFail,attempt+1);
-        },KORYOTV_RETRY_BASE_MS*Math.pow(2,attempt));
-      } else {
-        onFail(reason);
-      }
-    });
-  }
-
   function loadFallbackEPG(targetDate){
     fetchEventsShapeEPG(FALLBACK_URL,targetDate,function(fb){
       populateLangSelect(fb);renderEPG(fb);
@@ -1076,18 +1353,8 @@
     document.getElementById('epgLoading').style.display='';document.getElementById('epgError').style.display='none';document.getElementById('epgContent').style.display='none';document.getElementById('epgRetryNote').style.display='none';
     var targetDate=epgDS(getPT());
 
-    if(currentSource==='koryotv'){
-      if(!KORYOTV_URL){showErr('This EPG source isn\u2019t available yet — try Juche TV instead.');return;}
-      fetchEventsShapeEPGWithRetry(KORYOTV_URL,targetDate,function(d){
-        populateLangSelect(d);renderEPG(d);
-      },function(reason){
-        showErr(reason==='empty'?'No programme data available from this source for today.':'Could not reach this EPG source right now — tried '+(KORYOTV_MAX_RETRIES+1)+' times.');
-      });
-      return;
-    }
-
     var url=getUrl();
-    if(!url){showErr('This EPG source isn\u2019t available yet — try Juche TV instead.');return;}
+    if(!url){showErr('This EPG source isn\u2019t available yet \u2014 try Juche TV instead.');return;}
     var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.timeout=8000;
     xhr.onload=function(){
       if(xhr.status===200){
@@ -1131,14 +1398,12 @@
 
   window._kctvGetCurrentProgram=function(){if(!epgData||!epgData.programs)return null;for(var i=0;i<epgData.programs.length;i++){var p=epgData.programs[i];if(isCur(p.start,p.end))return titleFor(p);}return null;};
 
-  /* Language dropdown — re-render in place, no refetch needed */
   if(langSelectEl)langSelectEl.addEventListener('change',function(){
     currentLang=this.value;
     try{sessionStorage.setItem('kctvEpgLang',currentLang);}catch(e){}
     if(epgData){renderEPG(epgData);if(isOvOpen)renderOv(epgData);}
   });
 
-  /* EPG Source dropdown — switching source re-fetches from the new feed */
   if(srcSelectEl)srcSelectEl.addEventListener('change',function(){
     currentSource=this.value;
     try{sessionStorage.setItem('kctvEpgSource',currentSource);}catch(e){}
