@@ -67,7 +67,7 @@
 
     /* PLAYER */
     .player-wrap{position:relative;background:#000;border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shlg),0 0 0 1px var(--brd)}
-    #dplayer{width:100%!important;aspect-ratio:16/9}
+    #dplayer{width:100%!important;aspect-ratio:16/9;position:relative}
     .ss-flash{position:absolute;inset:0;z-index:50;background:#fff;opacity:0;pointer-events:none}
     .ss-flash.active{animation:flash .35s ease-out forwards}
     @keyframes flash{0%{opacity:.9}100%{opacity:0}}
@@ -668,6 +668,13 @@
   var SERVERS={za:{id:'za',name:'South Africa',url:_d(),tag:'primary'}};
   var activeServer='za',hlsInstance=null,lastPingMs=0;
   var isLiveMode=true;
+  var isIOS=(function(){
+    var ua=navigator.userAgent||'';
+    if(/iPad|iPhone|iPod/.test(ua))return true;
+    /* iPadOS 13+ reports as Mac but has touch support */
+    if(/Macintosh/.test(ua)&&navigator.maxTouchPoints&&navigator.maxTouchPoints>1)return true;
+    return false;
+  })();
 
   function destroyPlayer(){
     if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
@@ -675,11 +682,35 @@
     var c=document.getElementById('dplayer');if(c)c.innerHTML='';
   }
 
+  /* Build a bare native <video> for iOS - Safari's own AVPlayer chrome,
+     own fullscreen/AirPlay/PiP/lock-screen controls, no DPlayer wrapper */
+  function buildNativeVideo(url,poster,autoplay){
+    var wrap=document.getElementById('dplayer');
+    var v=document.createElement('video');
+    v.id='iosNativeVideo';
+    v.src=url;
+    v.controls=true;
+    v.playsInline=true;
+    v.setAttribute('webkit-playsinline','');
+    v.setAttribute('poster',poster||'');
+    v.volume=1.0;
+    v.style.width='100%';v.style.height='100%';v.style.background='#000';v.style.display='block';
+    wrap.appendChild(v);
+    if(autoplay)v.play().catch(function(){});
+    window._dpInstance=null;
+    return v;
+  }
+
   function initPlayer(sid){
     activeServer=sid;var s=SERVERS[sid];if(!s||!s.url)return;
     destroyPlayer();
     var c=document.getElementById('dplayer');if(c)c.innerHTML='';
     isLiveMode=true;
+    if(isIOS){
+      buildNativeVideo(s.url,'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',true);
+      document.dispatchEvent(new CustomEvent('dplayer:reinit'));
+      return;
+    }
     var dp=new DPlayer({
       container:document.getElementById('dplayer'),live:true,autoplay:true,screenshot:false,
       theme:'#e2472b',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
@@ -724,6 +755,11 @@
   function playRecording(url,label){
     destroyPlayer();
     isLiveMode=false;
+    if(isIOS){
+      buildNativeVideo(url,'https://raw.githubusercontent.com/Bloxyplay/JucheTV-EPG-API/refs/heads/main/tv_cover.png',true);
+      document.dispatchEvent(new CustomEvent('dplayer:reinit'));
+      return;
+    }
     var dp=new DPlayer({
       container:document.getElementById('dplayer'),live:false,autoplay:true,screenshot:false,
       theme:'#e2472b',lang:'en',hotkey:true,preload:'auto',logo:null,volume:1.0,mutex:true,
@@ -737,6 +773,7 @@
   }
   window._playRecording=playRecording;
   window._kctvIsLive=function(){return isLiveMode;};
+  window._kctvIsIOS=isIOS;
 
   function backToLive(){
     initPlayer('za');
