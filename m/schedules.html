@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+<title>Schedules - Juche TV</title>
+<style>
+  :root {
+    --bg: #F2F2F7;
+    --elevated: #FFFFFF;
+    --primary: #1C1C1E;
+    --secondary: #8E8E93;
+    --tertiary: #C7C7CC;
+    --separator: rgba(60, 60, 67, 0.1);
+    --tint: #007AFF;
+    --tint-secondary: #5856D6;
+    --red: #FF3B30;
+    --green: #34C759;
+    --orange: #FF9500;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  :root.dark {
+    --bg: #000000;
+    --elevated: #1C1C1E;
+    --primary: #F2F2F7;
+    --secondary: #8E8E93;
+    --tertiary: #48484A;
+    --separator: rgba(140, 140, 147, 0.24);
+    --tint: #0A84FF;
+    --tint-secondary: #5E5CE6;
+    --green: #30D158;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(242, 242, 247, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 0.5px solid var(--separator);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  :root.dark .nav { background: rgba(28, 28, 30, 0.72); }
+  .nav-inner {
+    max-width: 720px; margin: 0 auto; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 20px; height: 52px; gap: 8px;
+  }
+  .logo { display:flex; align-items:center; gap:8px; font-size:19px; font-weight:800; letter-spacing:-0.5px; color:var(--primary); text-decoration:none; }
+  .logo-icon { width:30px; height:30px; background: linear-gradient(135deg, #FF2D55, #FF9500); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+  .back-btn {
+    display:flex; align-items:center; gap:4px; font-size:15px; font-weight:500;
+    color: var(--tint); text-decoration:none; padding: 6px 4px;
+  }
+  .nav-btn {
+    width:34px; height:34px; border-radius:50%; border:none; background:transparent; color:var(--secondary);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition: all 0.2s ease;
+  }
+  .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+  :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
+  .nav-btn svg { width:18px; height:18px; }
+  .nav-right { display:flex; align-items:center; gap:4px; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .hero { text-align:center; margin-bottom: 24px; }
+  .hero h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.7px; margin-bottom: 6px; }
+  .hero p { font-size: 14px; color: var(--secondary); line-height: 1.5; }
+
+  /* === Custom Dropdown (in-page, not native select) — lives in the top nav bar === */
+  .dropdown-wrap { position: relative; flex: 1; max-width: 230px; margin: 0 12px; }
+  .dropdown-trigger {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg);
+    border: 0.5px solid var(--separator);
+    border-radius: 999px;
+    padding: 7px 12px 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    user-select: none;
+  }
+  .dropdown-trigger:hover { background: rgba(0,122,255,0.06); }
+  .dropdown-trigger.open { border-color: var(--tint); }
+  .dropdown-trigger-left { display:flex; align-items:center; gap:7px; min-width:0; }
+  .dropdown-trigger-left svg { width:14px; height:14px; color: var(--tint); flex-shrink:0; }
+  .dropdown-trigger-left span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dropdown-chevron { width:12px; height:12px; color: var(--secondary); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; margin-left:4px; }
+  .dropdown-trigger.open .dropdown-chevron { transform: rotate(180deg); }
+
+  .dropdown-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px) scale(0.98);
+    width: 280px;
+    max-width: 86vw;
+    background: var(--elevated);
+    border: 0.5px solid var(--separator);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1);
+    z-index: 150;
+    pointer-events: none;
+  }
+  .dropdown-panel.open {
+    max-height: 320px;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .dropdown-list { max-height: 320px; overflow-y: auto; padding: 6px; }
+  .dropdown-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 11px 12px; border-radius: var(--radius-sm);
+    font-size: 14.5px; font-weight: 500; color: var(--primary);
+    cursor: pointer; transition: background 0.15s ease;
+    gap: 10px;
+  }
+  .dropdown-item:hover { background: rgba(0,122,255,0.08); }
+  .dropdown-item.active { background: var(--tint); color: #fff; font-weight: 600; }
+  .dropdown-item .item-sub { font-size: 12px; color: var(--secondary); font-weight: 400; flex-shrink:0; white-space:nowrap; }
+  .dropdown-item.active .item-sub { color: rgba(255,255,255,0.75); }
+  .dropdown-divider { height: 0.5px; background: var(--separator); margin: 4px 6px; }
+
+  @media (max-width: 640px) {
+    .dropdown-wrap { max-width: 150px; margin: 0 6px; }
+    .dropdown-trigger { padding: 6px 9px; font-size: 12px; }
+    .back-btn span, .back-btn { font-size: 0; }
+    .back-btn svg { width:18px; height:18px; }
+  }
+
+  /* === EPG list === */
+  .epg-status { text-align:center; color: var(--secondary); font-size: 14px; padding: 30px 0; }
+  .epg-status.error { color: var(--red); }
+
+  .epg-list { display:flex; flex-direction:column; gap: 10px; }
+  .epg-item {
+    display:flex; gap: 14px; align-items:flex-start;
+    background: var(--elevated);
+    border: 0.5px solid var(--separator);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .epg-item.live {
+    border-color: var(--green);
+    box-shadow: 0 0 0 1px var(--green) inset;
+  }
+  .epg-time {
+    flex-shrink: 0;
+    width: 70px;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--secondary);
+    line-height: 1.4;
+    padding-top: 1px;
+  }
+  .epg-item.live .epg-time { color: var(--green); }
+  .epg-time .end { font-weight: 400; opacity: 0.7; }
+  .epg-body { flex: 1; min-width: 0; }
+  .epg-title { font-size: 14.5px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+  .epg-meta { display:flex; flex-wrap:wrap; gap: 6px; align-items:center; }
+  .epg-tag {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px;
+    background: rgba(0,122,255,0.1); color: var(--tint);
+  }
+  :root.dark .epg-tag { background: rgba(10,132,255,0.18); }
+  .epg-tag.live-tag {
+    background: rgba(52,199,89,0.12); color: var(--green);
+    display:flex; align-items:center; gap:4px;
+  }
+  :root.dark .epg-tag.live-tag { background: rgba(48,209,88,0.18); }
+  .live-dot { width:5px; height:5px; border-radius:50%; background: currentColor; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .epg-note { font-size: 12.5px; color: var(--secondary); margin-top: 4px; line-height: 1.4; }
+  .epg-langs { font-size: 12px; color: var(--tertiary); margin-top: 2px; }
+
+  .footer {
+    max-width: 720px; margin: 0 auto; padding: 24px 20px 40px; text-align:center;
+    font-size: 12px; color: var(--secondary); border-top: 0.5px solid var(--separator); line-height: 1.8;
+  }
+
+  .fade-in { opacity:0; transform: translateY(10px); animation: fadeInUp 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
+  @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
+
+  @media (max-width: 640px) {
+    .nav-inner { padding: 0 16px; height: 48px; }
+    .main { padding: 22px 16px 40px; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      Juche TV
+    </a>
+
+    <!-- Custom in-page date dropdown (no native <select>), living in the top bar -->
+    <div class="dropdown-wrap" id="ddWrap">
+      <button class="dropdown-trigger" id="ddTrigger" aria-haspopup="listbox" aria-expanded="false">
+        <span class="dropdown-trigger-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="ddLabel">Loading…</span>
+        </span>
+        <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="dropdown-panel" id="ddPanel">
+        <div class="dropdown-list" id="ddList" role="listbox"></div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Home
+      </a>
+      <button class="nav-btn" id="themeToggle" title="Toggle theme">
+        <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+        <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="hero">
+    <h1 class="fade-in">Schedules</h1>
+    <p class="fade-in" style="animation-delay:0.06s">KCTV programming guide &middot; Pyongyang Time (UTC+9)</p>
+  </div>
+
+  <div id="epgContainer">
+    <div class="epg-status" id="epgStatus">Loading schedule…</div>
+    <div class="epg-list" id="epgList"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
+  <br><span>All times shown in Pyongyang Time (UTC+9).</span>
+</footer>
+
+<script>
+  // ---------- Theme toggle ----------
+  const themeToggle = document.getElementById('themeToggle');
+  const moon = document.getElementById('moon');
+  const sun = document.getElementById('sun');
+  const saved = localStorage.getItem('juche-theme');
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark');
+    moon.style.display = 'none'; sun.style.display = '';
+  } else if (saved === 'light') {
+    document.documentElement.classList.remove('dark');
+    moon.style.display = ''; sun.style.display = 'none';
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add('dark');
+    moon.style.display = 'none'; sun.style.display = '';
+  }
+  themeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    moon.style.display = isDark ? 'none' : '';
+    sun.style.display = isDark ? '' : 'none';
+    localStorage.setItem('juche-theme', isDark ? 'dark' : 'light');
+  });
+
+  // ---------- Date setup ----------
+  // EPG coverage starts 2026-06-20. New days are added day by day going forward.
+  const EPG_START = '2026-06-20';
+  const API_BASE = 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date=';
+
+  function pyongyangNow() {
+    // Asia/Pyongyang is UTC+9, no DST
+    const now = new Date();
+    const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utcMs + 9 * 3600000);
+  }
+
+  function fmtDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function buildDateList() {
+    const start = new Date(EPG_START + 'T00:00:00');
+    const today = pyongyangNow();
+    today.setHours(0,0,0,0);
+    const dates = [];
+    let cursor = new Date(start);
+    // Always show through "today" in Pyongyang time, plus one extra day ahead
+    // since KCTV publishes tomorrow's schedule in advance.
+    const end = new Date(today);
+    end.setDate(end.getDate() + 1);
+    while (cursor <= end) {
+      dates.push(fmtDate(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return dates.reverse(); // newest first
+  }
+
+  const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function prettyDate(isoStr) {
+    const d = new Date(isoStr + 'T00:00:00');
+    return `${WEEKDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  }
+
+  // ---------- Custom dropdown ----------
+  const ddTrigger = document.getElementById('ddTrigger');
+  const ddPanel = document.getElementById('ddPanel');
+  const ddList = document.getElementById('ddList');
+  const ddLabel = document.getElementById('ddLabel');
+
+  let dateList = [];
+  let selectedDate = null;
+
+  function openDropdown() {
+    ddPanel.classList.add('open');
+    ddTrigger.classList.add('open');
+    ddTrigger.setAttribute('aria-expanded', 'true');
+  }
+  function closeDropdown() {
+    ddPanel.classList.remove('open');
+    ddTrigger.classList.remove('open');
+    ddTrigger.setAttribute('aria-expanded', 'false');
+  }
+  ddTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddPanel.classList.contains('open') ? closeDropdown() : openDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!ddPanel.contains(e.target) && !ddTrigger.contains(e.target)) closeDropdown();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDropdown();
+  });
+
+  function renderDropdownList() {
+    ddList.innerHTML = '';
+    const todayIso = fmtDate(pyongyangNow());
+    dateList.forEach((iso) => {
+      const item = document.createElement('div');
+      item.className = 'dropdown-item' + (iso === selectedDate ? ' active' : '');
+      item.setAttribute('role', 'option');
+      let tag;
+      if (iso === todayIso) tag = 'Today';
+      else if (iso > todayIso) tag = 'Upcoming';
+      else tag = 'Archived Date 🗓️';
+      item.innerHTML = `<span>${prettyDate(iso)}</span><span class="item-sub">${tag}</span>`;
+      item.addEventListener('click', () => {
+        selectDate(iso);
+        closeDropdown();
+      });
+      ddList.appendChild(item);
+    });
+  }
+
+  function selectDate(iso) {
+    selectedDate = iso;
+    const todayIso = fmtDate(pyongyangNow());
+    ddLabel.textContent = iso < todayIso ? `${prettyDate(iso)} · Archived 🗓️` : prettyDate(iso);
+    renderDropdownList();
+    loadEpg(iso);
+  }
+
+  // ---------- EPG normalization ----------
+  // Two known shapes:
+  // Legacy (e.g. 2026-06-20): { programs: [{start_time,end_time,title,category,type,note}] }
+  // Current (2026-06-21 onward): { programs: [{start,end,title:{en,ko,zh},category}] }
+  function normalizeProgram(p) {
+    const start = p.start_time || p.start || '';
+    const end = p.end_time || p.end || '';
+    let titleEn, titleSub = null;
+    if (typeof p.title === 'object' && p.title !== null) {
+      titleEn = p.title.en || p.title.ko || 'Untitled';
+      const subs = [];
+      if (p.title.ko) subs.push(p.title.ko);
+      if (p.title.zh) subs.push(p.title.zh);
+      titleSub = subs.length ? subs.join(' · ') : null;
+    } else {
+      titleEn = p.title || 'Untitled';
+    }
+    const tag = p.type || p.category || null;
+    return {
+      start, end,
+      title: titleEn,
+      sub: titleSub,
+      category: p.category || null,
+      tag,
+      note: p.note || null
+    };
+  }
+
+  function timeToMinutes(t) {
+    if (!t) return null;
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function isLiveNow(start, end) {
+    const now = pyongyangNow();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const s = timeToMinutes(start);
+    let e = timeToMinutes(end);
+    if (s === null || e === null) return false;
+    if (e <= s) e += 24 * 60; // crosses midnight
+    let n = nowMin;
+    if (n < s && (e > 24*60)) n += 24*60;
+    return n >= s && n < e;
+  }
+
+  async function loadEpg(iso) {
+    const statusEl = document.getElementById('epgStatus');
+    const listEl = document.getElementById('epgList');
+    listEl.innerHTML = '';
+    statusEl.style.display = 'block';
+    statusEl.classList.remove('error');
+    statusEl.textContent = 'Loading schedule…';
+
+    const todayIso = fmtDate(pyongyangNow());
+
+    try {
+      const res = await fetch(API_BASE + iso);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const programs = (data.programs || []).map(normalizeProgram);
+
+      if (!programs.length) {
+        statusEl.textContent = 'No schedule data available for this date.';
+        return;
+      }
+
+      statusEl.style.display = 'none';
+      programs.forEach(p => {
+        const live = (iso === todayIso) && isLiveNow(p.start, p.end);
+        const item = document.createElement('div');
+        item.className = 'epg-item' + (live ? ' live' : '');
+        item.innerHTML = `
+          <div class="epg-time">${p.start || '—'}<br><span class="end">${p.end || ''}</span></div>
+          <div class="epg-body">
+            <div class="epg-title">${escapeHtml(p.title)}</div>
+            <div class="epg-meta">
+              ${live ? '<span class="epg-tag live-tag"><span class="live-dot"></span>On Air</span>' : ''}
+              ${p.tag ? `<span class="epg-tag">${escapeHtml(p.tag)}</span>` : ''}
+            </div>
+            ${p.sub ? `<div class="epg-langs">${escapeHtml(p.sub)}</div>` : ''}
+            ${p.note ? `<div class="epg-note">${escapeHtml(p.note)}</div>` : ''}
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+    } catch (err) {
+      statusEl.classList.add('error');
+      statusEl.textContent = 'Could not load schedule for this date. Please try again later.';
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- Init ----------
+  dateList = buildDateList();
+  renderDropdownList();
+  const initial = fmtDate(pyongyangNow()) <= dateList[0] ? fmtDate(pyongyangNow()) : dateList[0];
+  // pick today if available in list, else newest
+  const todayIso = fmtDate(pyongyangNow());
+  selectDate(dateList.includes(todayIso) ? todayIso : dateList[0]);
+</script>
+</body>
+</html>
