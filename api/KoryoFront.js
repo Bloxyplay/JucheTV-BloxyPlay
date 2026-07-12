@@ -1,41 +1,44 @@
 export default async function handler(req, res) {
-  // 1. Get the date from the incoming request (defaults to today if missing)
-  const { date } = req.query;
-  
-  if (!date) {
-    return res.status(400).json({ error: "Missing required 'date' query parameter." });
-  }
-
-  // 2. Build the exact target URL
-  const targetUrl = `https://koryofront.org/api/kctv/epg?date=${date}`;
+  const { ch, date } = req.query;
 
   try {
-    // 3. Fetch from upstream with realistic browser headers to avoid being blocked
-    const response = await fetch(targetUrl, {
-      method: 'GET',
+    const targetUrl = new URL('https://koryo.tv/api/epg/schedule.json');
+    
+    if (ch) targetUrl.searchParams.append('ch', ch);
+    if (date) targetUrl.searchParams.append('date', date);
+
+    const response = await fetch(targetUrl.toString(), {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Accept': 'application/json'
       }
     });
 
-    // If the upstream site gives a 404 or 500, pass that error detail through
+    // --- CUSTOM ERROR INTERCEPTION ---
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: `Upstream server responded with status ${response.status}`
-      });
+      // If it's a 401, 403, or any other failure code, trigger your custom message
+      if (response.status === 401 || response.status === 403 || response.status >= 400) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        return res.status(response.status).json({ 
+          error: "Koryo TV gatekeeping the EPG I don't know why but I guess they kinda dumb!" 
+        });
+      }
+      
+      throw new Error(`Koryo TV responded with status: ${response.status}`);
     }
+    // ---------------------------------
 
     const data = await response.json();
 
-    // 4. Set CORS and content headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', '*'); 
     res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate'); 
 
-    return res.status(200).json(data);
+    res.status(200).json(data);
 
   } catch (error) {
-    return res.status(500).json({ error: `Proxy error: ${error.message}` });
+    // Fallback for network-level crashes or DNS failures
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.status(500).json({ error: 'Failed to fetch EPG data', details: error.message });
   }
 }
