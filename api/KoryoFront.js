@@ -1,44 +1,45 @@
+// api/KoryoFront.js
+
 export default async function handler(req, res) {
-  const { ch, date } = req.query;
+  // 1. Enable CORS so your frontend application can fetch from this domain
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // 2. Grab the ?date= parameter from https://juche-tv.vercel.app/api/KoryoFront?date=2026-07-12
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ 
+      error: "Missing required 'date' query parameter. Example: ?date=2026-07-12" 
+    });
+  }
+
+  // 3. Construct the destination URL
+  const upstreamUrl = `https://koryofront.org/api/kctv/epg?date=${date}`;
 
   try {
-    const targetUrl = new URL('https://koryo.tv/api/epg/schedule.json');
-    
-    if (ch) targetUrl.searchParams.append('ch', ch);
-    if (date) targetUrl.searchParams.append('date', date);
+    const upstreamResponse = await fetch(upstreamUrl);
 
-    const response = await fetch(targetUrl.toString(), {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json'
-      }
-    });
-
-    // --- CUSTOM ERROR INTERCEPTION ---
-    if (!response.ok) {
-      // If it's a 401, 403, or any other failure code, trigger your custom message
-      if (response.status === 401 || response.status === 403 || response.status >= 400) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        return res.status(response.status).json({ 
-          error: "Koryo TV gatekeeping the EPG I don't know why but I guess they kinda dumb!" 
-        });
-      }
-      
-      throw new Error(`Koryo TV responded with status: ${response.status}`);
+    if (!upstreamResponse.ok) {
+      return res.status(upstreamResponse.status).json({
+        error: `Target API responded with status ${upstreamResponse.status}`
+      });
     }
-    // ---------------------------------
 
-    const data = await response.json();
-
-    res.setHeader('Access-Control-Allow-Origin', '*'); 
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate'); 
-
-    res.status(200).json(data);
+    const data = await upstreamResponse.json();
+    
+    // 4. Send the data back to your client application
+    return res.status(200).json(data);
 
   } catch (error) {
-    // Fallback for network-level crashes or DNS failures
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.status(500).json({ error: 'Failed to fetch EPG data', details: error.message });
+    return res.status(500).json({
+      error: 'Proxy Error',
+      message: error.message
+    });
   }
 }
