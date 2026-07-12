@@ -1,6 +1,6 @@
 {
   "notice": false,
   "message": "We are currently experiencing technical issues at the reception site. Live broadcasts will be restored shortly. Thank you for your patience.",
-  "status-online": true,
+  "status-online": false,
   "status-online-message": "Service has been restored. We experienced a power outage at the reception site, and live broadcasts are back to normal. We apologize for the inconvenience."
 }
