@@ -1,10 +1,11 @@
 // Vercel Edge Middleware
-// Mobile visitors get redirected to /m/... (URL bar shows /m/)
+// Mobile visitors get redirected to clean /m/... URLs (e.g. /m/, /m/kctv)
 // Desktop visitors stay on the root URL and get the desktop-optimized pages.
 
 export const config = {
-  // Runs on every request except: files already under /m/, static assets
-  // (anything with a file extension), and Next/Vercel internals.
+  // Runs on every request except: paths already under /m/, and any path
+  // with a file extension (assets, and .html requests get handled by
+  // Vercel's cleanUrls redirect before hitting this again as extensionless).
   matcher: ['/((?!m/|_next/|api/|.*\\..*).*)'],
 };
 
@@ -21,12 +22,15 @@ export default function middleware(request) {
 
   const url = new URL(request.url);
 
-  // Avoid double-prefixing and let it fall through if already under /m/
-  if (url.pathname.startsWith('/m/')) {
+  // Already on a /m/ path — don't touch it.
+  if (url.pathname === '/m' || url.pathname.startsWith('/m/')) {
     return;
   }
 
-  url.pathname = url.pathname === '/' ? '/m/index.html' : '/m' + url.pathname;
+  // '/'        -> '/m/'
+  // '/kctv'    -> '/m/kctv'
+  // '/schedules' -> '/m/schedules'
+  url.pathname = url.pathname === '/' ? '/m/' : '/m' + url.pathname;
 
   return Response.redirect(url, 307);
 }
