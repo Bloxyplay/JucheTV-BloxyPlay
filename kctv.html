@@ -302,6 +302,34 @@
     .kbd{display:inline-block;padding:1px 6px;font-size:10px;font-weight:700;font-family:var(--font);color:var(--tx2);background:var(--surf2);border:1px solid var(--brd2);border-radius:4px;box-shadow:0 1px 0 var(--brd2)}
     .dplayer:fullscreen .epg-ov,.dplayer:-webkit-full-screen .epg-ov{position:fixed;inset:0;z-index:999999}
 
+    /* DESKTOP GRID LAYOUT */
+    .dsk-grid{display:block}
+    .col-main{min-width:0}
+    .col-side{min-width:0;margin-top:28px}
+
+    @media(min-width:1020px){
+      .nav-inner{max-width:1480px}
+      .page{max-width:1480px;padding:32px 32px 72px}
+      .ft{max-width:1480px}
+      .ch-hdr{margin-bottom:28px;padding-bottom:24px}
+      .ch-logo{width:64px;height:64px}
+      .ch-name{font-size:30px}
+      .dsk-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:32px;align-items:start}
+      .col-side{margin-top:0;position:sticky;top:78px;max-height:calc(100vh - 96px);overflow-y:auto;scrollbar-width:thin}
+      .col-side::-webkit-scrollbar{width:5px}
+      .col-side::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+      #dplayer{aspect-ratio:16/9}
+      .sched-list{max-height:calc(100vh - 430px);min-height:220px}
+      .rw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+      .action-row{flex-wrap:nowrap}
+    }
+    @media(min-width:1320px){
+      .nav-inner{max-width:1600px}
+      .page{max-width:1600px}
+      .ft{max-width:1600px}
+      .dsk-grid{grid-template-columns:minmax(0,1fr) 440px}
+    }
+
     @media(max-width:640px){
       .ch-name{font-size:20px}
       .action-row{flex-direction:column}
@@ -347,6 +375,9 @@
       <div class="ch-sub" data-i18n="liveFrom">Live from Pyongyang, DPRK &middot; Korean Central Television.</div>
     </div>
   </div>
+
+  <div class="dsk-grid">
+  <div class="col-main">
 
   <!-- PLAYER -->
   <div class="player-wrap" id="playerWrap">
@@ -422,6 +453,15 @@
       </div>
     </div>
   </div>
+
+  <!-- ABOUT -->
+  <div class="about">
+    <h3 data-i18n="about">About KCTV</h3>
+    <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
+  </div>
+
+  </div><!-- /col-main -->
+  <div class="col-side">
 
   <!-- EPG -->
   <div class="epg-sec">
@@ -536,11 +576,8 @@
     </div>
   </div>
 
-  <!-- ABOUT -->
-  <div class="about">
-    <h3 data-i18n="about">About KCTV</h3>
-    <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
-  </div>
+  </div><!-- /col-side -->
+  </div><!-- /dsk-grid -->
 </main>
 
 <!-- SCREENSHOT POPUP -->
