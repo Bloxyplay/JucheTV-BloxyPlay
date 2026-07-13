@@ -1165,14 +1165,30 @@
 
   function finishLoading(){
     allDates=sortDatesDesc(Object.keys(dateSet));
-    if(!allDates.length){showRwError('No recordings found on the server.');return;}
-    /* Pick most recent date */
-    currentDate=allDates[0];
+    /* Always ensure today's Pyongyang date has a tab, even with zero recordings yet,
+       so the live hour is reachable/visible from the moment it starts. */
+    var todayDS=pyongyangDateStr();
+    if(allDates.indexOf(todayDS)===-1){allDates=sortDatesDesc(allDates.concat([todayDS]));}
+    /* Default to today so live is visible on load rather than the latest-recorded date */
+    currentDate=todayDS;
     document.getElementById('rwCardTitle').textContent='Recordings';
     renderDateTabs();
     renderGrid();
     showRwContent();
   }
+
+  /* Keep the live badge and date tabs current as the hour/day rolls over in Pyongyang time,
+     without needing a page reload. */
+  function refreshLiveState(){
+    if(!allDates.length)return;
+    var todayDS=pyongyangDateStr();
+    if(allDates.indexOf(todayDS)===-1){
+      allDates=sortDatesDesc(allDates.concat([todayDS]));
+      renderDateTabs();
+    }
+    if(currentDate===todayDS)renderGrid();
+  }
+  setInterval(refreshLiveState,30000);
 
   document.getElementById('rwRetryBtn').addEventListener('click',fetchFolders);
   fetchFolders();
