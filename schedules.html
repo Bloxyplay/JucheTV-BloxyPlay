@@ -4,501 +4,702 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
-<title>Schedules - Juche TV</title>
+<meta name="theme-color" content="#0B0D12">
+<title>Programme Guide — Korean Central Television</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F2F2F7;
-    --elevated: #FFFFFF;
-    --primary: #1C1C1E;
-    --secondary: #8E8E93;
-    --tertiary: #C7C7CC;
-    --separator: rgba(60, 60, 67, 0.1);
-    --tint: #007AFF;
-    --tint-secondary: #5856D6;
-    --red: #FF3B30;
-    --green: #34C759;
-    --orange: #FF9500;
-    --radius-sm: 10px;
-    --radius-md: 14px;
+    --void:      #0A0C11;
+    --panel:     #12151D;
+    --elevated:  #171B25;
+    --elevated-2:#1E2330;
+    --line:      rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.14);
+    --text-1:    #ECEEF3;
+    --text-2:    #9AA0AE;
+    --text-3:    #656B7A;
+    --red:       #C9313F;
+    --red-dim:   rgba(201,49,63,0.14);
+    --gold:      #C6A567;
+    --gold-dim:  rgba(198,165,103,0.14);
+    --blue:      #4C7EA8;
+    --radius-sm: 8px;
+    --radius-md: 12px;
     --radius-lg: 18px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
-    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-panel: 0 20px 60px -20px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3);
+    --font-display: 'Oswald', 'Segoe UI', sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-body: 'Inter', -apple-system, 'Segoe UI', 'Noto Sans', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans Tibetan', 'Noto Sans Myanmar', sans-serif;
   }
-  :root.dark {
-    --bg: #000000;
-    --elevated: #1C1C1E;
-    --primary: #F2F2F7;
-    --secondary: #8E8E93;
-    --tertiary: #48484A;
-    --separator: rgba(140, 140, 147, 0.24);
-    --tint: #0A84FF;
-    --tint-secondary: #5E5CE6;
-    --green: #30D158;
-  }
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    background: var(--bg);
-    color: var(--primary);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-  .nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(242, 242, 247, 0.72);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-bottom: 0.5px solid var(--separator);
-    transition: background 0.3s, border-color 0.3s;
-  }
-  :root.dark .nav { background: rgba(28, 28, 30, 0.72); }
-  .nav-inner {
-    max-width: 720px; margin: 0 auto; display: flex; align-items: center;
-    justify-content: space-between; padding: 0 20px; height: 52px; gap: 8px;
-  }
-  .logo { display:flex; align-items:center; gap:8px; font-size:19px; font-weight:800; letter-spacing:-0.5px; color:var(--primary); text-decoration:none; }
-  .logo-icon { width:30px; height:30px; background: linear-gradient(135deg, #FF2D55, #FF9500); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
-  .back-btn {
-    display:flex; align-items:center; gap:4px; font-size:15px; font-weight:500;
-    color: var(--tint); text-decoration:none; padding: 6px 4px;
-  }
-  .nav-btn {
-    width:34px; height:34px; border-radius:50%; border:none; background:transparent; color:var(--secondary);
-    display:flex; align-items:center; justify-content:center; cursor:pointer; transition: all 0.2s ease;
-  }
-  .nav-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
-  :root.dark .nav-btn:hover { background: rgba(255,255,255,0.08); }
-  .nav-btn svg { width:18px; height:18px; }
-  .nav-right { display:flex; align-items:center; gap:4px; }
-
-  .main { max-width: 720px; margin: 0 auto; padding: 28px 20px 60px; }
-
-  .hero { text-align:center; margin-bottom: 24px; }
-  .hero h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.7px; margin-bottom: 6px; }
-  .hero p { font-size: 14px; color: var(--secondary); line-height: 1.5; }
-
-  /* === Custom Dropdown (in-page, not native select) — lives in the top nav bar === */
-  .dropdown-wrap { position: relative; flex: 1; max-width: 230px; margin: 0 12px; }
-  .dropdown-trigger {
-    width: 100%;
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg);
-    border: 0.5px solid var(--separator);
-    border-radius: 999px;
-    padding: 7px 12px 7px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--primary);
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-    user-select: none;
-  }
-  .dropdown-trigger:hover { background: rgba(0,122,255,0.06); }
-  .dropdown-trigger.open { border-color: var(--tint); }
-  .dropdown-trigger-left { display:flex; align-items:center; gap:7px; min-width:0; }
-  .dropdown-trigger-left svg { width:14px; height:14px; color: var(--tint); flex-shrink:0; }
-  .dropdown-trigger-left span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .dropdown-chevron { width:12px; height:12px; color: var(--secondary); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; margin-left:4px; }
-  .dropdown-trigger.open .dropdown-chevron { transform: rotate(180deg); }
-
-  .dropdown-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-6px) scale(0.98);
-    width: 280px;
-    max-width: 86vw;
-    background: var(--elevated);
-    border: 0.5px solid var(--separator);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1);
-    z-index: 150;
-    pointer-events: none;
-  }
-  .dropdown-panel.open {
-    max-height: 320px;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-    pointer-events: auto;
-  }
-  .dropdown-list { max-height: 320px; overflow-y: auto; padding: 6px; }
-  .dropdown-item {
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 11px 12px; border-radius: var(--radius-sm);
-    font-size: 14.5px; font-weight: 500; color: var(--primary);
-    cursor: pointer; transition: background 0.15s ease;
-    gap: 10px;
-  }
-  .dropdown-item:hover { background: rgba(0,122,255,0.08); }
-  .dropdown-item.active { background: var(--tint); color: #fff; font-weight: 600; }
-  .dropdown-item .item-sub { font-size: 12px; color: var(--secondary); font-weight: 400; flex-shrink:0; white-space:nowrap; }
-  .dropdown-item.active .item-sub { color: rgba(255,255,255,0.75); }
-  .dropdown-divider { height: 0.5px; background: var(--separator); margin: 4px 6px; }
-
-  @media (max-width: 640px) {
-    .dropdown-wrap { max-width: 150px; margin: 0 6px; }
-    .dropdown-trigger { padding: 6px 9px; font-size: 12px; }
-    .back-btn span, .back-btn { font-size: 0; }
-    .back-btn svg { width:18px; height:18px; }
+  :root.light {
+    --void:      #F4F3EF;
+    --panel:     #FFFFFF;
+    --elevated:  #FFFFFF;
+    --elevated-2:#F7F6F2;
+    --line:      rgba(20,20,25,0.08);
+    --line-strong: rgba(20,20,25,0.14);
+    --text-1:    #16181D;
+    --text-2:    #61656E;
+    --text-3:    #9498A0;
+    --shadow-panel: 0 16px 40px -18px rgba(20,20,25,0.16), 0 2px 8px rgba(20,20,25,0.05);
   }
 
-  /* === EPG list === */
-  .epg-status { text-align:center; color: var(--secondary); font-size: 14px; padding: 30px 0; }
-  .epg-status.error { color: var(--red); }
-
-  .epg-list { display:flex; flex-direction:column; gap: 10px; }
-  .epg-item {
-    display:flex; gap: 14px; align-items:flex-start;
-    background: var(--elevated);
-    border: 0.5px solid var(--separator);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .epg-item.live {
-    border-color: var(--green);
-    box-shadow: 0 0 0 1px var(--green) inset;
-  }
-  .epg-time {
-    flex-shrink: 0;
-    width: 70px;
-    font-variant-numeric: tabular-nums;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--secondary);
-    line-height: 1.4;
-    padding-top: 1px;
-  }
-  .epg-item.live .epg-time { color: var(--green); }
-  .epg-time .end { font-weight: 400; opacity: 0.7; }
-  .epg-body { flex: 1; min-width: 0; }
-  .epg-title { font-size: 14.5px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
-  .epg-meta { display:flex; flex-wrap:wrap; gap: 6px; align-items:center; }
-  .epg-tag {
-    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px;
-    background: rgba(0,122,255,0.1); color: var(--tint);
-  }
-  :root.dark .epg-tag { background: rgba(10,132,255,0.18); }
-  .epg-tag.live-tag {
-    background: rgba(52,199,89,0.12); color: var(--green);
-    display:flex; align-items:center; gap:4px;
-  }
-  :root.dark .epg-tag.live-tag { background: rgba(48,209,88,0.18); }
-  .live-dot { width:5px; height:5px; border-radius:50%; background: currentColor; animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-  .epg-note { font-size: 12.5px; color: var(--secondary); margin-top: 4px; line-height: 1.4; }
-  .epg-langs { font-size: 12px; color: var(--tertiary); margin-top: 2px; }
-
-  .footer {
-    max-width: 720px; margin: 0 auto; padding: 24px 20px 40px; text-align:center;
-    font-size: 12px; color: var(--secondary); border-top: 0.5px solid var(--separator); line-height: 1.8;
+  *,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--void);
+    color: var(--text-1);
+    font-family: var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s ease, color .35s ease;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 12% -8%, rgba(198,165,103,0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(76,126,168,0.06), transparent 55%);
+    background-attachment: fixed;
   }
 
-  .fade-in { opacity:0; transform: translateY(10px); animation: fadeInUp 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
-  @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
+  a{ color:inherit; }
+  .wrap{ max-width: 1180px; margin:0 auto; padding: 0 28px; }
 
-  @media (max-width: 640px) {
-    .nav-inner { padding: 0 16px; height: 48px; }
-    .main { padding: 22px 16px 40px; }
-    .hero h1 { font-size: 26px; }
+  /* ============ HEADER ============ */
+  .masthead{
+    position: sticky; top:0; z-index: 200;
+    background: rgba(10,12,17,0.78);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--line);
   }
+  :root.light .masthead{ background: rgba(244,243,239,0.82); }
+  .masthead-inner{
+    max-width:1180px; margin:0 auto; padding: 14px 28px;
+    display:flex; align-items:center; gap:18px;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; flex-shrink:0; }
+  .brand-mark{
+    width:40px; height:40px; border-radius: 9px;
+    background: var(--elevated-2); border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden; flex-shrink:0;
+  }
+  .brand-mark img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .brand-mark .fallback{ font-family:var(--font-display); font-weight:600; font-size:15px; color:var(--gold); letter-spacing:0.5px; }
+  .brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+  .brand-text .en{ font-family:var(--font-display); font-weight:600; font-size:15.5px; letter-spacing:0.3px; color:var(--text-1); }
+  .brand-text .sub{ font-size:11px; color:var(--text-3); letter-spacing:0.6px; text-transform:uppercase; margin-top:2px; }
+
+  .masthead-controls{ display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:nowrap; }
+
+  .icon-btn{
+    width:36px; height:36px; border-radius:50%; border:1px solid var(--line);
+    background: var(--elevated); color:var(--text-2); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition: all .18s ease; flex-shrink:0;
+  }
+  .icon-btn:hover{ color:var(--text-1); border-color:var(--line-strong); }
+  .icon-btn svg{ width:16px; height:16px; }
+
+  @media (max-width:760px){
+    .masthead-inner{ padding:11px 16px; gap:10px; }
+    .brand-text .sub{ display:none; }
+    .brand-mark{ width:34px; height:34px; }
+  }
+
+  /* ============ DROPDOWNS (shared component) ============ */
+  .dd{ position:relative; }
+  .dd-trigger{
+    display:flex; align-items:center; gap:7px;
+    background: var(--elevated); border:1px solid var(--line);
+    border-radius: 999px; padding: 8px 13px;
+    font-size:12.5px; font-weight:600; color:var(--text-1);
+    cursor:pointer; user-select:none; white-space:nowrap; transition: border-color .18s ease, background .18s ease;
+  }
+  .dd-trigger:hover{ border-color:var(--line-strong); }
+  .dd-trigger.open{ border-color: var(--gold); }
+  .dd-trigger svg.lead{ width:14px; height:14px; color: var(--gold); flex-shrink:0; }
+  .dd-trigger svg.chev{ width:11px; height:11px; color:var(--text-3); transition: transform .22s ease; flex-shrink:0; }
+  .dd-trigger.open svg.chev{ transform: rotate(180deg); }
+  .dd-label{ max-width:150px; overflow:hidden; text-overflow:ellipsis; }
+
+  .dd-panel{
+    position:absolute; top:calc(100% + 8px); right:0;
+    width:280px; max-width:82vw;
+    background: var(--elevated); border:1px solid var(--line-strong);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-panel);
+    max-height:0; overflow:hidden; opacity:0; pointer-events:none;
+    transform: translateY(-4px);
+    transition: max-height .25s cubic-bezier(.4,0,.2,1), opacity .18s ease, transform .2s ease;
+    z-index:250;
+  }
+  .dd-panel.open{ max-height:340px; opacity:1; pointer-events:auto; transform:translateY(0); }
+  .dd-list{ max-height:340px; overflow-y:auto; padding:6px; }
+  .dd-item{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 11px; border-radius:7px; font-size:13.5px; font-weight:500;
+    cursor:pointer; transition: background .13s ease;
+  }
+  .dd-item:hover{ background: var(--elevated-2); }
+  .dd-item.active{ background: var(--gold-dim); color: var(--gold); font-weight:600; }
+  .dd-item .item-sub{ font-size:11px; color:var(--text-3); font-weight:400; flex-shrink:0; }
+  .dd-item.active .item-sub{ color: var(--gold); opacity:0.75; }
+
+  /* ============ HERO / DESCRIPTION ============ */
+  .intro{ padding: 44px 0 30px; border-bottom:1px solid var(--line); }
+  .eyebrow{
+    font-family: var(--font-display); font-size:11.5px; font-weight:600; letter-spacing:2.2px;
+    text-transform:uppercase; color: var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:9px;
+  }
+  .eyebrow::before{ content:''; width:16px; height:1px; background: var(--gold); }
+  .intro h1{
+    font-family: var(--font-serif); font-weight:600; font-size: 40px; letter-spacing:-0.4px;
+    line-height:1.12; max-width:720px; margin-bottom:16px;
+  }
+  .intro h1 em{ font-style:italic; color: var(--gold); }
+  .intro p{ font-size:15px; line-height:1.65; color:var(--text-2); max-width:640px; }
+  .intro-meta{ display:flex; gap:22px; margin-top:22px; flex-wrap:wrap; }
+  .intro-meta div{ display:flex; flex-direction:column; gap:3px; }
+  .intro-meta .k{ font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); }
+  .intro-meta .v{ font-size:13.5px; font-weight:600; color:var(--text-1); font-variant-numeric:tabular-nums; }
+
+  @media (max-width:760px){
+    .intro{ padding: 30px 0 24px; }
+    .intro h1{ font-size:28px; }
+    .intro p{ font-size:14px; }
+  }
+
+  /* ============ NOW / AFTER ============ */
+  .onair-section{ padding: 30px 0 10px; }
+  .onair-grid{ display:grid; grid-template-columns: 1.55fr 1fr; gap:18px; }
+  @media (max-width:900px){ .onair-grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background: var(--panel); border:1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-panel);
+    padding: 26px 26px 22px; position:relative; overflow:hidden;
+  }
+  .card-now{ border-color: rgba(201,49,63,0.35); }
+  .card-now::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--red), transparent 70%);
+  }
+  .card-label-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .status-badge{
+    display:inline-flex; align-items:center; gap:6px; font-family:var(--font-display);
+    font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase;
+    padding: 5px 10px 5px 8px; border-radius:6px;
+  }
+  .status-badge.live{ background: var(--red-dim); color: var(--red); }
+  .status-badge.next{ background: var(--gold-dim); color: var(--gold); }
+  .status-badge.off{ background: var(--elevated-2); color: var(--text-3); }
+  .live-dot{ width:6px; height:6px; border-radius:50%; background:currentColor; animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+  .card-time{ font-family:var(--font-display); font-size:13px; font-weight:500; color:var(--text-3); font-variant-numeric:tabular-nums; letter-spacing:0.3px; }
+
+  .prog-title{ font-family:var(--font-serif); font-weight:600; font-size:23px; line-height:1.28; margin-bottom:8px; }
+  .card-after .prog-title{ font-size:18px; }
+  .prog-sub{ font-size:13.5px; color:var(--text-2); line-height:1.5; margin-bottom:12px; }
+  .prog-tags{ display:flex; flex-wrap:wrap; gap:7px; }
+  .tag{
+    font-size:11px; font-weight:600; padding:4px 10px; border-radius:6px;
+    background: var(--elevated-2); color:var(--text-2); border:1px solid var(--line);
+  }
+  .tag.gold{ background: var(--gold-dim); color: var(--gold); border-color: transparent; }
+
+  .progress-track{ margin-top:18px; height:4px; border-radius:99px; background: var(--elevated-2); overflow:hidden; }
+  .progress-fill{ height:100%; background: linear-gradient(90deg, var(--red), #E0616D); border-radius:99px; transition: width 1s linear; }
+  .progress-labels{ display:flex; justify-content:space-between; margin-top:7px; font-size:11px; color:var(--text-3); font-variant-numeric:tabular-nums; }
+
+  @media (max-width:760px){
+    .card{ padding:20px 18px 18px; }
+    .prog-title{ font-size:19px; }
+  }
+
+  /* ============ SCHEDULE LIST ============ */
+  .schedule-section{ padding: 40px 0 60px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; gap:12px; flex-wrap:wrap; }
+  .section-head h2{ font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; }
+  .section-head .count{ font-size:12px; color:var(--text-3); font-variant-numeric:tabular-nums; }
+
+  .epg-status{ text-align:center; color:var(--text-2); font-size:14px; padding:50px 0; }
+  .epg-status.error{ color: var(--red); }
+
+  .epg-list{ display:flex; flex-direction:column; }
+  .epg-row{
+    display:grid; grid-template-columns: 92px 1fr; gap:20px;
+    padding: 16px 4px; border-bottom:1px solid var(--line);
+    transition: background .15s ease;
+  }
+  .epg-row:hover{ background: var(--elevated); border-radius:8px; }
+  .epg-row.live{ background: var(--red-dim); border-radius:8px; border-bottom-color:transparent; }
+  .epg-row.past{ opacity:0.5; }
+
+  .epg-time{ font-family:var(--font-display); font-size:13px; font-weight:500; color:var(--text-3); font-variant-numeric:tabular-nums; padding-top:2px; }
+  .epg-row.live .epg-time{ color: var(--red); }
+  .epg-time .end{ display:block; font-size:11px; color:var(--text-3); opacity:0.7; margin-top:2px; }
+
+  .epg-body .epg-title{ font-size:14.5px; font-weight:600; line-height:1.4; margin-bottom:5px; }
+  .epg-body .epg-sub{ font-size:12.5px; color:var(--text-2); line-height:1.5; margin-bottom:6px; }
+  .epg-meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+
+  @media (max-width:600px){
+    .epg-row{ grid-template-columns:64px 1fr; gap:12px; padding:13px 2px; }
+    .epg-time{ font-size:11.5px; }
+  }
+
+  /* ============ FOOTER ============ */
+  .site-footer{
+    border-top:1px solid var(--line); padding: 34px 0 42px;
+  }
+  .footer-inner{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; }
+  .footer-credit{ font-size:13px; color:var(--text-2); line-height:1.7; max-width:560px; }
+  .footer-credit strong{ color:var(--text-1); font-weight:600; }
+  .footer-fine{ font-size:11.5px; color:var(--text-3); line-height:1.7; }
+  .footer-mark{ font-family:var(--font-display); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-3); margin-top:6px; }
+
+  .fade-in{ opacity:0; transform:translateY(8px); animation: fadeUp .5s cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes fadeUp{ to{ opacity:1; transform:translateY(0); } }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background: var(--line-strong); border-radius:8px; }
 </style>
+<link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
+<link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="index.html" class="brand">
+      <div class="brand-mark">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg" alt="Korean Central Television" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span class="fallback" style="display:none;">KCTV</span>
       </div>
-      Juche TV
+      <div class="brand-text">
+        <span class="en">Korean Central Television</span>
+        <span class="sub">Electronic Programme Guide</span>
+      </div>
     </a>
 
-    <!-- Custom in-page date dropdown (no native <select>), living in the top bar -->
-    <div class="dropdown-wrap" id="ddWrap">
-      <button class="dropdown-trigger" id="ddTrigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="dropdown-trigger-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span id="ddLabel">Loading…</span>
-        </span>
-        <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="dropdown-panel" id="ddPanel">
-        <div class="dropdown-list" id="ddList" role="listbox"></div>
-      </div>
-    </div>
-
-    <div class="nav-right">
-      <a href="index.html" class="back-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        Home
+    <div class="masthead-controls">
+      <a href="index.html" class="icon-btn" title="Back" style="text-decoration:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
       </a>
-      <button class="nav-btn" id="themeToggle" title="Toggle theme">
-        <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+      <div class="dd" id="langWrap">
+        <button class="dd-trigger" id="langTrigger" aria-haspopup="listbox" aria-expanded="false">
+          <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
+          <span class="dd-label" id="langLabel">English</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dd-panel" id="langPanel"><div class="dd-list" id="langList" role="listbox"></div></div>
+      </div>
+
+      <div class="dd" id="dateWrap">
+        <button class="dd-trigger" id="dateTrigger" aria-haspopup="listbox" aria-expanded="false">
+          <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="dd-label" id="dateLabel">Loading…</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dd-panel" id="datePanel"><div class="dd-list" id="dateList" role="listbox"></div></div>
+      </div>
+
+      <button class="icon-btn" id="themeToggle" title="Toggle appearance">
+        <svg id="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Z"/></svg>
         <svg id="sun" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
     </div>
   </div>
-</nav>
+</header>
 
-<main class="main">
-  <div class="hero">
-    <h1 class="fade-in">Schedules</h1>
-    <p class="fade-in" style="animation-delay:0.06s">KCTV programming guide &middot; Pyongyang Time (UTC+9)</p>
+<div class="wrap">
+
+  <section class="intro">
+    <p class="eyebrow fade-in">Broadcast Guide · Pyongyang, DPRK</p>
+    <div class="fade-in" style="animation-delay:.05s; margin-bottom:16px;">
+      <img src="https://raw.githubusercontent.com/Bloxyplay/JucheTV-BloxyPlay/refs/heads/main/m/today's-order.png" alt="Today's Programs" style="max-width:420px; width:100%; height:auto; display:block; margin-bottom:12px;">
+    </div>
+    <h1 class="fade-in" style="animation-delay:.08s">The daily transmission schedule of <em>Korean Central Television</em></h1>
+    <p class="fade-in" style="animation-delay:.1s">
+      Korean Central Television (KCTV) is the principal state broadcaster of the Democratic People's Republic of Korea, transmitting news, documentary, cultural and entertainment programming from Pyongyang. This guide tracks KCTV's daily line-up as it is published, program by program, and is maintained independently as a reference for researchers, broadcast monitors and viewers following North Korean state media.
+    </p>
+    <div class="intro-meta fade-in" style="animation-delay:.15s">
+      <div><span class="k">Time Zone</span><span class="v" id="tzNow">Pyongyang · UTC+9</span></div>
+      <div><span class="k">Channel</span><span class="v">KCTV — 조선중앙텔레비죤</span></div>
+      <div><span class="k">Coverage Since</span><span class="v">20 June 2026</span></div>
+    </div>
+  </section>
+
+  <section class="onair-section">
+    <div class="onair-grid">
+      <div class="card card-now" id="nowCard">
+        <div class="card-label-row">
+          <span class="status-badge off" id="nowBadge">Off Air</span>
+          <span class="card-time" id="nowTime">—</span>
+        </div>
+        <div class="prog-title" id="nowTitle">No programme currently airing</div>
+        <div class="prog-sub" id="nowSub"></div>
+        <div class="prog-tags" id="nowTags"></div>
+        <div class="progress-track" id="progressTrack" style="display:none;">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-labels" id="progressLabels" style="display:none;"></div>
+      </div>
+
+      <div class="card card-after" id="afterCard">
+        <div class="card-label-row">
+          <span class="status-badge next">Up Next</span>
+          <span class="card-time" id="afterTime">—</span>
+        </div>
+        <div class="prog-title" id="afterTitle">—</div>
+        <div class="prog-sub" id="afterSub"></div>
+        <div class="prog-tags" id="afterTags"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedule-section">
+    <div class="section-head">
+      <h2>Full Schedule</h2>
+      <span class="count" id="epgCount"></span>
+    </div>
+    <div id="epgContainer">
+      <div class="epg-status" id="epgStatus">Loading schedule…</div>
+      <div class="epg-list" id="epgList"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-credit">Korean Central Television Electronic Program Guide by <strong>Juche TV</strong> &amp; <strong>KoryoFront</strong>, with other several volunteers!</p>
+    <p class="footer-fine">This is an independent, unofficial archive and is not affiliated with, endorsed by, or operated on behalf of Korean Central Television or the DPRK state broadcasting authority. All programme titles are translated for reference purposes only. Times shown in Pyongyang Time (UTC+9).</p>
+    <span class="footer-mark">조선중앙텔레비죤 · KCTV EPG</span>
   </div>
-
-  <div id="epgContainer">
-    <div class="epg-status" id="epgStatus">Loading schedule…</div>
-    <div class="epg-list" id="epgList"></div>
-  </div>
-</main>
-
-<footer class="footer">
-  <span>&copy; Juche TV. Not affiliated with any broadcasting entity.</span>
-  <br><span>All times shown in Pyongyang Time (UTC+9).</span>
 </footer>
 
 <script>
-  // ---------- Theme toggle ----------
+  // ---------- Theme ----------
   const themeToggle = document.getElementById('themeToggle');
   const moon = document.getElementById('moon');
   const sun = document.getElementById('sun');
-  const saved = localStorage.getItem('juche-theme');
-  if (saved === 'dark') {
-    document.documentElement.classList.add('dark');
-    moon.style.display = 'none'; sun.style.display = '';
-  } else if (saved === 'light') {
-    document.documentElement.classList.remove('dark');
-    moon.style.display = ''; sun.style.display = 'none';
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add('dark');
-    moon.style.display = 'none'; sun.style.display = '';
+  const savedTheme = localStorage.getItem('kctv-theme');
+  function applyTheme(mode){
+    document.documentElement.classList.toggle('light', mode === 'light');
+    moon.style.display = mode === 'light' ? '' : 'none';
+    sun.style.display = mode === 'light' ? 'none' : '';
   }
+  if (savedTheme) applyTheme(savedTheme);
+  else applyTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   themeToggle.addEventListener('click', () => {
-    document.documentElement.classList.toggle('dark');
-    const isDark = document.documentElement.classList.contains('dark');
-    moon.style.display = isDark ? 'none' : '';
-    sun.style.display = isDark ? '' : 'none';
-    localStorage.setItem('juche-theme', isDark ? 'dark' : 'light');
+    const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+    applyTheme(next);
+    localStorage.setItem('kctv-theme', next);
   });
 
-  // ---------- Date setup ----------
-  // EPG coverage starts 2026-06-20. New days are added day by day going forward.
+  // ---------- Config ----------
   const EPG_START = '2026-06-20';
   const API_BASE = 'https://juche-tv-epg-api.vercel.app/api/bloxyplaytv?ch=KCTV&date=';
 
+  const LANGS = [
+    { code:'en',   native:'English' },
+    { code:'ko',   native:'조선말' },
+    { code:'zh',   native:'中文' },
+    { code:'ja',   native:'日本語' },
+    { code:'ru',   native:'Русский' },
+    { code:'es',   native:'Español' },
+    { code:'fr',   native:'Français' },
+    { code:'de',   native:'Deutsch' },
+    { code:'my',   native:'မြန်မာ' },
+    { code:'mn',   native:'Монгол' },
+    { code:'kk',   native:'Қазақша' },
+    { code:'bo',   native:'བོད་ཡིག · Tibetan' },
+    { code:'kham', native:'ཁམས་སྐད · Khams' },
+    { code:'amdo', native:'ཨ་མདོ · Amdo' },
+  ];
+  let currentLang = localStorage.getItem('kctv-lang') || 'en';
+  if (!LANGS.some(l => l.code === currentLang)) currentLang = 'en';
+
+  // ---------- Time helpers ----------
   function pyongyangNow() {
-    // Asia/Pyongyang is UTC+9, no DST
     const now = new Date();
     const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
     return new Date(utcMs + 9 * 3600000);
   }
-
   function fmtDate(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
     return `${y}-${m}-${day}`;
   }
+  const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function prettyDate(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return `${WEEKDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  }
+  function timeToMinutes(t){ if(!t) return null; const [h,m]=t.split(':').map(Number); return h*60+m; }
 
   function buildDateList() {
     const start = new Date(EPG_START + 'T00:00:00');
-    const today = pyongyangNow();
-    today.setHours(0,0,0,0);
-    const dates = [];
-    let cursor = new Date(start);
-    // Always show through "today" in Pyongyang time, plus one extra day ahead
-    // since KCTV publishes tomorrow's schedule in advance.
-    const end = new Date(today);
-    end.setDate(end.getDate() + 1);
-    while (cursor <= end) {
-      dates.push(fmtDate(cursor));
-      cursor.setDate(cursor.getDate() + 1);
-    }
-    return dates.reverse(); // newest first
+    const today = pyongyangNow(); today.setHours(0,0,0,0);
+    const dates = []; let cursor = new Date(start);
+    const end = new Date(today); end.setDate(end.getDate() + 1);
+    while (cursor <= end) { dates.push(fmtDate(cursor)); cursor.setDate(cursor.getDate()+1); }
+    return dates.reverse();
   }
 
-  const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  // ---------- Language dropdown ----------
+  const langTrigger = document.getElementById('langTrigger');
+  const langPanel = document.getElementById('langPanel');
+  const langList = document.getElementById('langList');
+  const langLabel = document.getElementById('langLabel');
 
-  function prettyDate(isoStr) {
-    const d = new Date(isoStr + 'T00:00:00');
-    return `${WEEKDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  }
-
-  // ---------- Custom dropdown ----------
-  const ddTrigger = document.getElementById('ddTrigger');
-  const ddPanel = document.getElementById('ddPanel');
-  const ddList = document.getElementById('ddList');
-  const ddLabel = document.getElementById('ddLabel');
-
-  let dateList = [];
-  let selectedDate = null;
-
-  function openDropdown() {
-    ddPanel.classList.add('open');
-    ddTrigger.classList.add('open');
-    ddTrigger.setAttribute('aria-expanded', 'true');
-  }
-  function closeDropdown() {
-    ddPanel.classList.remove('open');
-    ddTrigger.classList.remove('open');
-    ddTrigger.setAttribute('aria-expanded', 'false');
-  }
-  ddTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    ddPanel.classList.contains('open') ? closeDropdown() : openDropdown();
-  });
-  document.addEventListener('click', (e) => {
-    if (!ddPanel.contains(e.target) && !ddTrigger.contains(e.target)) closeDropdown();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDropdown();
-  });
-
-  function renderDropdownList() {
-    ddList.innerHTML = '';
-    const todayIso = fmtDate(pyongyangNow());
-    dateList.forEach((iso) => {
+  function renderLangList() {
+    langList.innerHTML = '';
+    LANGS.forEach(l => {
       const item = document.createElement('div');
-      item.className = 'dropdown-item' + (iso === selectedDate ? ' active' : '');
-      item.setAttribute('role', 'option');
-      let tag;
-      if (iso === todayIso) tag = 'Today';
-      else if (iso > todayIso) tag = 'Upcoming';
-      else tag = 'Archived Date 🗓️';
-      item.innerHTML = `<span>${prettyDate(iso)}</span><span class="item-sub">${tag}</span>`;
+      item.className = 'dd-item' + (l.code === currentLang ? ' active' : '');
+      item.setAttribute('role','option');
+      item.innerHTML = `<span>${l.native}</span><span class="item-sub">${l.code.toUpperCase()}</span>`;
       item.addEventListener('click', () => {
-        selectDate(iso);
-        closeDropdown();
+        currentLang = l.code;
+        localStorage.setItem('kctv-lang', currentLang);
+        langLabel.textContent = l.native;
+        renderLangList();
+        closeAllDropdowns();
+        if (selectedDate) loadEpg(selectedDate);
       });
-      ddList.appendChild(item);
+      langList.appendChild(item);
     });
   }
+  langLabel.textContent = (LANGS.find(l => l.code === currentLang) || LANGS[0]).native;
 
+  // ---------- Generic dropdown open/close ----------
+  const dropdowns = [
+    { trigger: langTrigger, panel: langPanel },
+    { trigger: document.getElementById('dateTrigger'), panel: document.getElementById('datePanel') },
+  ];
+  function closeAllDropdowns() {
+    dropdowns.forEach(({trigger,panel}) => { panel.classList.remove('open'); trigger.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); });
+  }
+  dropdowns.forEach(({trigger,panel}) => {
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = !panel.classList.contains('open');
+      closeAllDropdowns();
+      if (willOpen) { panel.classList.add('open'); trigger.classList.add('open'); trigger.setAttribute('aria-expanded','true'); }
+    });
+  });
+  document.addEventListener('click', (e) => {
+    const inside = dropdowns.some(({trigger,panel}) => panel.contains(e.target) || trigger.contains(e.target));
+    if (!inside) closeAllDropdowns();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDropdowns(); });
+
+  // ---------- Date dropdown ----------
+  const dateTrigger = document.getElementById('dateTrigger');
+  const dateList = document.getElementById('dateList');
+  const dateLabel = document.getElementById('dateLabel');
+  let allDates = [];
+  let selectedDate = null;
+
+  function renderDateList() {
+    dateList.innerHTML = '';
+    const todayIso = fmtDate(pyongyangNow());
+    allDates.forEach(iso => {
+      const item = document.createElement('div');
+      item.className = 'dd-item' + (iso === selectedDate ? ' active' : '');
+      item.setAttribute('role','option');
+      let tag = iso === todayIso ? 'Today' : (iso > todayIso ? 'Upcoming' : 'Archive');
+      item.innerHTML = `<span>${prettyDate(iso)}</span><span class="item-sub">${tag}</span>`;
+      item.addEventListener('click', () => { selectDate(iso); closeAllDropdowns(); });
+      dateList.appendChild(item);
+    });
+  }
   function selectDate(iso) {
     selectedDate = iso;
     const todayIso = fmtDate(pyongyangNow());
-    ddLabel.textContent = iso < todayIso ? `${prettyDate(iso)} · Archived 🗓️` : prettyDate(iso);
-    renderDropdownList();
+    dateLabel.textContent = iso < todayIso ? `${prettyDate(iso)} · Archive` : prettyDate(iso);
+    renderDateList();
     loadEpg(iso);
   }
 
-  // ---------- EPG normalization ----------
-  // Two known shapes:
-  // Legacy (e.g. 2026-06-20): { programs: [{start_time,end_time,title,category,type,note}] }
-  // Current (2026-06-21 onward): { programs: [{start,end,title:{en,ko,zh},category}] }
-  function normalizeProgram(p) {
+  // ---------- Program normalization (multi-language aware) ----------
+  function pickLang(obj, lang) {
+    if (obj == null) return null;
+    if (typeof obj !== 'object') return String(obj);
+    return obj[lang] || obj.en || obj.ko || Object.values(obj)[0] || null;
+  }
+  function normalizeProgram(p, lang) {
     const start = p.start_time || p.start || '';
     const end = p.end_time || p.end || '';
-    let titleEn, titleSub = null;
+    const title = pickLang(p.title, lang) || 'Untitled';
+    const category = pickLang(p.category, lang);
+    // Secondary reference line: show English when viewing a non-English language, else show Korean.
+    let sub = null;
     if (typeof p.title === 'object' && p.title !== null) {
-      titleEn = p.title.en || p.title.ko || 'Untitled';
-      const subs = [];
-      if (p.title.ko) subs.push(p.title.ko);
-      if (p.title.zh) subs.push(p.title.zh);
-      titleSub = subs.length ? subs.join(' · ') : null;
-    } else {
-      titleEn = p.title || 'Untitled';
+      if (lang !== 'en' && p.title.en) sub = p.title.en;
+      else if (lang === 'en' && p.title.ko) sub = p.title.ko;
     }
-    const tag = p.type || p.category || null;
-    return {
-      start, end,
-      title: titleEn,
-      sub: titleSub,
-      category: p.category || null,
-      tag,
-      note: p.note || null
-    };
+    return { start, end, title, sub, category, note: p.note || null };
   }
-
-  function timeToMinutes(t) {
-    if (!t) return null;
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
-  }
-
   function isLiveNow(start, end) {
     const now = pyongyangNow();
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const s = timeToMinutes(start);
-    let e = timeToMinutes(end);
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const s = timeToMinutes(start); let e = timeToMinutes(end);
     if (s === null || e === null) return false;
-    if (e <= s) e += 24 * 60; // crosses midnight
-    let n = nowMin;
-    if (n < s && (e > 24*60)) n += 24*60;
+    if (e <= s) e += 24*60;
+    let n = nowMin; if (n < s && e > 24*60) n += 24*60;
     return n >= s && n < e;
   }
+  function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : str; return div.innerHTML; }
 
+  // ---------- Now / After cards ----------
+  function renderNowAfter(programs, isToday) {
+    const nowBadge = document.getElementById('nowBadge');
+    const nowTime = document.getElementById('nowTime');
+    const nowTitle = document.getElementById('nowTitle');
+    const nowSub = document.getElementById('nowSub');
+    const nowTags = document.getElementById('nowTags');
+    const track = document.getElementById('progressTrack');
+    const fill = document.getElementById('progressFill');
+    const labels = document.getElementById('progressLabels');
+    const afterCard = document.getElementById('afterCard');
+    const afterTime = document.getElementById('afterTime');
+    const afterTitle = document.getElementById('afterTitle');
+    const afterSub = document.getElementById('afterSub');
+    const afterTags = document.getElementById('afterTags');
+
+    let liveIdx = -1;
+    if (isToday) liveIdx = programs.findIndex(p => isLiveNow(p.start, p.end));
+
+    if (liveIdx >= 0) {
+      const p = programs[liveIdx];
+      nowBadge.className = 'status-badge live';
+      nowBadge.innerHTML = '<span class="live-dot"></span>On Air';
+      nowTime.textContent = `${p.start} – ${p.end}`;
+      nowTitle.textContent = p.title;
+      nowSub.textContent = p.sub || '';
+      nowTags.innerHTML = p.category ? `<span class="tag gold">${escapeHtml(p.category)}</span>` : '';
+
+      const s = timeToMinutes(p.start); let e = timeToMinutes(p.end);
+      if (e <= s) e += 24*60;
+      const now = pyongyangNow(); let n = now.getHours()*60 + now.getMinutes();
+      if (n < s && e > 24*60) n += 24*60;
+      const pct = Math.max(0, Math.min(100, ((n - s) / (e - s)) * 100));
+      track.style.display = ''; labels.style.display = 'flex';
+      fill.style.width = pct.toFixed(1) + '%';
+      const remaining = Math.max(0, Math.round(e - n));
+      labels.innerHTML = `<span>${Math.round(pct)}% elapsed</span><span>${remaining} min remaining</span>`;
+    } else {
+      nowBadge.className = 'status-badge off';
+      nowBadge.textContent = isToday ? 'Off Air' : 'Not Today';
+      nowTime.textContent = '—';
+      nowTitle.textContent = isToday ? 'No programme currently transmitting' : 'This is not today\u2019s schedule';
+      nowSub.textContent = isToday ? 'Broadcasting will resume per the schedule below.' : 'Select today\u2019s date to see live status.';
+      nowTags.innerHTML = '';
+      track.style.display = 'none'; labels.style.display = 'none';
+    }
+
+    const nextIdx = liveIdx >= 0 ? liveIdx + 1 : programs.findIndex(p => {
+      const s = timeToMinutes(p.start);
+      const now = pyongyangNow(); const n = now.getHours()*60 + now.getMinutes();
+      return isToday && s !== null && s > n;
+    });
+    if (nextIdx >= 0 && nextIdx < programs.length && (liveIdx >= 0 || isToday)) {
+      const p = programs[nextIdx];
+      afterCard.style.display = '';
+      afterTime.textContent = `${p.start} – ${p.end}`;
+      afterTitle.textContent = p.title;
+      afterSub.textContent = p.sub || '';
+      afterTags.innerHTML = p.category ? `<span class="tag">${escapeHtml(p.category)}</span>` : '';
+    } else if (programs.length) {
+      const p = programs[0];
+      afterCard.style.display = '';
+      document.querySelector('#afterCard .status-badge').textContent = isToday ? 'Up Next' : 'First Programme';
+      afterTime.textContent = `${p.start} – ${p.end}`;
+      afterTitle.textContent = p.title;
+      afterSub.textContent = p.sub || '';
+      afterTags.innerHTML = p.category ? `<span class="tag">${escapeHtml(p.category)}</span>` : '';
+    } else {
+      afterCard.style.display = 'none';
+    }
+  }
+
+  // ---------- Load & render EPG ----------
   async function loadEpg(iso) {
     const statusEl = document.getElementById('epgStatus');
     const listEl = document.getElementById('epgList');
-    listEl.innerHTML = '';
-    statusEl.style.display = 'block';
-    statusEl.classList.remove('error');
+    const countEl = document.getElementById('epgCount');
+    listEl.innerHTML = ''; countEl.textContent = '';
+    statusEl.style.display = 'block'; statusEl.classList.remove('error');
     statusEl.textContent = 'Loading schedule…';
 
     const todayIso = fmtDate(pyongyangNow());
+    const isToday = iso === todayIso;
 
     try {
       const res = await fetch(API_BASE + iso);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      const programs = (data.programs || []).map(normalizeProgram);
+      const programs = (data.programs || []).map(p => normalizeProgram(p, currentLang));
 
       if (!programs.length) {
         statusEl.textContent = 'No schedule data available for this date.';
+        renderNowAfter([], isToday);
         return;
       }
 
       statusEl.style.display = 'none';
+      countEl.textContent = `${programs.length} programmes`;
+
+      const nowMin = pyongyangNow().getHours()*60 + pyongyangNow().getMinutes();
       programs.forEach(p => {
-        const live = (iso === todayIso) && isLiveNow(p.start, p.end);
-        const item = document.createElement('div');
-        item.className = 'epg-item' + (live ? ' live' : '');
-        item.innerHTML = `
-          <div class="epg-time">${p.start || '—'}<br><span class="end">${p.end || ''}</span></div>
+        const live = isToday && isLiveNow(p.start, p.end);
+        const s = timeToMinutes(p.start);
+        const past = isToday && !live && s !== null && s < nowMin;
+        const row = document.createElement('div');
+        row.className = 'epg-row' + (live ? ' live' : '') + (past ? ' past' : '');
+        row.innerHTML = `
+          <div class="epg-time">${p.start || '—'}<span class="end">${p.end || ''}</span></div>
           <div class="epg-body">
             <div class="epg-title">${escapeHtml(p.title)}</div>
+            ${p.sub ? `<div class="epg-sub">${escapeHtml(p.sub)}</div>` : ''}
             <div class="epg-meta">
-              ${live ? '<span class="epg-tag live-tag"><span class="live-dot"></span>On Air</span>' : ''}
-              ${p.tag ? `<span class="epg-tag">${escapeHtml(p.tag)}</span>` : ''}
+              ${live ? '<span class="tag gold"><span class="live-dot" style="width:5px;height:5px;display:inline-block;margin-right:4px;"></span>On Air</span>' : ''}
+              ${p.category ? `<span class="tag">${escapeHtml(p.category)}</span>` : ''}
             </div>
-            ${p.sub ? `<div class="epg-langs">${escapeHtml(p.sub)}</div>` : ''}
-            ${p.note ? `<div class="epg-note">${escapeHtml(p.note)}</div>` : ''}
-          </div>
-        `;
-        listEl.appendChild(item);
+            ${p.note ? `<div class="epg-sub">${escapeHtml(p.note)}</div>` : ''}
+          </div>`;
+        listEl.appendChild(row);
       });
+
+      renderNowAfter(programs, isToday);
     } catch (err) {
       statusEl.classList.add('error');
       statusEl.textContent = 'Could not load schedule for this date. Please try again later.';
+      renderNowAfter([], isToday);
     }
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  // ---------- Live clock ----------
+  function updateClock() {
+    const n = pyongyangNow();
+    const hh = String(n.getHours()).padStart(2,'0'), mm = String(n.getMinutes()).padStart(2,'0'), ss = String(n.getSeconds()).padStart(2,'0');
+    document.getElementById('tzNow').textContent = `${hh}:${mm}:${ss} · Pyongyang (UTC+9)`;
   }
+  setInterval(() => {
+    updateClock();
+    if (selectedDate === fmtDate(pyongyangNow())) loadEpg(selectedDate);
+  }, 30000);
+  setInterval(updateClock, 1000);
 
   // ---------- Init ----------
-  dateList = buildDateList();
-  renderDropdownList();
-  const initial = fmtDate(pyongyangNow()) <= dateList[0] ? fmtDate(pyongyangNow()) : dateList[0];
-  // pick today if available in list, else newest
+  renderLangList();
+  allDates = buildDateList();
+  renderDateList();
+  updateClock();
   const todayIso = fmtDate(pyongyangNow());
-  selectDate(dateList.includes(todayIso) ? todayIso : dateList[0]);
+  selectDate(allDates.includes(todayIso) ? todayIso : allDates[0]);
 </script>
 </body>
 </html>
