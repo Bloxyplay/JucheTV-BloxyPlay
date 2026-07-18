@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#101014">
+  <title id="pageTitle">Juche TV VOD - Player</title>
+  <meta name="description" id="metaDescription" content="Watch on-demand DPRK broadcasts from Korean Central Television.">
+  <meta property="og:type" content="video.other">
+  <meta property="og:site_name" content="Juche TV">
+  <meta property="og:title" id="ogTitle" content="Juche TV VOD - Player">
+  <meta property="og:description" id="ogDescription" content="Watch on-demand DPRK broadcasts from Korean Central Television.">
+  <meta property="og:image" id="ogImage" content="">
+  <meta property="og:url" id="ogUrl" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" id="twitterTitle" content="Juche TV VOD - Player">
+  <meta name="twitter:description" id="twitterDescription" content="Watch on-demand DPRK broadcasts from Korean Central Television.">
+  <meta name="twitter:image" id="twitterImage" content="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.8.4/plyr.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&display=swap');
+    :root {
+      --md-bg:#101014; --surface:#141218; --surface-container-low:#1A181E; --surface-container:#1D1B20;
+      --surface-container-high:#262429; --surface-container-highest:#2F2D33; --outline:#48454E; --outline-variant:#322F37;
+      --on-surface:#E6E1E5; --on-surface-variant:#A8A3AC;
+      --primary:#FF5449; --on-primary:#690003; --primary-container:#93000A; --on-primary-container:#FFDAD5;
+      --secondary:#A8C8FF; --secondary-container:#1E3A5C;
+      --shape-xs:8px; --shape-sm:12px; --shape-md:16px; --shape-lg:20px; --shape-xl:28px; --shape-full:999px;
+      --elev-1:0 1px 2px rgba(0,0,0,.45),0 1px 3px 1px rgba(0,0,0,.25);
+      --elev-2:0 1px 2px rgba(0,0,0,.5),0 3px 8px 1px rgba(0,0,0,.3);
+      --plyr-color-main: var(--primary);
+      --plyr-video-background:#000;
+      --plyr-menu-background:#262429;
+      --plyr-menu-color:#E6E1E5;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{font-family:'Roboto',system-ui,sans-serif;background:var(--md-bg);color:var(--on-surface);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+    .nav{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--outline-variant)}
+    .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:64px}
+    .logo{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:700;color:var(--on-surface);text-decoration:none;padding:8px;border-radius:var(--shape-lg)}
+    .logo-icon{width:36px;height:36px;background:var(--primary-container);border-radius:var(--shape-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-icon svg{color:var(--on-primary-container)}
+    .nav-links{display:flex;align-items:center;gap:4px}
+    .nav-link{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--shape-full);color:var(--on-surface-variant);text-decoration:none;font-size:13.5px;font-weight:600;transition:background .15s,color .15s}
+    .nav-link svg{width:18px;height:18px}
+    .nav-link:hover{background:var(--surface-container-high);color:var(--on-surface)}
+    .nav-link.active{background:var(--primary-container);color:var(--on-primary-container)}
+    @media (max-width:860px){ .nav-links .nav-link span{display:none} .nav-link{padding:0 10px} }
+
+    .layout{max-width:1280px;margin:0 auto;padding:20px 20px 64px;display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+    @media (max-width:960px){ .layout{grid-template-columns:1fr} }
+
+    .player-col{min-width:0}
+    .back-row{margin-bottom:12px}
+    .back-btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 6px 0 4px;border-radius:var(--shape-full);color:var(--on-surface-variant);text-decoration:none;font-size:13px;font-weight:600;transition:background .15s,color .15s}
+    .back-btn:hover{background:var(--surface-container-high);color:var(--on-surface)}
+    .back-btn svg{width:18px;height:18px}
+    .player-wrap{background:#000;border-radius:var(--shape-lg);overflow:hidden;box-shadow:var(--elev-2)}
+
+    .video-info{padding:18px 2px 0}
+    .video-title{font-size:20px;font-weight:700;line-height:1.3;margin-bottom:10px}
+    .video-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:var(--shape-full);letter-spacing:.2px;border:1px solid transparent}
+    .badge-cat{background:var(--surface-container-highest);color:var(--on-surface-variant);border-color:var(--outline)}
+    .badge-date{background:var(--secondary-container);color:var(--secondary)}
+    .video-desc{font-size:13.5px;line-height:1.65;color:var(--on-surface-variant);margin-bottom:16px}
+
+    .action-row{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--outline-variant);border-bottom:1px solid var(--outline-variant);padding:14px 0;margin-bottom:6px}
+    .action-btn{display:flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:var(--shape-full);border:1px solid var(--outline-variant);background:var(--surface-container);color:var(--on-surface);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .15s,filter .15s;font-family:inherit}
+    .action-btn:hover{background:var(--surface-container-high)}
+    .action-btn.primary{background:var(--primary-container);color:var(--on-primary-container);border-color:transparent}
+    .action-btn.primary:hover{filter:brightness(1.1)}
+    .action-btn svg{width:16px;height:16px}
+
+    .side-col{min-width:0}
+    .side-title{font-size:13px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:12px;padding-left:2px}
+    .up-next-list{display:flex;flex-direction:column;gap:10px}
+    .up-card{display:flex;gap:10px;background:var(--surface-container);border-radius:var(--shape-md);overflow:hidden;text-decoration:none;color:inherit;padding:6px;transition:background .15s}
+    .up-card:hover{background:var(--surface-container-high)}
+    .up-thumb{position:relative;flex-shrink:0;width:128px;aspect-ratio:16/9;border-radius:var(--shape-sm);overflow:hidden;background:var(--surface-container-highest)}
+    .up-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s}
+    .up-thumb img.ready{opacity:1}
+    .up-thumb .ph-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--outline)}
+    .up-thumb .ph-icon svg{width:20px;height:20px}
+    .up-info{flex:1;min-width:0;padding:2px 4px 2px 0}
+    .up-info-title{font-size:12.5px;font-weight:700;line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .up-info-meta{font-size:10.5px;color:var(--on-surface-variant)}
+
+    .state-msg{padding:60px 20px;text-align:center;color:var(--on-surface-variant)}
+    .state-msg svg{width:38px;height:38px;margin-bottom:14px;color:var(--outline)}
+    .state-msg a{color:var(--primary);font-weight:700;text-decoration:none}
+    .spin{animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface-container-highest);color:var(--on-surface);padding:12px 20px;border-radius:var(--shape-full);font-size:13px;font-weight:600;box-shadow:var(--elev-2);z-index:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;display:flex;align-items:center;gap:8px}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast svg{width:16px;height:16px;color:#7DDA8F}
+
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--surface-container-highest);border-radius:4px}
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        Juche TV
+      </a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>Home</span>
+        </a>
+        <a href="/schedules" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Schedule</span>
+        </a>
+        <a href="/Magazine" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Magazines</span>
+        </a>
+        <a href="/VOD.html" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l1.2-3.6a1.5 1.5 0 0 1 1.9-.95l13.4 4.55"/><path d="M3 8.5V19a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 19V9.5A1.5 1.5 0 0 0 19.5 8H4.5A1.5 1.5 0 0 0 3 8.5z"/><path d="M7 5l3 3.5"/><path d="M12 3.8l3 3.5"/><path d="M3 8.5h18"/></svg>
+          <span>VOD</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="layout" id="layout" style="display:none">
+    <div class="player-col">
+      <div class="back-row">
+        <a href="/VOD.html" class="back-btn" id="backBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Back to VOD
+        </a>
+      </div>
+      <div class="player-wrap">
+        <video id="player" playsinline controls></video>
+      </div>
+      <div class="video-info">
+        <div class="video-title" id="videoTitle">&nbsp;</div>
+        <div class="video-meta-row">
+          <span class="badge badge-cat" id="videoCategory">Category</span>
+          <span class="badge badge-date" id="videoDate">Date</span>
+        </div>
+        <div class="video-desc" id="videoDesc"></div>
+        <div class="action-row">
+          <button class="action-btn primary" id="shareBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+            Share
+          </button>
+          <a class="action-btn" id="downloadBtn" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </a>
+          <a class="action-btn" href="/VOD.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            Browse VOD
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="side-title">Up Next</div>
+      <div class="up-next-list" id="upNextList"></div>
+    </div>
+  </div>
+
+  <div class="state-msg" id="stateMsg">
+    <svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    <p>Loading video…</p>
+  </div>
+
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastMsg">Link copied</span>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.8.4/plyr.min.js"></script>
+  <script>
+    (function () {
+      const API = 'https://kctv.koryofront.org/api/media-list';
+      const ORIGIN = 'https://kctv.koryofront.org';
+      const THUMB_API = 'https://koryofront.org/api/kctv/thumb';
+      const UP_NEXT_LIMIT = 12;
+
+      let ALL = [];
+      let plyrInstance = null;
+
+      const layout = document.getElementById('layout');
+      const stateMsg = document.getElementById('stateMsg');
+      const videoTitle = document.getElementById('videoTitle');
+      const videoCategory = document.getElementById('videoCategory');
+      const videoDate = document.getElementById('videoDate');
+      const videoDesc = document.getElementById('videoDesc');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const shareBtn = document.getElementById('shareBtn');
+      const backBtn = document.getElementById('backBtn');
+      const upNextList = document.getElementById('upNextList');
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const metaDescription = document.getElementById('metaDescription');
+      const ogTitle = document.getElementById('ogTitle');
+      const ogDescription = document.getElementById('ogDescription');
+      const ogImage = document.getElementById('ogImage');
+      const ogUrl = document.getElementById('ogUrl');
+      const twitterTitle = document.getElementById('twitterTitle');
+      const twitterDescription = document.getElementById('twitterDescription');
+      const twitterImage = document.getElementById('twitterImage');
+
+      backBtn.addEventListener('click', (e) => {
+        if (document.referrer && document.referrer.indexOf(location.origin) === 0 && history.length > 1) {
+          e.preventDefault();
+          history.back();
+        }
+      });
+
+      // Blank track so the captions control is always available, even without real subtitles
+      const vttBlob = new Blob(['WEBVTT\n\n1\n00:00:00.000 --> 00:00:00.100\n \n'], { type: 'text/vtt' });
+      const BLANK_VTT_URL = URL.createObjectURL(vttBlob);
+
+      function shortId(str) {
+        let h = 0x811c9dc5;
+        for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+        return (h >>> 0).toString(36);
+      }
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+      }
+      function formatDate(d) {
+        try { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }); }
+        catch (e) { return d; }
+      }
+      function thumbUrl(v) {
+        const path = '/recordings/' + v.category + '/' + v.filename;
+        return THUMB_API + '?path=' + encodeURI(path) + '&t=5';
+      }
+      function genDescription(v) {
+        return 'Watch "' + v.title + '," a ' + v.category + ' broadcast from Korean Central Television, originally aired ' + formatDate(v.date) + '. Streamed on-demand on Juche TV, an archive of DPRK television.';
+      }
+
+      function showState(html) {
+        stateMsg.innerHTML = html;
+        stateMsg.style.display = 'block';
+        layout.style.display = 'none';
+      }
+
+      async function init() {
+        const id = new URLSearchParams(location.search).get('video');
+        if (!id) {
+          showState('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>No video specified. <a href="/VOD.html">Browse the archive</a>.</p>');
+          return;
+        }
+        try {
+          const res = await fetch(API);
+          if (!res.ok) throw new Error('fetch failed');
+          const data = await res.json();
+          ALL = [];
+          Object.keys(data).forEach(cat => {
+            (data[cat] || []).forEach(item => {
+              const vid = shortId(cat + '|' + item.filename);
+              ALL.push({
+                id: vid, category: item.category || cat, title: item.title, date: item.date,
+                filename: item.filename,
+                fullUrl: ORIGIN + item.url, fullDownload: ORIGIN + item.download
+              });
+            });
+          });
+          const video = ALL.find(v => v.id === id);
+          if (!video) {
+            showState('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Video not found. <a href="/VOD.html">Browse the archive</a>.</p>');
+            return;
+          }
+          renderVideo(video);
+        } catch (e) {
+          showState('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Couldn\'t load the archive. Please try again shortly.</p>');
+        }
+      }
+
+      function renderVideo(video) {
+        stateMsg.style.display = 'none';
+        layout.style.display = 'grid';
+
+        const pageTitle = video.title + ' — Juche TV VOD';
+        const desc = genDescription(video);
+        const thumb = thumbUrl(video);
+        const shareUrl = location.origin + location.pathname + '?video=' + video.id;
+
+        document.title = pageTitle;
+        videoTitle.textContent = video.title;
+        videoCategory.textContent = video.category;
+        videoDate.textContent = formatDate(video.date);
+        videoDesc.textContent = desc;
+        downloadBtn.href = video.fullDownload;
+
+        metaDescription.setAttribute('content', desc);
+        ogTitle.setAttribute('content', pageTitle);
+        ogDescription.setAttribute('content', desc);
+        ogImage.setAttribute('content', thumb);
+        ogUrl.setAttribute('content', shareUrl);
+        twitterTitle.setAttribute('content', pageTitle);
+        twitterDescription.setAttribute('content', desc);
+        twitterImage.setAttribute('content', thumb);
+
+        buildPlayer(video);
+        buildUpNext(video);
+
+        shareBtn.onclick = async () => {
+          try { await navigator.clipboard.writeText(shareUrl); showToast('Link copied to clipboard'); }
+          catch (e) { window.prompt('Copy this link:', shareUrl); }
+        };
+      }
+
+      function buildPlayer(video) {
+        const wrap = document.querySelector('.player-wrap');
+        wrap.innerHTML = '<video id="player" playsinline controls></video>';
+        const v = document.getElementById('player');
+        v.innerHTML =
+          '<source src="' + video.fullUrl + '" type="video/mp4">' +
+          '<track kind="captions" label="English" srclang="en" src="' + BLANK_VTT_URL + '">';
+
+        if (plyrInstance) { try { plyrInstance.destroy(); } catch (e) {} }
+        // Standard Plyr — default controls, just wire up the download link
+        plyrInstance = new Plyr(v, { download: video.fullDownload });
+      }
+
+      function buildUpNext(current) {
+        const sameCategory = ALL.filter(v => v.id !== current.id && v.category === current.category);
+        let pool = sameCategory;
+        if (pool.length < UP_NEXT_LIMIT) {
+          const rest = ALL.filter(v => v.id !== current.id && v.category !== current.category);
+          pool = pool.concat(rest);
+        }
+        const list = pool.slice(0, UP_NEXT_LIMIT);
+
+        upNextList.innerHTML = '';
+        if (!list.length) {
+          upNextList.innerHTML = '<div class="state-msg" style="padding:20px 0"><p>Nothing else to show.</p></div>';
+          return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            const id = entry.target.dataset.id;
+            const v = list.find(x => x.id === id);
+            if (v) makeThumb(entry.target, v);
+          });
+        }, { rootMargin: '200px' });
+
+        list.forEach(v => {
+          const card = document.createElement('a');
+          card.className = 'up-card';
+          card.href = 'player.html?video=' + v.id;
+          card.dataset.id = v.id;
+          card.innerHTML =
+            '<div class="up-thumb">' +
+              '<span class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></span>' +
+              '<img alt="" loading="lazy">' +
+            '</div>' +
+            '<div class="up-info">' +
+              '<div class="up-info-title">' + escapeHtml(v.title) + '</div>' +
+              '<div class="up-info-meta">' + escapeHtml(v.category) + ' · ' + formatDate(v.date) + '</div>' +
+            '</div>';
+          upNextList.appendChild(card);
+          observer.observe(card);
+        });
+      }
+
+      function makeThumb(card, video) {
+        const img = card.querySelector('img');
+        const ph = card.querySelector('.ph-icon');
+        img.addEventListener('load', () => {
+          img.classList.add('ready');
+          if (ph) ph.style.display = 'none';
+        });
+        img.addEventListener('error', () => {});
+        img.src = thumbUrl(video);
+      }
+
+      function showToast(msg) {
+        toastMsg.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
