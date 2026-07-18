@@ -1,36 +1,95 @@
-// Vercel Edge Middleware
-// Mobile visitors get redirected to clean /m/... URLs (e.g. /m/, /m/kctv)
-// Desktop visitors stay on the root URL and get the desktop-optimized pages.
+/**
+ * Vercel Routing Middleware: injects real per-video Open Graph / Twitter meta
+ * tags into player.html, but ONLY for known social-preview crawlers.
+ * Real visitors get the untouched SPA (client-side JS still updates the UI).
+ *
+ * Covers both your desktop and mobile player pages:
+ *   /player.html    (main/desktop)
+ *   /m/player.html  (mobile)
+ *
+ * Setup:
+ *  1. Put this file at the ROOT of your project (same level as package.json,
+ *     i.e. one level above both your main/ and m/ folders).
+ *  2. If this isn't a Next.js project, either:
+ *       a) add  "type": "module"  to package.json, or
+ *       b) rename this file to middleware.mjs
+ *  3. Deploy: `vercel --prod`. No extra config needed — the matcher below
+ *     scopes it to just those two files, everything else passes through as-is.
+ */
 
 export const config = {
-  // Runs on every request except: paths already under /m/, and any path
-  // with a file extension (assets, and .html requests get handled by
-  // Vercel's cleanUrls redirect before hitting this again as extensionless).
-  matcher: ['/((?!m/|_next/|api/|.*\\..*).*)'],
+  matcher: ['/player.html', '/m/player.html'],
 };
 
-const MOBILE_UA = /Android|iPhone|iPod|IEMobile|BlackBerry|Opera Mini|Mobile(?!.*iPad)/i;
+const BOT_UA = /facebookexternalhit|Twitterbot|Discordbot|Slackbot|LinkedInBot|WhatsApp|TelegramBot|Pinterest|SkypeUriPreview|vkShare/i;
 
-export default function middleware(request) {
-  const ua = request.headers.get('user-agent') || '';
-  const isMobile = MOBILE_UA.test(ua);
+const API = 'https://kctv.koryofront.org/api/media-list';
+const THUMB_API = 'https://koryofront.org/api/kctv/thumb';
 
-  if (!isMobile) {
-    // Desktop / tablet: do nothing, serve the normal root-level pages.
-    return;
-  }
-
+export default async function middleware(request) {
   const url = new URL(request.url);
+  const videoId = url.searchParams.get('video');
+  const ua = request.headers.get('user-agent') || '';
 
-  // Already on a /m/ path — don't touch it.
-  if (url.pathname === '/m' || url.pathname.startsWith('/m/')) {
-    return;
+  // Always fetch the real static file so behavior is identical either way
+  const pageRes = await fetch(url);
+
+  if (!videoId || !BOT_UA.test(ua)) {
+    return pageRes; // pass through untouched for real users / non-bot requests
   }
 
-  // '/'        -> '/m/'
-  // '/kctv'    -> '/m/kctv'
-  // '/schedules' -> '/m/schedules'
-  url.pathname = url.pathname === '/' ? '/m/' : '/m' + url.pathname;
+  const video = await findVideo(videoId);
+  let html = await pageRes.text();
+  if (!video) return new Response(html, pageRes);
 
-  return Response.redirect(url, 307);
+  const title = `${video.title} — Juche TV VOD`;
+  const desc = `Watch "${video.title}," a ${video.category} broadcast from Korean Central ` +
+               `Television, originally aired ${video.date}. Streamed on-demand on Juche TV, ` +
+               `an archive of DPRK television.`;
+  const thumb = `${THUMB_API}?path=${encodeURI('/recordings/' + video.category + '/' + video.filename)}&t=5`;
+  const shareUrl = `${url.origin}${url.pathname}?video=${videoId}`;
+
+  html = replaceMeta(html, 'name="description"', desc);
+  html = replaceMeta(html, 'property="og:title"', title);
+  html = replaceMeta(html, 'property="og:description"', desc);
+  html = replaceMeta(html, 'property="og:image"', thumb);
+  html = replaceMeta(html, 'property="og:url"', shareUrl);
+  html = replaceMeta(html, 'name="twitter:title"', title);
+  html = replaceMeta(html, 'name="twitter:description"', desc);
+  html = replaceMeta(html, 'name="twitter:image"', thumb);
+
+  return new Response(html, {
+    status: 200,
+    headers: { ...Object.fromEntries(pageRes.headers), 'content-type': 'text/html;charset=UTF-8' },
+  });
+}
+
+async function findVideo(videoId) {
+  const res = await fetch(API);
+  if (!res.ok) return null;
+  const data = await res.json();
+  for (const cat of Object.keys(data)) {
+    for (const item of data[cat] || []) {
+      if (shortId(cat + '|' + item.filename) === videoId) {
+        return { ...item, category: item.category || cat };
+      }
+    }
+  }
+  return null;
+}
+
+// Must exactly match the shortId() hash used client-side in player.html/VOD.html
+function shortId(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
+}
+
+function replaceMeta(html, attrMatch, value) {
+  const re = new RegExp(`(<meta[^>]*${attrMatch}[^>]*content=")[^"]*("[^>]*>)`);
+  return html.replace(re, `$1${escapeAttr(value)}$2`);
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
