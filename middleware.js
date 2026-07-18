@@ -3,9 +3,11 @@
  * tags into player.html, but ONLY for known social-preview crawlers.
  * Real visitors get the untouched SPA (client-side JS still updates the UI).
  *
- * Covers both your desktop and mobile player pages:
- *   /player.html    (main/desktop)
- *   /m/player.html  (mobile)
+ * Covers both your desktop and mobile player pages, with or without the
+ * .html extension (Vercel's clean URLs strip it for the links you actually
+ * share, e.g. /player?video=xyz instead of /player.html?video=xyz):
+ *   /player.html or /player      (main/desktop)
+ *   /m/player.html or /m/player  (mobile)
  *
  * Setup:
  *  1. Put this file at the ROOT of your project (same level as package.json,
@@ -18,7 +20,7 @@
  */
 
 export const config = {
-  matcher: ['/player.html', '/m/player.html'],
+  matcher: ['/player.html', '/player', '/m/player.html', '/m/player'],
 };
 
 const BOT_UA = /facebookexternalhit|Twitterbot|Discordbot|Slackbot|LinkedInBot|WhatsApp|TelegramBot|Pinterest|SkypeUriPreview|vkShare/i;
