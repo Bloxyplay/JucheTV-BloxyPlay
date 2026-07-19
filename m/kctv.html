@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta name="theme-color" content="#101014">
   <title>KCTV &mdash; Korean Central Television &middot; Juche TV</title>
   <meta name="description" content="Watch KCTV, North Korea's state broadcaster, live &mdash; plus browse the archive of recorded broadcasts on Juche TV.">
   <meta property="og:type" content="website">
@@ -13,40 +13,41 @@
   <meta property="og:description" content="Watch KCTV, North Korea's state broadcaster, live &mdash; plus browse the archive of recorded broadcasts on Juche TV.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/a/ad/Korean_Central_Television_2005.svg">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&display=swap');
     :root {
-      --bg:#120e0b; --surf:#1a1512; --surf2:#221b16; --surf3:#2c231c;
-      --brd:rgba(255,255,255,0.07); --brd2:rgba(255,255,255,0.13);
-      --tx:#f2ece2; --tx2:#8f8577; --tx3:#5a5145;
-      --acc:#e2472b; --acc2:#ff7a45; --glow:rgba(226,71,43,0.28);
-      --tint:#c98a4b; --grn:#30d158; --gld:#d9a441;
-      --rsm:7px; --rmd:10px; --rlg:14px; --rxl:16px;
-      --shsm:0 1px 4px rgba(0,0,0,.45);
-      --shmd:0 4px 24px rgba(0,0,0,.55);
-      --shlg:0 16px 56px rgba(0,0,0,.72);
-      --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-      --mono:'IBM Plex Mono',ui-monospace,'SF Mono',monospace;
+      --bg:#101014; --surf:#1D1B20; --surf2:#262429; --surf3:#2F2D33;
+      --brd:#322F37; --brd2:#48454E;
+      --tx:#E6E1E5; --tx2:#A8A3AC; --tx3:#6f6b73;
+      --acc:#FF5449; --acc2:#FF8177; --glow:rgba(255,84,73,0.28);
+      --tint:#A8C8FF; --grn:#7DDA8F; --gld:#EFC44C;
+      --rsm:8px; --rmd:12px; --rlg:16px; --rxl:20px;
+      --shsm:0 1px 2px rgba(0,0,0,.45),0 1px 3px 1px rgba(0,0,0,.25);
+      --shmd:0 1px 2px rgba(0,0,0,.5),0 3px 8px 1px rgba(0,0,0,.3);
+      --shlg:0 1px 2px rgba(0,0,0,.5),0 3px 8px 1px rgba(0,0,0,.3);
+      --font:'Roboto',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      --mono:'Roboto Mono',ui-monospace,'SF Mono',monospace;
     }
 
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{scroll-behavior:smooth}
-    body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
-    body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 90% 55% at 10% 0%,rgba(226,71,43,.08) 0%,transparent 65%),radial-gradient(ellipse 60% 40% at 90% 5%,rgba(201,138,75,.05) 0%,transparent 65%)}
+    body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
     /* NAV */
-    .nav{position:sticky;top:0;z-index:200;background:rgba(18,14,11,.86);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid var(--brd)}
+    .nav{position:sticky;top:0;z-index:200;background:var(--surf);border-bottom:1px solid var(--brd)}
 
-    .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;gap:16px}
-    .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-    .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px var(--glow)}
-    .logo-mark svg{width:15px;height:15px;fill:#fff}
-    .logo-text{font-size:17px;font-weight:800;color:var(--tx);letter-spacing:.2px;text-transform:uppercase}
-    .nav-r{display:flex;align-items:center;gap:8px}
-    .nav-lnk{font-size:13px;font-weight:600;color:var(--tx2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .2s;white-space:nowrap}
+    .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:64px;gap:16px}
+    .logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0;font-size:19px;font-weight:700;color:var(--tx);padding:8px;border-radius:var(--rxl)}
+    .logo-mark{width:36px;height:36px;background:#93000A;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-mark svg{width:18px;height:18px;fill:#FFDAD5}
+    .logo-text{font-size:19px;font-weight:700;color:var(--tx);letter-spacing:0}
+    .nav-r{display:flex;align-items:center;gap:4px}
+    .nav-lnk{display:flex;align-items:center;gap:8px;height:40px;font-size:13.5px;font-weight:600;color:var(--tx2);text-decoration:none;padding:0 16px;border-radius:100px;transition:background .15s,color .15s;white-space:nowrap}
     .nav-lnk:hover{color:var(--tx);background:var(--surf2)}
+    .nav-lnk.active{background:#93000A;color:#FFDAD5}
+    .nav-lnk svg{width:18px;height:18px}
+    @media (max-width:700px){ .nav-lnk span{display:none} .nav-lnk{padding:0 10px} }
 
     /* PAGE */
     .page{flex:1;max-width:1160px;width:100%;margin:0 auto;padding:24px 20px 60px;position:relative}
@@ -86,9 +87,6 @@
     #dplayer .plyr__control--overlaid{background:rgba(226,71,43,.88)}
     #dplayer .plyr__control--overlaid:hover,#dplayer .plyr__control--overlaid:focus{background:var(--acc)}
     #dplayer .plyr__controls .plyr__control.plyr__tab-focus,#dplayer .plyr__control:hover{color:#fff}
-    .ss-flash{position:absolute;inset:0;z-index:50;background:#fff;opacity:0;pointer-events:none}
-    .ss-flash.active{animation:flash .35s ease-out forwards}
-    @keyframes flash{0%{opacity:.9}100%{opacity:0}}
     .live-badge{display:flex;align-items:center;gap:6px;margin-left:-6px;padding:0 8px 0 2px;font-size:12px;font-weight:800;letter-spacing:.6px;color:#fff;text-transform:uppercase;font-family:var(--font);pointer-events:none}
     .live-dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px rgba(226,71,43,.7);animation:blink 1.4s ease infinite;flex-shrink:0}
     .live-spinner{display:none;width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.28);border-top-color:#fff;animation:liveSpin 1.8s linear infinite;flex-shrink:0}
@@ -233,50 +231,6 @@
     .ft a{color:var(--tx3);text-decoration:none;transition:color .2s}
     .ft a:hover{color:var(--acc)}
 
-    /* SCREENSHOT OVERLAY */
-    .ss-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
-    .ss-ov.show{display:flex;opacity:1}
-    .ss-inn{display:flex;flex-direction:column;width:100%;max-width:560px;max-height:92vh;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shlg);transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.32,.72,0,1)}
-    .ss-ov.show .ss-inn{transform:none}
-    .ss-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--brd)}
-    .ss-hdr-t{font-size:16px;font-weight:800;letter-spacing:-.3px}
-    .ss-close{width:30px;height:30px;border-radius:50%;background:var(--surf2);border:none;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:background .15s}
-    .ss-close:hover{background:var(--surf3)}
-    .ss-close svg{width:14px;height:14px}
-    .ss-body{overflow-y:auto;flex:1}
-    .ss-body::-webkit-scrollbar{width:5px}
-    .ss-body::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
-    .ss-img img{width:100%;display:block}
-    .ss-tog-row{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--brd)}
-    .ss-tog-text{flex:1;min-width:0}
-    .ss-tog-lbl{font-size:13.5px;font-weight:700}
-    .ss-tog-desc{font-size:12px;color:var(--tx2);margin-top:2px;line-height:1.4}
-    .ios-sw{position:relative;display:inline-block;width:46px;height:28px;flex-shrink:0}
-    .ios-sw input{position:absolute;opacity:0;width:0;height:0}
-    .ios-trk{position:absolute;inset:0;cursor:pointer;background:var(--surf3);border-radius:100px;transition:background .2s}
-    .ios-trk::before{content:'';position:absolute;left:2px;top:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.3);transition:transform .2s cubic-bezier(.32,.72,0,1)}
-    .ios-sw input:checked+.ios-trk{background:var(--grn)}
-    .ios-sw input:checked+.ios-trk::before{transform:translateX(18px)}
-    .ss-acts{display:flex;gap:8px;padding:16px 22px}
-    .ss-acts .btn{flex:1;justify-content:center}
-    .ss-pick-btn{flex-shrink:0;padding:6px 14px;font-size:12px;font-weight:700;color:var(--acc);background:rgba(226,71,43,.10);border:1px solid rgba(226,71,43,.25);border-radius:100px;cursor:pointer;font-family:var(--font);transition:background .2s,transform .15s;white-space:nowrap}
-    .ss-pick-btn:hover{background:rgba(226,71,43,.18);transform:translateY(-1px)}
-    .ss-edit-input-wrap{padding:0 22px 14px}
-    .ss-edit-input{width:100%;padding:10px 14px;font-size:13px;font-family:var(--font);font-weight:600;background:var(--surf2);border:1px solid var(--brd2);border-radius:var(--rmd);color:var(--tx);outline:none;transition:border-color .2s}
-    .ss-edit-input:focus{border-color:var(--acc)}
-    .ss-edit-input::placeholder{color:var(--tx3);font-weight:500}
-    .ss-section-lbl{padding:14px 22px 6px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);border-top:1px solid var(--brd)}
-    .ss-font-row{padding:0 22px 12px;display:flex;flex-direction:column;gap:8px}
-    .ss-font-presets{display:flex;flex-wrap:wrap;gap:6px}
-    .ss-font-preset{padding:6px 14px;border-radius:100px;border:1px solid var(--brd2);background:var(--surf2);color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;font-family:var(--font)}
-    .ss-font-preset:hover{background:var(--surf3);color:var(--tx)}
-    .ss-font-preset.active{background:var(--acc);border-color:transparent;color:#fff}
-    .ss-font-custom-row{padding:0 22px 14px;display:flex;flex-direction:column;gap:4px}
-    .ss-font-custom-lbl{font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:4px}
-    .ss-font-url-wrap{display:flex;flex-direction:column;gap:6px}
-    .ss-font-apply-btn{align-self:flex-start;padding:7px 16px;border-radius:100px;border:1px solid rgba(226,71,43,.3);background:rgba(226,71,43,.10);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:background .18s}
-    .ss-font-apply-btn:hover{background:rgba(226,71,43,.2)}
-
     /* EPG OVERLAY */
     .epg-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.90);z-index:9999;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
     .epg-ov.show{display:flex;opacity:1}
@@ -314,14 +268,100 @@
     .kbd{display:inline-block;padding:1px 6px;font-size:10px;font-weight:700;font-family:var(--font);color:var(--tx2);background:var(--surf2);border:1px solid var(--brd2);border-radius:4px;box-shadow:0 1px 0 var(--brd2)}
     .plyr:fullscreen .epg-ov,.plyr:-webkit-full-screen .epg-ov{position:fixed;inset:0;z-index:999999}
 
+    /* EXPLORE VIDEOS SECTION */
+    .ev-sec{margin-top:36px;padding-top:28px;border-top:1px solid var(--brd)}
+    .ev-hdr{margin-bottom:16px}
+    .ev-pill{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:3px 9px;border-radius:100px;display:inline-block;margin-bottom:10px}
+    .ev-ttl{font-size:22px;font-weight:900;letter-spacing:-.4px;line-height:1.2;margin-bottom:6px}
+    .ev-sub{font-size:13px;color:var(--tx2);line-height:1.5;max-width:640px}
+    .ev-row-wrap{position:relative}
+    .ev-row{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;padding:4px 2px 14px;scrollbar-width:thin}
+    .ev-row::-webkit-scrollbar{height:6px}
+    .ev-row::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+    .ev-card{flex:0 0 auto;width:230px;background:var(--surf);border-radius:var(--rlg);overflow:hidden;text-decoration:none;color:inherit;display:block;transition:transform .18s ease,box-shadow .18s ease;border:1px solid var(--brd)}
+    .ev-card:hover{transform:translateY(-4px);box-shadow:var(--shmd);border-color:var(--brd2)}
+    .ev-thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(160deg,var(--surf2),var(--surf3));overflow:hidden}
+    .ev-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s ease}
+    .ev-thumb img.ready{opacity:1}
+    .ev-thumb .ph-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--brd2)}
+    .ev-thumb .ph-icon svg{width:26px;height:26px}
+    .ev-cat-chip{position:absolute;top:8px;left:8px;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:4px 9px;border-radius:100px;background:rgba(10,10,15,.78);backdrop-filter:blur(4px);color:var(--tx);max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ev-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .18s ease}
+    .ev-card:hover .ev-play{background:rgba(0,0,0,.38)}
+    .ev-play-icon{width:40px;height:40px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.8);transition:opacity .18s ease,transform .18s ease;box-shadow:var(--shmd)}
+    .ev-card:hover .ev-play-icon{opacity:1;transform:scale(1)}
+    .ev-play-icon svg{width:15px;height:15px;color:#fff;margin-left:2px}
+    .ev-body{padding:11px 12px 13px}
+    .ev-title{font-size:13px;font-weight:700;line-height:1.35;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+    .ev-meta{font-size:11px;color:var(--tx2);display:flex;align-items:center;gap:5px}
+    .ev-meta svg{width:12px;height:12px;flex-shrink:0}
+    .ev-state{padding:36px 20px;text-align:center;color:var(--tx2);width:100%}
+    .ev-state svg{width:30px;height:30px;margin-bottom:10px;color:var(--brd2)}
+    .ev-state p{font-size:13px}
+    .ev-state .spin{animation:evspin 1s linear infinite}
+    @keyframes evspin{to{transform:rotate(360deg)}}
+    .ev-more{margin-top:14px;text-align:right}
+    .ev-more a{font-size:12.5px;font-weight:700;color:var(--acc);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .ev-more a:hover{text-decoration:underline}
+    .ev-more a svg{width:14px;height:14px}
+    @media(max-width:640px){
+      .ev-ttl{font-size:18px}
+      .ev-card{width:172px}
+    }
+
+    /* DESKTOP GRID LAYOUT */
+    .dsk-grid{display:block}
+    .col-main{min-width:0}
+    .col-side{min-width:0;margin-top:28px}
+
+    @media(min-width:1020px){
+      .nav-inner{max-width:1480px}
+      .page{max-width:1480px;padding:32px 32px 72px}
+      .ft{max-width:1480px}
+      .ch-hdr{margin-bottom:28px;padding-bottom:24px}
+      .ch-logo{width:64px;height:64px}
+      .ch-name{font-size:30px}
+      .dsk-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:32px;align-items:start}
+      .col-side{margin-top:0;position:sticky;top:78px;max-height:calc(100vh - 96px);overflow-y:auto;scrollbar-width:thin}
+      .col-side::-webkit-scrollbar{width:5px}
+      .col-side::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+      #dplayer{aspect-ratio:16/9}
+      .sched-list{max-height:calc(100vh - 430px);min-height:220px}
+      .rw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+      .action-row{flex-wrap:nowrap}
+    }
+    @media(min-width:1320px){
+      .nav-inner{max-width:1600px}
+      .page{max-width:1600px}
+      .ft{max-width:1600px}
+      .dsk-grid{grid-template-columns:minmax(0,1fr) 440px}
+    }
+
+    /* Forces the desktop two-column layout for devices we detect as desktop via JS,
+       even if the viewport happens to be narrower than the width breakpoints above. */
+    body.is-desktop .nav-inner{max-width:1480px}
+    body.is-desktop .page{max-width:1480px;padding:32px 32px 72px}
+    body.is-desktop .ft{max-width:1480px}
+    body.is-desktop .ch-hdr{margin-bottom:28px;padding-bottom:24px}
+    body.is-desktop .ch-logo{width:64px;height:64px}
+    body.is-desktop .ch-name{font-size:30px}
+    body.is-desktop .dsk-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:32px;align-items:start}
+    body.is-desktop .col-side{margin-top:0;position:sticky;top:78px;max-height:calc(100vh - 96px);overflow-y:auto;scrollbar-width:thin}
+    body.is-desktop .col-side::-webkit-scrollbar{width:5px}
+    body.is-desktop .col-side::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:4px}
+    body.is-desktop #dplayer{aspect-ratio:16/9}
+    body.is-desktop .sched-list{max-height:calc(100vh - 430px);min-height:220px}
+    body.is-desktop .rw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+    body.is-desktop .action-row{flex-wrap:nowrap}
+
     @media(max-width:640px){
       .ch-name{font-size:20px}
       .action-row{flex-direction:column}
       .btn{justify-content:center}
       .sched-list{max-height:280px}
       .pt-clock-digits{font-size:34px}
-      .epg-ov,.ss-ov{padding:8px}
-      .epg-ov-inn,.ss-inn{max-height:96vh}
+      .epg-ov{padding:8px}
+      .epg-ov-inn{max-height:96vh}
       .page{padding:16px 12px 48px}
       .nav-lnk{display:none}
       .rw-grid{grid-template-columns:repeat(3,1fr)}
@@ -340,7 +380,22 @@
       <span class="logo-text" data-i18n="brand">Juche TV</span>
     </a>
     <div class="nav-r">
-      <a href="index.html" class="nav-lnk" data-i18n="channels">Channels</a>
+      <a href="index.html" class="nav-lnk" data-i18n="channels">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="/schedules" class="nav-lnk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Schedule</span>
+      </a>
+      <a href="/Magazine" class="nav-lnk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Magazines</span>
+      </a>
+      <a href="/VOD.html" class="nav-lnk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l1.2-3.6a1.5 1.5 0 0 1 1.9-.95l13.4 4.55"/><path d="M3 8.5V19a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 19V9.5A1.5 1.5 0 0 0 19.5 8H4.5A1.5 1.5 0 0 0 3 8.5z"/><path d="M7 5l3 3.5"/><path d="M12 3.8l3 3.5"/><path d="M3 8.5h18"/></svg>
+        <span>VOD</span>
+      </a>
     </div>
   </div>
 </nav>
@@ -360,18 +415,12 @@
     </div>
   </div>
 
+  <div class="dsk-grid">
+  <div class="col-main">
+
   <!-- PLAYER -->
   <div class="player-wrap" id="playerWrap">
-    <div class="ss-flash" id="ssFlash"></div>
     <div id="dplayer"></div>
-  </div>
-
-  <!-- ACTIONS -->
-  <div class="action-row">
-    <button class="btn pri" id="screenshotBtn" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      <span>Take Screenshot</span>
-    </button>
   </div>
 
   <!-- REWIND SECTION -->
@@ -434,6 +483,15 @@
       </div>
     </div>
   </div>
+
+  <!-- ABOUT -->
+  <div class="about">
+    <h3 data-i18n="about">About KCTV</h3>
+    <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
+  </div>
+
+  </div><!-- /col-main -->
+  <div class="col-side">
 
   <!-- EPG -->
   <div class="epg-sec">
@@ -548,87 +606,32 @@
     </div>
   </div>
 
-  <!-- ABOUT -->
-  <div class="about">
-    <h3 data-i18n="about">About KCTV</h3>
-    <p data-i18n="kctvDesc">Korean Central Television (KCTV) is the state television broadcaster of the Democratic People's Republic of Korea. It broadcasts news, cultural programs, documentaries, and entertainment content from Pyongyang.</p>
+  </div><!-- /col-side -->
+  </div><!-- /dsk-grid -->
+
+  <!-- EXPLORE VIDEOS -->
+  <div class="ev-sec" id="evSection">
+    <div class="ev-hdr">
+      <span class="ev-pill">On-Demand Archive</span>
+      <div class="ev-ttl">Explore Videos From Korean Central Television</div>
+      <p class="ev-sub">Step inside the full KCTV archive — news bulletins, cultural showcases, and revolutionary programming from Pyongyang, ready to stream the moment you press play.</p>
+    </div>
+    <div class="ev-row-wrap">
+      <div class="ev-row" id="evRow">
+        <div class="ev-state">
+          <svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <p>Loading videos&hellip;</p>
+        </div>
+      </div>
+    </div>
+    <div class="ev-more">
+      <a href="/VOD.html">
+        Browse the full VOD archive
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
   </div>
 </main>
-
-<!-- SCREENSHOT POPUP -->
-<div class="ss-ov" id="screenshotOverlay">
-  <div class="ss-inn">
-    <div class="ss-hdr">
-      <div class="ss-hdr-t">Screenshot Captured</div>
-      <button class="ss-close" id="screenshotOverlayClose" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="ss-body">
-      <div class="ss-img"><img id="screenshotImg" alt="Screenshot"></div>
-      <div class="ss-tog-row">
-        <div class="ss-tog-text">
-          <div class="ss-tog-lbl">Show what's airing now</div>
-          <div class="ss-tog-desc">Swap the date for the current programme name pulled live from the EPG</div>
-        </div>
-        <label class="ios-sw"><input type="checkbox" id="screenshotProgramToggle"><span class="ios-trk"></span></label>
-      </div>
-      <div class="ss-tog-row">
-        <div class="ss-tog-text">
-          <div class="ss-tog-lbl">&#x1F3AF; Pick the programme yourself</div>
-          <div class="ss-tog-desc">Choose exactly what's showing &mdash; browse the full schedule and stamp it on your screenshot</div>
-        </div>
-        <button class="ss-pick-btn" id="screenshotPickProgBtn" type="button">Browse Guide</button>
-      </div>
-      <div class="ss-tog-row" id="ssEditTextRow" style="display:none">
-        <div class="ss-tog-text">
-          <div class="ss-tog-lbl">&#x270F;&#xFE0F; Make it yours &mdash; edit the caption</div>
-          <div class="ss-tog-desc">Type anything you want on the watermark strip</div>
-        </div>
-        <label class="ios-sw"><input type="checkbox" id="screenshotEditTextToggle"><span class="ios-trk"></span></label>
-      </div>
-      <div class="ss-edit-input-wrap" id="ssEditInputWrap" style="display:none">
-        <input type="text" id="ssCustomText" class="ss-edit-input" placeholder="e.g. KCTV &middot; Special Broadcast" maxlength="120">
-      </div>
-
-      <!-- FONT SETTINGS -->
-      <div class="ss-section-lbl">&#x1F524; Watermark Font</div>
-      <div class="ss-font-row">
-        <div class="ss-font-presets" id="ssFontPresets">
-          <button class="ss-font-preset active" data-font="Inter,sans-serif" type="button">Inter</button>
-          <button class="ss-font-preset" data-font="Georgia,serif" type="button">Georgia</button>
-          <button class="ss-font-preset" data-font="'Courier New',monospace" type="button">Mono</button>
-          <button class="ss-font-preset" data-font="'Times New Roman',serif" type="button">Times</button>
-          <button class="ss-font-preset" data-font="Impact,sans-serif" type="button">Impact</button>
-        </div>
-      </div>
-      <div class="ss-font-custom-row">
-        <div class="ss-font-custom-lbl">Custom Google Font URL</div>
-        <div class="ss-font-url-wrap">
-          <input type="text" id="ssFontUrl" class="ss-edit-input" placeholder="https://fonts.googleapis.com/css2?family=Roboto&hellip;" style="margin-bottom:6px">
-          <input type="text" id="ssFontName" class="ss-edit-input" placeholder="Font name, e.g. Roboto">
-          <button class="ss-font-apply-btn" id="ssFontApplyBtn" type="button">Apply Font</button>
-        </div>
-      </div>
-
-      <div class="ss-acts">
-        <a class="btn" id="screenshotViewAll" href="Screenshots.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          My Screenshots
-        </a>
-        <button class="btn" id="screenshotSave" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save
-        </button>
-        <a class="btn pri" id="screenshotDownload" download="kctv-screenshot.png">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download
-        </a>
-      </div>
-      <div id="ssSaveMsg" style="display:none;text-align:center;padding:0 22px 14px;font-size:12px;color:var(--grn);font-weight:600">&#x2713; Saved to your Screenshots gallery!</div>
-    </div>
-  </div>
-</div>
 
 <!-- EPG FULL OVERLAY -->
 <div class="epg-ov" id="epgOverlay">
@@ -688,6 +691,17 @@
     if(/Macintosh/.test(ua)&&navigator.maxTouchPoints&&navigator.maxTouchPoints>1)return true;
     return false;
   })();
+
+  /* Auto-detect a desktop device (not a phone/tablet) and force the desktop
+     two-column layout, independent of the current window width. */
+  var isDesktopDevice=(function(){
+    var ua=navigator.userAgent||'';
+    if(/Mobi|Android|iPhone|iPod|iPad|BlackBerry|IEMobile|Opera Mini/i.test(ua))return false;
+    if(/Macintosh/.test(ua)&&navigator.maxTouchPoints&&navigator.maxTouchPoints>1)return false;
+    return true;
+  })();
+  if(isDesktopDevice&&document.body)document.body.classList.add('is-desktop');
+  window._kctvIsDesktop=isDesktopDevice;
 
   function destroyPlayer(){
     if(window._dpInstance){try{window._dpInstance.destroy();}catch(e){}window._dpInstance=null;}
@@ -847,186 +861,6 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_init);else _init();
   window._kctvInitPlayer=initPlayer;window._kctvActiveServer=function(){return activeServer;};window._kctvHls=function(){return hlsInstance;};
 
-  /* SCREENSHOT */
-  (function(){
-    var btn=document.getElementById('screenshotBtn'),flash=document.getElementById('ssFlash');
-    var ov=document.getElementById('screenshotOverlay'),ovc=document.getElementById('screenshotOverlayClose');
-    var img=document.getElementById('screenshotImg'),dl=document.getElementById('screenshotDownload');
-    var tog=document.getElementById('screenshotProgramToggle');
-    var pickBtn=document.getElementById('screenshotPickProgBtn');
-    var editToggle=document.getElementById('screenshotEditTextToggle');
-    var editRow=document.getElementById('ssEditTextRow');
-    var editWrap=document.getElementById('ssEditInputWrap');
-    var customInput=document.getElementById('ssCustomText');
-    var saveBtn=document.getElementById('screenshotSave');
-    var saveMsg=document.getElementById('ssSaveMsg');
-    var SK='kctv_ss_prog';
-    var pickedProgram=null,customText=null;
-
-    /* FONT SYSTEM */
-    var FONT='Inter,sans-serif';
-    var fontPresets=document.getElementById('ssFontPresets');
-    var fontUrlInput=document.getElementById('ssFontUrl');
-    var fontNameInput=document.getElementById('ssFontName');
-    var fontApplyBtn=document.getElementById('ssFontApplyBtn');
-    fontPresets.addEventListener('click',function(e){
-      var b=e.target.closest('.ss-font-preset');if(!b)return;
-      fontPresets.querySelectorAll('.ss-font-preset').forEach(function(x){x.classList.remove('active');});
-      b.classList.add('active');
-      FONT=b.dataset.font;
-      renderSS();
-    });
-    fontApplyBtn.addEventListener('click',function(){
-      var url=fontUrlInput.value.trim(),name=fontNameInput.value.trim();
-      if(!url||!name){alert('Please enter both a Google Fonts URL and the font name.');return;}
-      var existing=document.getElementById('ss-custom-font-link');
-      if(existing)existing.remove();
-      var lnk=document.createElement('link');lnk.id='ss-custom-font-link';lnk.rel='stylesheet';lnk.href=url;
-      document.head.appendChild(lnk);
-      fontPresets.querySelectorAll('.ss-font-preset').forEach(function(x){x.classList.remove('active');});
-      FONT='"'+name+'",sans-serif';
-      lnk.onload=function(){renderSS();};
-      setTimeout(function(){renderSS();},800);
-    });
-
-    try{tog.checked=localStorage.getItem(SK)==='1';}catch(e){}
-
-    /* Pyongyang time helpers */
-    function getPT(){var n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+9*3600000);}
-    function fmt2(n){return String(n).padStart(2,'0');}
-    function fmtKST(d){return fmt2(d.getHours())+':'+fmt2(d.getMinutes());}
-    function wDate(){var k=getPT();return k.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][k.getMonth()]+' '+k.getFullYear();}
-    function getEpgSlot(){
-      if(typeof window._kctvGetCurrentProgram==='function'){
-        var p=window._kctvGetCurrentProgram();if(p)return p;
-      }
-      return null;
-    }
-    function curProg(){
-      if(pickedProgram)return pickedProgram;
-      var ep=getEpgSlot();if(ep)return ep;
-      return 'Korean Central Television';
-    }
-
-    function rrp(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
-    function fitSz(ctx,txt,maxW,start,min){var sz=start;while(sz>min){ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),aw=Math.max(3,Math.round(sz*0.16));if(tw+px*2+aw+Math.round(sz*0.35)<=maxW)break;sz--;}return sz;}
-    function getWMText(){
-      if(customText!==null&&customText.trim()!=='')return customText.trim();
-      if(tog.checked||pickedProgram)return curProg()+'\u2002\u2013\u2002Shared via https://juche-tv.vercel.app/';
-      return 'Shared via https://juche-tv.vercel.app  \u2013  '+wDate()+'  \u2013  Korean Central Television';
-    }
-    function drawWM(ctx,w,h){
-      var txt=getWMText();
-      var mg=Math.max(16,Math.round(w*0.018)),maxPW=w-mg*2,sz=fitSz(ctx,txt,maxPW,Math.max(13,Math.round(w*0.019)),10);
-      ctx.font='700 '+sz+'px '+FONT;var tw=ctx.measureText(txt).width,px=Math.round(sz*0.85),py=Math.round(sz*0.62),aw=Math.max(3,Math.round(sz*0.16)),gap=Math.round(sz*0.35),r=Math.round(sz*0.5),ph=sz+py*2,pw=Math.min(tw+px*2+aw+gap,maxPW),pX=mg,pY=h-mg-ph;
-      ctx.save();ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=Math.round(sz*0.6);ctx.shadowOffsetY=Math.round(sz*0.15);ctx.fillStyle='rgba(18,18,22,.82)';rrp(ctx,pX,pY,pw,ph,r);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#e2472b';ctx.fillRect(pX,pY,aw,ph);ctx.restore();
-      ctx.save();rrp(ctx,pX,pY,pw,ph,r);ctx.clip();ctx.fillStyle='#fff';ctx.font='700 '+sz+'px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(txt,pX+aw+px,pY+ph/2+Math.round(sz*0.04));ctx.restore();ctx.restore();
-    }
-
-    var lastFrame=null,currentDataUrl=null;
-    function renderSS(){
-      if(!lastFrame)return;
-      var c=document.createElement('canvas');c.width=lastFrame.width;c.height=lastFrame.height;
-      var ctx=c.getContext('2d');ctx.drawImage(lastFrame,0,0);
-      drawWM(ctx,c.width,c.height);
-      currentDataUrl=c.toDataURL('image/png');
-      img.src=currentDataUrl;dl.href=currentDataUrl;
-      saveMsg.style.display='none';
-    }
-
-    /* SAVE TO LOCALSTORAGE */
-    saveBtn.addEventListener('click',function(){
-      if(!currentDataUrl)return;
-      var now=new Date();
-      var kst=getPT();
-      var epgProgram=null,epgTime=null;
-      if(typeof window._kctvGetCurrentProgram==='function')epgProgram=window._kctvGetCurrentProgram();
-      if(window._epgData&&window._epgData.programs){
-        for(var i=0;i<window._epgData.programs.length;i++){
-          var p=window._epgData.programs[i];
-          var pTitle=(typeof window._kctvTitleFor==='function')?window._kctvTitleFor(p):(typeof p.title==='object'?p.title.en:p.title);
-          if(epgProgram&&pTitle===epgProgram){
-            epgTime=p.start+' \u2013 '+p.end+' KST';break;
-          }
-        }
-      }
-      var userTZ='';try{userTZ=Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}
-      var userCountry='';try{var lc=Intl.DateTimeFormat().resolvedOptions().locale;userCountry=lc;}catch(e){}
-
-      var entry={
-        id:'ss_'+Date.now(),
-        dataUrl:currentDataUrl,
-        capturedAt:now.toISOString(),
-        userLocalTime:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' '+now.toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}),
-        userTimezone:userTZ,
-        userLocale:userCountry,
-        pyongyangTime:fmt2(kst.getHours())+':'+fmt2(kst.getMinutes())+' KST',
-        pyongyangDate:kst.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][kst.getMonth()]+' '+kst.getFullYear(),
-        epgProgram:pickedProgram||epgProgram||'\u2014',
-        epgTimeSlot:epgTime||'\u2014',
-        watermarkText:getWMText(),
-        font:FONT
-      };
-      var arr=[];try{var raw=localStorage.getItem('kctv_screenshots');if(raw)arr=JSON.parse(raw);}catch(e){}
-      arr.unshift(entry);
-      if(arr.length>50)arr=arr.slice(0,50);
-      try{localStorage.setItem('kctv_screenshots',JSON.stringify(arr));}catch(e){alert('Storage full \u2014 please delete some screenshots from the gallery.');}
-      saveMsg.style.display='';
-      setTimeout(function(){saveMsg.style.display='none';},3000);
-    });
-
-    function openSS(){ov.classList.add('show');}
-    function closeSS(){ov.classList.remove('show');}
-    ovc.addEventListener('click',closeSS);
-    ov.addEventListener('click',function(e){if(e.target===this)closeSS();});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('show'))closeSS();});
-
-    tog.addEventListener('change',function(){
-      try{localStorage.setItem(SK,tog.checked?'1':'0');}catch(e){}
-      if(tog.checked){pickedProgram=null;pickBtn.textContent='Browse Guide';}
-      renderSS();
-    });
-
-    /* Pick programme */
-    pickBtn.addEventListener('click',function(){
-      if(typeof window._epgOpenOverlay==='function')window._epgOpenOverlay();
-      var epgBody=document.getElementById('epgOverlayBody');
-      if(!epgBody)return;
-      function onRowClick(e){
-        var row=e.target.closest('.epg-fr');if(!row)return;
-        var titleEl=row.querySelector('.epg-ftitle');
-        if(titleEl){
-          pickedProgram=titleEl.textContent.trim();
-          pickBtn.textContent='\u2713 '+pickedProgram.substring(0,28)+(pickedProgram.length>28?'\u2026':'');
-          tog.checked=false;
-          try{localStorage.setItem(SK,'0');}catch(e){}
-        }
-        epgBody.removeEventListener('click',onRowClick);
-        var closeBtn=document.getElementById('epgOverlayClose');
-        if(closeBtn)closeBtn.click();
-        renderSS();
-      }
-      epgBody.addEventListener('click',onRowClick);
-    });
-
-    /* Edit text toggle */
-    editToggle.addEventListener('change',function(){
-      editWrap.style.display=editToggle.checked?'block':'none';
-      if(!editToggle.checked){customText=null;customInput.value='';}
-      renderSS();
-    });
-    customInput.addEventListener('input',function(){customText=customInput.value;renderSS();});
-
-    function showEditRow(){editRow.style.display='';}
-
-    btn.addEventListener('click',function(){
-      var v=document.querySelector('#dplayer video');if(!v||!v.videoWidth){alert('Video not ready. Please wait for the stream.');return;}
-      var f=document.createElement('canvas');f.width=v.videoWidth;f.height=v.videoHeight;f.getContext('2d').drawImage(v,0,0,f.width,f.height);lastFrame=f;
-      flash.classList.remove('active');void flash.offsetWidth;flash.classList.add('active');
-      showEditRow();renderSS();openSS();
-    });
-  })();
 })();
 </script>
 
@@ -1385,6 +1219,16 @@
   }
   window._kctvTitleFor=titleFor;
 
+  function categoryFor(p){
+    if(!p||!p.category)return'';
+    if(typeof p.category!=='object')return p.category;
+    if(p.category[currentLang])return p.category[currentLang];
+    if(p.category.en)return p.category.en;
+    if(p.category.ko)return p.category.ko;
+    var keys=Object.keys(p.category);return keys.length?p.category[keys[0]]:'';
+  }
+  window._kctvCategoryFor=categoryFor;
+
   function withEnds(progs){
     for(var i=0;i<progs.length;i++){
       if(!progs[i].end)progs[i].end=progs[i+1]?progs[i+1].start:'24:00';
@@ -1416,7 +1260,7 @@
       var remHtml=curr?'<div class="sched-rem">'+getMinsLeft(p.end)+' min left</div>':'';
       row.innerHTML=
         '<div class="sched-time-col"><div class="sched-time">'+esc(p.start)+'</div></div>'+
-        '<div class="sched-body">'+badgeHtml+'<div class="sched-cat">'+esc(p.category||'')+'</div>'+
+        '<div class="sched-body">'+badgeHtml+'<div class="sched-cat">'+esc(categoryFor(p))+'</div>'+
         '<div class="sched-ttl">'+esc(titleFor(p))+'</div>'+subHtml+remHtml+'</div>';
       list.appendChild(row);
     });
@@ -1432,7 +1276,7 @@
       var past=isPast(p.end),curr=isCur(p.start,p.end),dur=getDur(p.start,p.end);
       var row=document.createElement('div');
       row.className='epg-fr'+(past?' epg-past':'')+(curr?' epg-cur':'');
-      row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleFor(p))+'</div><div class="epg-fsub">'+esc(titleSubFor(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(p.category)+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
+      row.innerHTML='<div class="epg-ft">'+esc(p.start)+'</div><div class="epg-fd"></div><div class="epg-fb"><div class="epg-ftitle">'+esc(titleFor(p))+'</div><div class="epg-fsub">'+esc(titleSubFor(p))+'</div><div class="epg-ftags"><span class="epg-fcat">'+esc(categoryFor(p))+'</span></div></div><div class="epg-fend">'+esc(p.end)+'<div class="epg-fdur">'+dur+' min</div></div>';
       body.appendChild(row);
     });
   }
@@ -1528,6 +1372,112 @@
 
   if(currentSource!=='juche')forceEnKoLangSelect();
   loadEPG();
+})();
+</script>
+
+<script>
+/* EXPLORE VIDEOS — pulls the full VOD archive and links each card straight to player.html?video=ID,
+   same fetching/id logic as VOD.html */
+(function(){
+  var API='https://kctv.koryofront.org/api/media-list';
+  var ORIGIN='https://kctv.koryofront.org';
+  var THUMB_API='https://koryofront.org/api/kctv/thumb';
+
+  var row=document.getElementById('evRow');
+  if(!row)return;
+
+  function shortId(str){
+    var h=0x811c9dc5;
+    for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193);}
+    return (h>>>0).toString(36);
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
+  }
+  function formatDate(d){
+    try{return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}
+    catch(e){return d;}
+  }
+  function thumbUrl(v){
+    var path='/recordings/'+v.category+'/'+v.filename;
+    return THUMB_API+'?path='+encodeURI(path)+'&t=5';
+  }
+
+  var thumbObserver=null;
+  function makeThumb(card,video){
+    var img=card.querySelector('img');
+    var ph=card.querySelector('.ph-icon');
+    img.addEventListener('load',function(){img.classList.add('ready');if(ph)ph.style.display='none';});
+    img.addEventListener('error',function(){});
+    img.src=thumbUrl(video);
+  }
+
+  function makeCard(v){
+    var card=document.createElement('a');
+    card.className='ev-card';
+    card.href='player.html?video='+v.id;
+    card.dataset.id=v.id;
+    card.innerHTML=
+      '<div class="ev-thumb">'+
+        '<span class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></span>'+
+        '<img alt="" loading="lazy">'+
+        '<span class="ev-cat-chip">'+escapeHtml(v.category)+'</span>'+
+        '<div class="ev-play"><div class="ev-play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>'+
+      '</div>'+
+      '<div class="ev-body">'+
+        '<div class="ev-title">'+escapeHtml(v.title)+'</div>'+
+        '<div class="ev-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'+formatDate(v.date)+'</div>'+
+      '</div>';
+    if(!thumbObserver){
+      thumbObserver=new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(!entry.isIntersecting)return;
+          thumbObserver.unobserve(entry.target);
+          var id=entry.target.dataset.id;
+          var vid=ALL.filter(function(x){return x.id===id;})[0];
+          if(vid)makeThumb(entry.target,vid);
+        });
+      },{root:row,rootMargin:'300px'});
+    }
+    thumbObserver.observe(card);
+    return card;
+  }
+
+  var ALL=[];
+  function showState(html){
+    row.innerHTML='<div class="ev-state">'+html+'</div>';
+  }
+
+  function loadVideos(){
+    fetch(API).then(function(res){
+      if(!res.ok)throw new Error('fetch failed');
+      return res.json();
+    }).then(function(data){
+      ALL=[];
+      Object.keys(data).forEach(function(cat){
+        (data[cat]||[]).forEach(function(item){
+          var id=shortId(cat+'|'+item.filename);
+          ALL.push({
+            id:id, category:item.category||cat, title:item.title, date:item.date,
+            filename:item.filename,
+            fullUrl:ORIGIN+item.url, fullDownload:ORIGIN+item.download
+          });
+        });
+      });
+      if(!ALL.length){
+        showState('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3z"/></svg><p>No videos available right now.</p>');
+        return;
+      }
+      var frag=document.createDocumentFragment();
+      ALL.forEach(function(v){frag.appendChild(makeCard(v));});
+      row.innerHTML='';
+      row.appendChild(frag);
+    }).catch(function(){
+      showState('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Couldn\'t load the archive. Please try again shortly.</p>');
+    });
+  }
+
+  loadVideos();
 })();
 </script>
 </body>
