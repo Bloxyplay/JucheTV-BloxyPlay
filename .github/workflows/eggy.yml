@@ -1,81 +1,54 @@
-name: Bloxy Play IPTV 24/7 Stream
+name: KoryoFront Main Live Stream
 
 on:
-  workflow_dispatch: 
+  schedule:
+    # 09:57 UTC is exactly 4:27 PM Myanmar Time (MMT)
+    - cron: '57 9 * * *'
+  workflow_dispatch:
 
 permissions:
-  actions: write 
+  actions: write
 
 concurrency:
-  group: "iptv-stream"
+  group: "koryofront-stream"
   cancel-in-progress: true
 
 jobs:
   stream-to-youtube:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install FFmpeg Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install ffmpeg -y
 
-      - name: Start Scheduled Stream Loop (4h limit)
-        env:
-          YOUTUBE_STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
-          TZ: "Asia/Yangon"
+      - name: Launch KoryoFront 1080p50 Relay
         run: |
-          JOB_START=$(date +%s)
-          MAX_RUNTIME=14400 # Exactly 4 hours
-          
+          echo "Starting KoryoFront Progressive 1080p50 High-Bitrate Engine..."
+
           while true; do
-            CURRENT_EPOCH=$(date +%s)
-            ELAPSED=$((CURRENT_EPOCH - JOB_START))
-            
-            if [ $ELAPSED -ge $MAX_RUNTIME ]; then
-              echo "4-hour limit reached. Safely exiting loop to trigger auto-restart..."
-              break
-            fi
-            
-            # Extract hours and minutes as pure numbers to avoid text sorting bugs
-            CURRENT_HOUR=$(date +"%-H")
-            CURRENT_MIN=$(date +"%-M")
-            TOTAL_MINUTES=$((CURRENT_HOUR * 60 + CURRENT_MIN))
-            
-            # 5:30 AM = 330 minutes | 8:30 PM (20:30) = 1230 minutes
-            # Off-Air condition: Before 5:30 AM OR After 8:30 PM
-            if [ $TOTAL_MINUTES -lt 330 ] || [ $TOTAL_MINUTES -ge 1230 ]; then
-              echo "KCTV is Off-Air (Current Minutes: $TOTAL_MINUTES). Broadcasting your Juche TV Test Card..."
-              
-              timeout 1800 ffmpeg -hide_banner \
-                -loop 1 -r 30 -i "Screenshot_2026-06-18-06-01-15-077_com.lemon.lvoverseas-edit.jpg" \
-                -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 \
-                -c:v libx264 -preset veryfast -b:v 3000k -maxrate 3000k -bufsize 6000k -pix_fmt yuv420p -g 60 \
-                -c:a aac -b:a 128k \
-                -shortest \
-                -f flv "rtmps://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY" || true
-            else
-              echo "KCTV is On-Air! Streaming live feed..."
-              
-              timeout 1800 ffmpeg -hide_banner \
-                -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
-                -thread_queue_size 512 \
-                -i "https://kctv.koryofront.org/stream/index.m3u8" \
-                -vf "drawtext=text='Bloxy Play IPTV':fontcolor=white@0.6:fontsize=38:shadowcolor=black@0.5:shadowx=2:shadowy=2:x=w-tw-30:y=30" \
-                -c:v libx264 -preset veryfast -b:v 4500k -maxrate 4500k -bufsize 9000k -pix_fmt yuv420p -g 60 -r 30 \
-                -c:a aac -b:a 128k -ar 44100 \
-                -f flv "rtmps://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY" || true
-            fi
-            
-            echo "Loop cycle completed. Resetting in 5 seconds..."
+            echo "Connecting to KoryoFront source stream..."
+
+            ffmpeg -hide_banner \
+              -allowed_extensions ALL \
+              -protocol_whitelist file,crypto,data,http,https,tcp,tls \
+              -reconnect 1 -reconnect_at_eof 0 -reconnect_streamed 1 -reconnect_delay_max 10 \
+              -fflags +genpts+nobuffer \
+              -max_delay 3000000 \
+              -thread_queue_size 8192 \
+              -i "https://kctv.koryofront.org/stream/index.m3u8" \
+              -i "Juchetv-watermark.png" \
+              -filter_complex "[1:v]scale=280:-1,format=rgba,colorchannelmixer=aa=0.5[wm];[0:v]scale=1920:1080[main];[main][wm]overlay=W-w-40:40[outv]" \
+              -map "[outv]" \
+              -map 0:a \
+              -c:v libx264 -preset veryfast -threads 0 \
+              -b:v 9000k -maxrate 9000k -bufsize 18000k -pix_fmt yuv420p -g 100 -fps_mode cfr -r 50 \
+              -c:a aac -b:a 128k -async 1 \
+              -f flv "rtmp://a.rtmp.youtube.com/live2/t4pp-m06h-053h-y38h-2bbh" || true
+
+            echo "Stream dropped. Re-establishing connection link in 5 seconds..."
             sleep 5
           done
-
-      - name: Trigger Next Run (Skipped if Manually Cancelled)
-        env:
-          GH_TOKEN: ${{ secrets.AUTO_RESTART_TOKEN }}
-        run: |
-          echo "Automatically launching the next workflow chain..."
-          gh workflow run "Bloxy Play IPTV 24/7 Stream"
